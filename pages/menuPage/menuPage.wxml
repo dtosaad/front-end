@@ -1,0 +1,56 @@
+<view class="page">
+
+  <!--顶部导航栏-->
+  <view class="swiper-tab">
+    <view class='blank'></view>
+    <view class="tab-item {{currentTab==0 ? 'on' : ''}}" data-current="0" bindtap="swichNav">菜单</view>
+    <view class='blank'></view>
+    <view class='blank'></view>
+    <view class="tab-item {{currentTab==1 ? 'on' : ''}}" data-current="1" bindtap="swichNav">桌位</view>
+    <view class='blank'></view>
+  </view>
+
+  <!--内容主体-->
+  <swiper class="swiper" current="{{currentTab}}" duration="200" bindchange="swiperChange">
+    <!--菜单-->
+    <swiper-item>
+      <!--推荐菜单滚动-->
+      <swiper indicator-dots = "{{true}}" autoplay = "{{true}}" interval='2000' duration='2000'>
+        <block wx:for="{{imgUrls}}">
+          <swiper-item>
+            <image src="{{item}}" class="slide-image" width="355" height="150"/>
+          </swiper-item>
+        </block>
+      </swiper>
+
+      <!--菜单按钮-->
+      <view class='menu_btn'>
+        <button>我吃过</button>
+        <button>铁板</button>
+        <button>披萨</button>
+        <button>焗饭</button>
+        <button>小吃</button>
+        <button>饮料</button>
+      </view>
+
+      <!--菜单列表-->
+      <scroll-view class='list'>
+        <view wx:for = "{{arr}}" class='list_item'>
+          <image src = "{{item.src}}" mode='aspectFit' style="width: 80px; height: 80px;">
+          </image>
+          <text class='food_name'>{{item.name}}</text>
+        </view>
+      </scroll-view>
+    </swiper-item>
+
+    <!--桌位-->
+    <swiper-item>
+      <view>桌位</view>
+    </swiper-item>
+  </swiper>
+
+  <!--付款菜单-->
+  <view class='pay_menu'>
+    <text>"￥10"</text>
+  </view>
+</view>

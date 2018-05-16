@@ -1,0 +1,65 @@
+.page {
+  margin-left: 10rpx;
+  margin-right: 10rpx;
+}
+
+.swiper-tab {
+  display: flex;
+  flex-direction: row;
+  line-height: 80rpx;
+  border-bottom: 2rpx solid #777;
+}
+
+.tab-item {
+  width: 30%;
+  text-align: center;
+  font-size: 15px;
+  color: #FFFFFF;
+  background: #000
+}
+
+.blank {
+  width: 20%;
+  background: #000
+}
+
+.swiper {
+  height: 1100px;
+  background: #CDC8B1;
+}
+
+.on {
+  color: white;
+  border-bottom: 5rpx solid white;
+}
+
+.menu_btn {
+  width: 30%;
+  position: absolute;
+  left: 0rpx;
+}
+
+.list {
+  width: 67%;
+  position: absolute;
+  left: 230rpx;
+  background: white;
+}
+
+.list_item {
+  border: 10rpx solid gray;
+}
+
+.pay_menu {
+  background: black;
+  width: 100%;
+  height: 5%;
+  position: fixed;
+  bottom: 0px;
+}
+
+.food_name {
+  position: relative;
+  bottom: 60px;
+  left: 5px;
+}
