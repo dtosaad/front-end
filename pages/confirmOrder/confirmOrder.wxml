@@ -1,0 +1,39 @@
+<!--index.wxml-->
+<view>
+    <!-- 订单列表 -->
+    <view wx:for="{{ testData.data }}" wx:key="{{ testData.data }}" class="order">
+        <view class="order-left">{{ item.name }}</view>
+        <view class="order-center">×{{ item.number }}</view>
+        <view class="order-right">￥{{ item.money }}</view>
+    </view>
+
+    <!-- 用餐人数 -->
+    <view class="order-member">
+        <view>用餐人数</view>
+        <view class="order-member-tips">（茶位费：1元/人）</view>
+        <view class="stepper">  
+            <!-- 减号 -->  
+            <text class="{{minusStatus}}" bindtap="bindMinus">-</text>  
+            <!-- 数值 -->  
+            <input type="number" bindchange="bindManual" value="{{num}}" />  
+            <!-- 加号 -->  
+            <text class="normal" bindtap="bindPlus">+</text>  
+        </view>  
+    </view>
+
+    <!-- 用餐方式 -->
+    <view>
+        <view>用餐方式</view>
+        <radio-group class="radio-group" bindchange="radioChange">
+            <label class="radio" wx:for="{{items}}" wx::key="{{items}}">
+                <radio value="item.name" checked="{{item.checked}}"/>{{item.value}}
+            </label>
+        </radio-group>
+    </view>
+
+    <!-- 备注 -->
+    <view>
+        <label>备注</label>
+        <view>口味偏好等 ></view> 
+    </view>
+</view>
