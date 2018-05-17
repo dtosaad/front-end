@@ -41,11 +41,19 @@
           <text class='food_name'>{{item.name}}</text>
         </view>
       </scroll-view>
+
+      
     </swiper-item>
 
     <!--桌位-->
     <swiper-item>
       <view>桌位</view>
+      <!-- 确认订单测试 -->
+      <view class="uploader">
+          <navigator url="../confirmOrder/confirmOrder" open-type="navigate" class="uploader-text">
+              <text>确认订单</text>
+          </navigator>
+      </view>
     </swiper-item>
   </swiper>
 
@@ -53,4 +61,6 @@
   <view class='pay_menu'>
     <text>"￥10"</text>
   </view>
+
+  
 </view>

@@ -5,12 +5,21 @@ page {
     justify-content: flex-start;
 }
  /*订单容器*/
-.order {
+.my-container {
+    height: auto;
+    width: 100%;
+    background: #FFFFFF;
+    padding-top: 5rpx;
+    padding-bottom: 5rpx;
+    margin-bottom: 10rpx;
+}
+
+.order-items {
     font-size: 32rpx;
+    margin: 20rpx;
     display: flex;
     flex-wrap: row wrap;
     justify-content: space-between;
-    margin: 20rpx;
 }
 
 /*订单item*/
@@ -35,51 +44,182 @@ page {
     display: flex;
     flex-wrap: row wrap;
     margin: 20rpx;
+    justify-content: space-between;
 }
 
 .order-member-tips {
     height: 100%;
+    line-height: 42rpx;
     font-size: 24rpx;
     color: #888888;
-    vertical-align: bottom;
+    vertical-align: middle;
 }
 
 /*加减控件*/
 .stepper {  
-    width: 80px;
-    height: 26px;
-    border: 1px solid rgb(245, 166, 35);  
-    border-radius: 50px;
-    margin:0 auto;
+    width: 132rpx;
+    height: 32rpx;
+    margin-left: auto;
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+    border: 1rpx solid rgb(245, 166, 35);
+    border-radius: 50rpx;
 }  
   
 /*加号和减号*/  
 .stepper text {
-    width: 19px;
-    line-height: 26px;
+    width: 34rpx;
+    height: 32rpx;
+    line-height: 32rpx;
     text-align: center;
     float: left;
+    font-size: 32rpx;
+    vertical-align: middle;
 }
-  
+
 /*数值*/  
-.stepper input {  
-    width: 40px;  
-    height: 26px;  
-    float: left;  
-    margin: 0 auto;  
-    text-align: center;  
-    font-size: 12px;  
-    /*给中间的input设置左右边框即可*/  
-    border-left: 1px solid #ccc;  
-    border-right: 1px solid #ccc;  
+.stepper-num {  
+    width: auto;
 }  
-  
+
+.stepper-button {
+    border: 0 solid rgb(245, 166, 35);
+    border-radius: 50rpx;
+}
+
 /*普通样式*/  
 .stepper .normal{  
-    color: black;  
+    color: black;
+    background: rgb(245, 166, 35);
 }
 
 /*禁用样式*/  
 .stepper .disabled{  
-    color: #ccc;  
-}  
+    color: #888888;  
+}
+
+/*用餐方式*/
+.eatstyle {
+    font-size: 32rpx;
+    margin: 20rpx;
+}
+
+/*单选框组样式*/
+.my-radio-group {
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+}
+
+.radio-group-label {
+    margin-top: 20rpx;
+}
+
+.radio-group-label text {
+    line-height: 32rpx;
+    vertical-align: middle;
+    margin-right: 45rpx;
+}
+
+/*单选框样式*/
+radio .wx-radio-input{
+   border-radius: 50%;
+   width: 32rpx;
+   height: 32rpx;
+}
+
+/* 选中后的 背景样式*/
+radio .wx-radio-input.wx-radio-input-checked{
+   border: none;
+   background: rgb(245, 166, 35);
+}
+
+/* 选中后的 对勾样式*/
+radio .wx-radio-input.wx-radio-input-checked::before{
+   border-radius: 50%;/* 圆角 */
+   width: 32rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+   height: 32rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+   line-height: 32rpx;
+   text-align: center;
+   font-size: 24rpx; /* 对勾大小 30rpx */
+   color:#fff; /* 对勾颜色 白色 */
+   background: transparent;
+   transform:translate(-50%, -50%) scale(1);
+   -webkit-transform:translate(-50%, -50%) scale(1);
+}
+
+/*备注样式*/
+.note, .coupon, .phone {
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+    font-size: 32rpx;
+    margin: 20rpx;
+}
+
+.note navigator, .coupon navigator, .phone navigator {
+    width: 80%;
+    text-align: right;
+}
+
+.note-unchanged, .coupon-unchanged, .address-unchanged, .phone-unchanged {
+    color: #b2b2b2;
+    text-align: right;
+}
+
+.address {
+    font-size: 32rpx;
+    margin: 20rpx;
+}
+
+.address-detail {
+    margin-top: 20rpx;
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+}
+
+.arrow {
+    width: 32rpx;
+    color: #b2b2b2;
+}
+
+.title {
+    width: 20%;
+}
+
+/*底部*/
+.pay-menu {
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+    background: black;
+    width: 100%;
+    height: 75rpx;
+    position: fixed;
+    bottom: 0px;
+    font-size: 34rpx;
+    line-height: 75rpx;
+    vertical-align: middle;
+    font-weight: 500;
+}
+
+.pay-menu-title {
+    color: #FFFFFF;
+    margin-left: 20rpx;
+}
+
+.pay-menu-money {
+    color: rgb(245, 166, 35);
+    margin-left: 20rpx;
+    margin-right: auto;
+}
+
+.pay-menu-button {
+    background: rgb(245, 166, 35);
+    color: white;
+    padding-right: 30rpx;
+    padding-left: 30rpx;
+
+}

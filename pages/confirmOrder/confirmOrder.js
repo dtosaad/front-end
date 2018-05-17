@@ -22,10 +22,19 @@ Page({
         num: 1,
         minusStatus: 'disabled',
         items: [
-            { name: 'TS', value: '堂食', checked: 'true' },
-            { name: 'WD', value: '外带', checked: 'false' },
-            { name: 'WM', value: '外卖', checked: 'false'},
-        ]
+            { name: 'TS', value: '堂食', checked: true },
+            { name: 'WD', value: '外带', checked: false },
+            { name: 'WM', value: '外卖', checked: false },
+        ],
+        noteStatus: 'note-unchanged',
+        note: "口味偏好等",
+        extendStatus: 1,
+        couponStatus: 'coupon-unchanged',
+        coupon: "暂无可用",
+        addressStatus: 'address-unchanged',
+        address: "请填写配送地址",
+        phoneStatus: 'phone-unchanged',
+        phone: "请填写联系电话",
     },
 
     /* 点击减号 */
@@ -67,7 +76,21 @@ Page({
 
     /* 改变单选框 */
     radioChange: function (e) {
-        console.log('radio发生change事件，携带value值为：', e.detail.value)
+        var extendStatus = this.data.extendStatus;
+        switch (e.detail.value) {
+            case 'TS':
+                extendStatus = 1;
+                break;
+            case 'WD':
+                extendStatus = 2;
+                break;
+            case 'WM':
+                extendStatus = 3;
+                break;
+        };
+        this.setData({
+            extendStatus: extendStatus
+        });
     },
 
     onLoad: function (options) {
