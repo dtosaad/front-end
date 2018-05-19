@@ -13,7 +13,7 @@
 .tab-item {
   width: 30%;
   text-align: center;
-  font-size: 15px;
+  font-size: 12px;
   color: #FFFFFF;
   background: #000
 }
@@ -24,8 +24,8 @@
 }
 
 .swiper {
-  height: 1100px;
-  background: #CDC8B1;
+  height: 600px;
+  background: #F8F8FF;
 }
 
 .on {
@@ -34,20 +34,35 @@
 }
 
 .menu_btn {
-  width: 30%;
+  width: 23%;
   position: absolute;
   left: 0rpx;
 }
 
+.btn {
+  vertical-align:middle;
+  font-size: 13px;
+  text-align: center;
+  line-height: 60px;
+  height: 60px;
+  color: gray;
+}
+
+.btn_on {
+  color: black;
+  font-weight: 700;
+}
+
 .list {
-  width: 67%;
+  width: 76%;
   position: absolute;
-  left: 230rpx;
+  left: 170rpx;
   background: white;
 }
 
 .list_item {
-  border: 10rpx solid gray;
+  height: 180rpx;
+  border: 10rpx solid #F8F8FF;
 }
 
 .pay_menu {
@@ -55,11 +70,116 @@
   width: 100%;
   height: 5%;
   position: fixed;
-  bottom: 0px;
+  bottom: 0rpx;
 }
 
 .food_name {
   position: relative;
-  bottom: 60px;
-  left: 5px;
+  bottom: 105rpx;
+  left: 20rpx;
+}
+
+.rank {
+  position: relative;
+  bottom: 145rpx;
+  left: 90rpx;
+  width: 12px;
+  height: 12px;
+}
+
+.food_num {
+  font-size: 25rpx;
+  position: relative;
+  right: 23%;
+  bottom: 18rpx;
+}
+
+.food_price {
+  font-size: 45rpx;
+  color: #FFC125;
+  position: relative;
+  bottom: 140rpx;
+  left: 75%;
+}
+
+/*加减控件*/
+.stepper {
+    position: relative;
+    right: 34%;
+    bottom: 50rpx;
+    width: 110rpx;
+    height: 32rpx;
+    margin-left: auto;
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+    border: 1rpx solid rgb(245, 166, 35);
+    border-radius: 50rpx;
+}  
+  
+/*加号和减号*/  
+.stepper text {
+    width: 34rpx;
+    height: 32rpx;
+    line-height: 32rpx;
+    text-align: center;
+    float: left;
+    font-size: 32rpx;
+    vertical-align: middle;
+}
+
+/*数值*/  
+.stepper-num {  
+    width: auto;
+}  
+
+.stepper-button {
+    border: 0 solid rgb(245, 166, 35);
+    border-radius: 50rpx;
+}
+
+/*普通样式*/  
+.stepper .normal{  
+    color: black;
+    background: rgb(245, 166, 35);
+}
+
+/*禁用样式*/  
+.stepper .disabled{  
+    color: #888888;  
+}
+
+/*底部*/
+.pay-menu {
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+    background: black;
+    width: 100%;
+    height: 75rpx;
+    position: fixed;
+    bottom: 0px;
+    font-size: 34rpx;
+    line-height: 75rpx;
+    vertical-align: middle;
+    font-weight: 500;
+}
+
+.pay-menu-title {
+    color: #FFFFFF;
+    margin-left: 20rpx;
+}
+
+.pay-menu-money {
+    color: rgb(245, 166, 35);
+    margin-left: 20rpx;
+    margin-right: auto;
+}
+
+.pay-menu-button {
+    background: rgb(245, 166, 35);
+    color: white;
+    padding-right: 30rpx;
+    padding-left: 30rpx;
+
 }
