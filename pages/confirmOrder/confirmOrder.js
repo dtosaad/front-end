@@ -94,9 +94,7 @@ Page({
     },
 
     onLoad: function (options) {
-        wx.setNavigationBarTitle({
-            title: "确认订单"
-        })
+        
     },
     onReady: function () {
         // 页面渲染完成

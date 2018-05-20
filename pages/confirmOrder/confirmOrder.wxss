@@ -168,6 +168,11 @@ radio .wx-radio-input.wx-radio-input-checked::before{
     text-align: right;
 }
 
+.note-changed, .coupon-changed, .address-changed, .phone-changed {
+    color: #000000;
+    text-align: right;
+}
+
 .address {
     font-size: 32rpx;
     margin: 20rpx;

@@ -1,0 +1,48 @@
+page {
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-size: 32rpx;
+}
+
+.noteStyle {
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 80rpx;
+    background: #F6F6F6;
+    width: 80%;
+    height: 200rpx;
+    border: 1rpx solid #b2b2b2;
+    border-radius: 5rpx;
+    padding: 40rpx;
+}
+
+.noteStyle textarea,.note-placeholder {
+    height: 160rpx;
+    width: 100%;
+}
+
+.note-words-limit-tips {
+    color: #888888;
+    text-align: right;
+}
+
+.note-button {
+    background-color: rgb(245, 166, 35);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50rpx;
+    width: 320rpx;
+    height: 64rpx;
+    border-radius: 5rpx;
+    border: 1rpx solid rgb(255, 140, 0);
+    display: flex;
+    justify-content: center;
+}
+
+.note-button text {
+    margin-top: auto;
+    margin-bottom: auto;
+    font-weight: 600;
+}

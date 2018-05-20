@@ -74,7 +74,7 @@
     <view class="my-container">
         <view class="note">
             <label class="title">备注</label>
-            <navigator url="../confirmOrder/confirmOrder" open-type="navigate">
+            <navigator url="../notePage/notePage?noteStatus={{noteStatus}}&note={{note}}" open-type="navigate">
                 <text class="{{noteStatus}}">{{ note }}</text>
             </navigator>
             <label class="arrow">></label>
@@ -82,6 +82,7 @@
     </view>
 
     <!-- 抵用券 -->
+    <!--
     <view class="my-container" wx:if="{{extendStatus == 1 ? false : true}}">
         <view class="coupon">
             <label class="title">抵用券</label>
@@ -91,7 +92,8 @@
             <label class="arrow">></label>
         </view>
     </view>
-
+    -->
+    
     <!--付款菜单-->
     <view class='pay-menu'>
         <text class='pay-menu-title'>合计</text>

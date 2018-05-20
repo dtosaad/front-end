@@ -1,0 +1,13 @@
+<!-- notePage -->
+<view>
+    <view class="noteStyle">
+        <textarea value="{{cur_words}}" placeholder="更多用餐需求" maxlength="50" focus="true" placeholder-class="note-placeholder" bindinput="noteInput"/>
+        <view class="note-words-limit-tips">
+            <text>{{cur_words_num}}/50个字</text>
+        </view>
+    </view>
+    
+    <view class="note-button" bindtap="navigateBack">
+        <text>确定</text>
+    </view>
+</view>
