@@ -4,7 +4,11 @@
     "pages/index/index",
     "pages/addCgi/addCgi",
     "pages/confirmOrder/confirmOrder",
-    "pages/notePage/notePage"
+    "pages/notePage/notePage",
+    "pages/addressPage/addressPage",
+    "pages/usingPage/usingPage",
+    "pages/payPage/payPage",
+    "pages/reviewPage/reviewPage"
   ],
   "window":{
     "backgroundColor":"#F6F6F6",

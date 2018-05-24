@@ -1,0 +1,55 @@
+page {
+    background: #FFFFFF;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+ /*订单容器*/
+.my-container {
+    height: auto;
+    width: 100%;
+    padding-top: 5rpx;
+    padding-bottom: 5rpx;
+    margin-bottom: 10rpx;
+}
+
+.order-items {
+    font-size: 32rpx;
+    margin: 20rpx;
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+}
+
+/*订单item*/
+.order-left {
+    width: 50%;
+    text-align: left;
+}
+
+.order-right {
+    width: 50%;
+    text-align: right;
+}
+
+.confirm-button {
+    background-color: rgb(86, 86, 86);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50rpx;
+    width: 160rpx;
+    height: 64rpx;
+    border-radius: 5rpx;
+    border: 1rpx solid #FFFFFF;
+    display: flex;
+    justify-content: center;
+    box-shadow: 2rpx 2rpx 2rpx 2rpx #888888;
+}
+
+.confirm-button text {
+    margin-top: auto;
+    margin-bottom: auto;
+    font-weight: 500;
+    color: #FFFFFF;
+    font-size: 32rpx;
+}

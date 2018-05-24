@@ -70,12 +70,6 @@
     <!--桌位-->
     <swiper-item>
       <view>桌位</view>
-      <!-- 确认订单测试 -->
-      <view class="uploader">
-          <navigator url="../confirmOrder/confirmOrder" open-type="navigate" class="uploader-text">
-              <text>确认订单</text>
-          </navigator>
-      </view>
     </swiper-item>
   </swiper>
 
@@ -83,7 +77,7 @@
     <view class='pay-menu'>
         <text class='pay-menu-title'>合计</text>
         <text class='pay-menu-money'>{{sum_money}}</text>
-        <text class='pay-menu-button'>点好了</text>
+        <text class='pay-menu-button' bindtap="navigateTo">点餐完毕</text>
     </view>
 
 </view>

@@ -30,7 +30,6 @@
                 </view>
             </view>
         </view>
-        
     </view>
 
     <!-- 用餐方式 -->
@@ -46,27 +45,20 @@
         </view>
     </view>
 
-    <!-- 送餐地址 -->
+    <!-- 送餐信息 -->
     <view class="my-container" wx:if="{{extendStatus == 3 ? true : false}}">
         <view class="address">
-            <label class="title">送餐地址</label>
+            <label class="title">送餐信息</label>
             <view class="address-detail">
-                <navigator url="../confirmOrder/confirmOrder" open-type="navigate">
-                    <text class="{{addressStatus}}">{{ address }}</text>
+                <navigator url="../addressPage/addressPage?addressStatus={{addressStatus}}&address={{address}}&addressDetail={{addressDetail}}&name={{name}}&phone={{phone}}" open-type="navigate">
+                    <text class="{{addressStatus}}">{{ address }} {{ addressDetail }}</text>
+                    <view class="contact-info" hidden="{{addressStatus=='address-unchanged'?true:false}}">
+                        <text>{{ name }}</text>
+                        <text class="phone">{{ phone }}</text>
+                    </view>
                 </navigator>
                 <label class="arrow">></label>
             </view>
-        </view>
-    </view>
-
-    <!-- 联系电话 -->
-    <view class="my-container" wx:if="{{extendStatus == 3 ? true : false}}">
-        <view class="phone">
-            <label class="title">联系电话</label>
-            <navigator url="../confirmOrder/confirmOrder" open-type="navigate">
-                <text class="{{phoneStatus}}">{{ phone }}</text>
-            </navigator>
-            <label class="arrow">></label>
         </view>
     </view>
 
@@ -98,6 +90,6 @@
     <view class='pay-menu'>
         <text class='pay-menu-title'>合计</text>
         <text class='pay-menu-money'>￥10</text>
-        <text class='pay-menu-button'>支付订单</text>
+        <text class='pay-menu-button' bindtap="navigateTo">{{ buttonWord }}</text>
     </view>
 </view>

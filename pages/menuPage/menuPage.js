@@ -91,6 +91,13 @@ Page({
       sum_money: sum_money,
     })
   },
+
+  navigateTo: function () {
+    wx.navigateTo({
+      url: "../confirmOrder/confirmOrder"
+    })
+  },
+
   onLoad: function (options) {
     // 生命周期函数--监听页面加载
   },

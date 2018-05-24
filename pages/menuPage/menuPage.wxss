@@ -1,6 +1,7 @@
 .page {
-  margin-left: 10rpx;
-  margin-right: 10rpx;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 .swiper-tab {
@@ -181,5 +182,4 @@
     color: white;
     padding-right: 30rpx;
     padding-left: 30rpx;
-
 }

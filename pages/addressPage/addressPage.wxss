@@ -1,0 +1,95 @@
+/*addressPage.wxss*/
+page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.my-container {
+    margin: 20rpx;
+    font-size: 32rpx;
+}
+
+/*地址*/
+.address, .contact, .phone {
+    margin-top: 50rpx;
+    margin-bottom: 55rpx;
+    padding: 10rpx;
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: left;
+}
+
+.address label, .contact label, .phone label {
+    width: 20%;
+    line-height: 50rpx;
+    vertical-align: middle;
+    font-weight: 500;
+}
+
+.address-input, .contact-input, .phone-input {
+    width: 65%;
+}
+
+/*单选框组样式*/
+.radio-group-label {
+    margin-top: 20rpx;
+}
+
+.radio-group-label text {
+    line-height: 32rpx;
+    vertical-align: middle;
+    margin-right: 20rpx;
+}
+
+/*单选框样式*/
+radio .wx-radio-input{
+   border-radius: 50%;
+   width: 32rpx;
+   height: 32rpx;
+}
+
+/* 选中后的 背景样式*/
+radio .wx-radio-input.wx-radio-input-checked{
+   border: none;
+   background: rgb(245, 166, 35);
+}
+
+/* 选中后的 对勾样式*/
+radio .wx-radio-input.wx-radio-input-checked::before{
+   border-radius: 50%;/* 圆角 */
+   width: 32rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+   height: 32rpx; /* 选中后对勾大小，不要超过背景的尺寸 */
+   line-height: 32rpx;
+   text-align: center;
+   font-size: 24rpx; /* 对勾大小 30rpx */
+   color:#fff; /* 对勾颜色 白色 */
+   background: transparent;
+   transform:translate(-50%, -50%) scale(1);
+   -webkit-transform:translate(-50%, -50%) scale(1);
+}
+
+.line {
+    height: 1rpx;
+    background: #888888;
+    margin-top: 15rpx;
+    margin-bottom: 15rpx;
+}
+
+.confirm-button {
+    background-color: rgb(245, 166, 35);
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 50rpx;
+    width: 320rpx;
+    height: 64rpx;
+    border-radius: 5rpx;
+    border: 1rpx solid rgb(255, 140, 0);
+    display: flex;
+    justify-content: center;
+}
+
+.confirm-button text {
+    line-height: 64rpx;
+    vertical-align: middle;
+}

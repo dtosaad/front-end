@@ -1,0 +1,37 @@
+<!--addressPage.wxml-->
+<view class="my-container">
+    <view class="address">
+        <label>地址</label>
+        <view class="address-input">
+            <input type="text" placeholder="请完善省份地区街道" focus="true" bindinput="addressInput" value="{{address}}"/>
+            <view class="line"></view>
+            <input type="text" placeholder="请完善详细地址(楼号-门牌号)" focus="true" bindinput="addressDetailInput" value="{{addressDetail}}"/>
+            <view class="line"></view>
+        </view>
+    </view>
+    <view class="contact">
+        <label>联系人</label>
+        <view class="contact-input">
+            <input type="text" placeholder="姓名" focus="true" bindinput="nameInput" value="{{name}}"/>
+            <view class="line"></view>
+            <radio-group bindchange="radioChange">
+                <label class="radio-group-label" wx:for="{{items}}" wx:key="{{items}}">
+                    <text>{{item.value}}</text>
+                    <radio value="{{item.name}}" checked="{{item.checked}}" color="rgb(245, 166, 35)"/>
+                </label>
+            </radio-group>
+        </view>
+    </view>
+    <view class="phone">
+        <label>电话</label>
+        <view class="phone-input">
+            <input type="number" placeholder="手机号" focus="true" bindinput="phoneInput" value="{{phone}}"/>
+            <view class="line"></view>
+        </view>
+    </view>
+    <view class="confirm-button" bindtap="navigateBack">
+        <text>确定</text>
+    </view>
+
+    
+</view>

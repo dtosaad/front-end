@@ -33,8 +33,10 @@ Page({
         coupon: "暂无可用",
         addressStatus: 'address-unchanged',
         address: "请填写配送地址",
-        phoneStatus: 'phone-unchanged',
-        phone: "请填写联系电话",
+        addressDetail: "",
+        phone: "",
+        name: "",
+        buttonWord: "提交订单"
     },
 
     /* 点击减号 */
@@ -80,17 +82,35 @@ Page({
         switch (e.detail.value) {
             case 'TS':
                 extendStatus = 1;
+                this.setData({
+                    buttonWord: "提交订单"
+                });
                 break;
             case 'WD':
                 extendStatus = 2;
+                this.setData({
+                    buttonWord: "支付订单"
+                });
                 break;
             case 'WM':
                 extendStatus = 3;
+                this.setData({
+                    buttonWord: "支付订单"
+                });
                 break;
         };
         this.setData({
             extendStatus: extendStatus
         });
+    },
+
+    navigateTo: function() {
+        var extendStatus = this.data.extendStatus;
+        if (extendStatus === 1) {
+            wx.reLaunch({
+                url:"../usingPage/usingPage"
+            })
+        }
     },
 
     onLoad: function (options) {
