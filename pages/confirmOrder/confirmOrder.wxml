@@ -2,10 +2,10 @@
 <view>
     <!-- 订单列表 -->
     <view class="my-container">
-        <view wx:for="{{ testData.data }}" wx:key="{{ testData.data }}" class="order-items">
-            <view class="order-left">{{ item.name }}</view>
-            <view class="order-center">×{{ item.number }}</view>
-            <view class="order-right">￥{{ item.money }}</view>
+        <view wx:for="{{ order }}" wx:key="{{ order }}" class="order-items">
+            <view class="order-left">{{ item.dish_name }}</view>
+            <view class="order-center">×{{ item.amount }}</view>
+            <view class="order-right">￥{{ item.price * item.amount }}</view>
         </view>
     </view>
     
@@ -89,7 +89,7 @@
     <!--付款菜单-->
     <view class='pay-menu'>
         <text class='pay-menu-title'>合计</text>
-        <text class='pay-menu-money'>￥10</text>
+        <text class='pay-menu-money'>￥{{ total }}</text>
         <text class='pay-menu-button' bindtap="navigateTo">{{ buttonWord }}</text>
     </view>
 </view>

@@ -73,10 +73,10 @@
     </swiper-item>
   </swiper>
 
-  <!--付款菜单-->
+    <!--付款菜单-->
     <view class='pay-menu'>
         <text class='pay-menu-title'>合计</text>
-        <text class='pay-menu-money'>{{sum_money}}</text>
+        <text class='pay-menu-money'>￥{{sum_money}}</text>
         <text class='pay-menu-button' bindtap="navigateTo">点餐完毕</text>
     </view>
 

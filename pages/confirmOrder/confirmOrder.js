@@ -3,22 +3,7 @@
 Page({
     // 初始化数据
     data: {
-        testData: {
-            "data" : [
-                {
-                    "id": 1,
-                    "name": "铁板牛肉aaa",
-                    "number": 1,
-                    "money": 10
-                },
-                {
-                    "id": 2,
-                    "name": "铁板牛肉",
-                    "number": 1,
-                    "money": 10
-                }
-            ]
-        },
+        order: [],
         num: 1,
         minusStatus: 'disabled',
         items: [
@@ -36,43 +21,51 @@ Page({
         addressDetail: "",
         phone: "",
         name: "",
-        buttonWord: "提交订单"
+        buttonWord: "提交订单",
+        total: 1
     },
+
 
     /* 点击减号 */
     bindMinus: function () {
         var num = this.data.num;
+        var total = this.data.total;
+
         // 如果大于1时，才可以减  
         if (num > 1) {
             num--;
+            total--;
         }
+
         // 只有大于一件的时候，才能normal状态，否则disable状态  
         var minusStatus = num <= 1 ? 'disabled' : 'normal';
+
         // 将数值与状态写回  
         this.setData({
             num: num,
-            minusStatus: minusStatus
+            minusStatus: minusStatus,
+            total: total
         });
     },
+
+
     /* 点击加号 */
     bindPlus: function () {
         var num = this.data.num;
-        // 不作过多考虑自增1  
+        var total = this.data.total;
+
+        // 人数和总价都自增1
         num++;
+        total++;
+
         // 只有大于一件的时候，才能normal状态，否则disable状态  
         var minusStatus = num < 1 ? 'disabled' : 'normal';
+
         // 将数值与状态写回  
         this.setData({
             num: num,
-            minusStatus: minusStatus
-        });
-    },
-    /* 输入框事件 */
-    bindManual: function (e) {
-        var num = e.detail.value;
-        // 将数值与状态写回  
-        this.setData({
-            num: num
+            minusStatus: minusStatus,
+            total: total
         });
     },
 
@@ -104,28 +97,57 @@ Page({
         });
     },
 
+
+    // 导航
     navigateTo: function() {
         var extendStatus = this.data.extendStatus;
+        var userNumber = this.data.num;
+
+        // 保存数据
+        wx.setStorage({
+            key: "userNumber",
+            data: userNumber
+        });
+
         if (extendStatus === 1) {
             wx.reLaunch({
                 url:"../usingPage/usingPage"
             })
+        } 
+        else {
+            // 清空本地数据
+            try {
+                wx.clearStorageSync()
+            } catch (e) {
+                console.log("Clear storage failed!")
+            }
+            wx.reLaunch({
+                url: "../menuPage/menuPage"
+            })
         }
     },
 
+    // 加载本地缓存的菜单
     onLoad: function (options) {
-        
-    },
-    onReady: function () {
-        // 页面渲染完成
-    },
-    onShow: function () {
-        // 页面显示
-    },
-    onHide: function () {
-        // 页面隐藏
-    },
-    onUnload: function () {
-        // 页面关闭
+        var order = this.data.order;
+        var total = this.data.total;
+
+        // 从本地缓存中同步取出order数组
+        try {
+            var value = wx.getStorageSync('order')
+            if (value) {
+                order = value;
+                order.forEach(item => {
+                    total += item.amount * item.price;
+                });
+            }
+        } catch (e) {
+            console.log("Get local data failed!");
+        }
+
+        this.setData({
+            order: order,
+            total: total
+        });
     }
 })

@@ -2,14 +2,14 @@
 <view>
     <!-- 订单列表 -->
     <view class="my-container">
-        <view wx:for="{{ testData.data }}" wx:key="{{ testData.data }}" class="order-items">
-            <view class="order-left">{{ item.name }}</view>
-            <view class="order-center">×{{ item.number }}</view>
-            <view class="order-right" wx:if="{{item.isComplete == 1 ? true : false}}">
+        <view wx:for="{{ order }}" wx:key="{{index}}" class="order-items">
+            <view class="order-left">{{ item.dish_name }}</view>
+            <view class="order-center">×{{ item.amount }}</view>
+            <view class="order-right" wx:if="{{item.isServe ? true : false}}">
                 <view class="order-finish">√</view>
             </view>
-            <view class="order-right" wx:if="{{item.isComplete == 0 ? true : false}}">
-                <view class="order-unfinish">催</view>
+            <view class="order-right" wx:if="{{item.isServe ? false : true}}">
+                <view class="order-unfinish" bindtap="urgeToServe" data-index="{{index}}">催</view>
             </view>
         </view>
     </view>

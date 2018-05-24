@@ -93,6 +93,28 @@ Page({
   },
 
   navigateTo: function () {
+
+    // testing
+    var order = [
+      {
+        dish_id: 1,
+        dish_name: "铁板牛肉",
+        price: 10.00,
+        amount: 2
+      },
+      {
+        dish_id: 1,
+        dish_name: "榴莲披萨",
+        price: 20.00,
+        amount: 1
+      }
+    ];
+
+    wx.setStorage({
+      key: "order",
+      data: order
+    });
+
     wx.navigateTo({
       url: "../confirmOrder/confirmOrder"
     })

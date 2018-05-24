@@ -32,6 +32,19 @@ page {
     text-align: right;
 }
 
+.star-area {
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: right
+}
+
+.star-style {
+    width: 32rpx;
+    height: 32rpx;
+    margin-right: 5rpx;
+    margin-left: 5rpx;
+}
+
 .confirm-button {
     background-color: rgb(86, 86, 86);
     margin-left: auto;
