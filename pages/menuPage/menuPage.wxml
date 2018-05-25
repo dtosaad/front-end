@@ -26,7 +26,7 @@
 
                 <view class="main-content">
                     <!--菜单按钮-->
-                    <view class='{{classListStyle}}'>
+                    <view class="class-list" hidden="{{classListStyle === 'class-list-fixed'?true:false}}">
                         <view class="btn {{currentMenu == 0 ? 'btn_on' : ''}}" data-currentmenu="0" bindtap="swiperMenu">我吃过</view>
                         <view class="btn {{currentMenu == 1 ? 'btn_on' : ''}}" data-currentmenu="1" bindtap="swiperMenu">铁板</view>
                         <view class="btn {{currentMenu == 2 ? 'btn_on' : ''}}" data-currentmenu="2" bindtap="swiperMenu">披萨</view>
@@ -72,6 +72,15 @@
                     </view>
                 </view>
             </scroll-view>
+            <!--菜单按钮-->
+            <view class="class-list-fixed" hidden="{{classListStyle === 'class-list'?true:false}}">
+                <view class="btn {{currentMenu == 0 ? 'btn_on' : ''}}" data-currentmenu="0" bindtap="swiperMenu">我吃过</view>
+                <view class="btn {{currentMenu == 1 ? 'btn_on' : ''}}" data-currentmenu="1" bindtap="swiperMenu">铁板</view>
+                <view class="btn {{currentMenu == 2 ? 'btn_on' : ''}}" data-currentmenu="2" bindtap="swiperMenu">披萨</view>
+                <view class="btn {{currentMenu == 3 ? 'btn_on' : ''}}" data-currentmenu="3" bindtap="swiperMenu">焗饭</view>
+                <view class="btn {{currentMenu == 4 ? 'btn_on' : ''}}" data-currentmenu="4" bindtap="swiperMenu">小吃</view>
+                <view class="btn {{currentMenu == 5 ? 'btn_on' : ''}}" data-currentmenu="5" bindtap="swiperMenu">饮料</view>
+            </view>
         </swiper-item>
         
         <!--桌位-->

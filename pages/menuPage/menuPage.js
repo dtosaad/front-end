@@ -89,7 +89,7 @@ Page({
         }
     },
     swiperChange: function (e) {
-        //console.log(e);
+        console.log(e);
         this.setData({
             currentTab: e.detail.current,
         })
@@ -118,6 +118,7 @@ Page({
     },
 
     swiperMenu: function (e) {
+        console.log(e.target.dataset.currentmenu)
         this.setData({
             currentMenu: e.target.dataset.currentmenu,
         })
