@@ -1,116 +1,183 @@
-.page {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
+page {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    font-size: 32rpx;
 }
 
+/*顶部导航栏*/
 .swiper-tab {
-  display: flex;
-  flex-direction: row;
-  line-height: 80rpx;
-  border-bottom: 2rpx solid #777;
+    display: flex;
+    flex-direction: row;
+    line-height: 80rpx;
+    border-bottom: 2rpx solid #777;
 }
 
 .tab-item {
-  width: 30%;
-  text-align: center;
-  font-size: 12px;
-  color: #FFFFFF;
-  background: #000
+    width: 20%;
+    text-align: center;
+    font-size: 28rpx;
+    color: #FFFFFF;
+    background: #000
 }
 
 .blank {
-  width: 20%;
-  background: #000
-}
-
-.swiper {
-  height: 600px;
-  background: #F8F8FF;
+    width: 15%;
+    background: #000
 }
 
 .on {
-  color: white;
-  border-bottom: 5rpx solid white;
+    color: white;
+    border-bottom: 5rpx solid white;
 }
 
-.menu_btn {
-  width: 23%;
-  position: absolute;
-  left: 0rpx;
+/*内容主体*/
+.main-scroll-view {
+    height: 1050rpx;
+}
+
+.swiper {
+    height: 1050rpx;
+    width: 100%;
+    background: #FFFFFF;
+}
+
+/*跑马灯*/
+.marquee {
+    width: 100%;
+    height: 340rpx;
+}
+
+.marquee image {
+    width: 100%;
+}
+
+::-webkit-scrollbar {
+  width: 0rpx;
+  height: 0rpx;
+  color: transparent;
+}
+
+/*侧边栏样式*/
+.class-list {
+    width: 22%;
+    margin-right: 1%;
+}
+
+.class-list-fixed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 22%;
 }
 
 .btn {
-  vertical-align:middle;
-  font-size: 13px;
-  text-align: center;
-  line-height: 60px;
-  height: 60px;
-  color: gray;
+    line-height: 120rpx;
+    vertical-align:middle;
+
+    font-size: 28rpx;
+    text-align: center;
+    height: 120rpx;
+    color: #888888;
+
+    background: #FFFFFF;
+    margin-bottom: 5rpx;
 }
 
 .btn_on {
-  color: black;
-  font-weight: 700;
+    color: black;
+    font-weight: 600;
+    box-shadow: 1.5rpx 1.5rpx 1.5rpx 1.5rpx #E2E2E2;
 }
 
-.list {
-  width: 76%;
-  position: absolute;
-  left: 170rpx;
-  background: white;
+/*菜单*/
+.main-content {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
 }
 
-.list_item {
-  height: 180rpx;
-  border: 10rpx solid #F8F8FF;
+.order-list {
+    width: 77%;
+    background: #F8F8F8;
 }
 
-.pay_menu {
-  background: black;
-  width: 100%;
-  height: 5%;
-  position: fixed;
-  bottom: 0rpx;
+.list-item {
+    height: 180rpx;
+    background: #FFFFFF;
+    margin: 14rpx;
+    padding: 20rpx;
+    box-shadow: 2rpx 2rpx 2rpx 2rpx #E2E2E2;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
 }
 
-.food_name {
-  position: relative;
-  bottom: 105rpx;
-  left: 20rpx;
+.list-item-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    margin-left: 30rpx;
+    width: 40%;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
-.rank {
-  position: relative;
-  bottom: 145rpx;
-  left: 90rpx;
-  width: 12px;
-  height: 12px;
+.food-name {
+    line-height: 40rpx;
+    vertical-align: middle;
 }
 
-.food_num {
-  font-size: 25rpx;
-  position: relative;
-  right: 23%;
-  bottom: 18rpx;
+.food-img {
+    width: 160rpx;
+    height: 160rpx;
+    border-radius: 50%;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
-.food_price {
-  font-size: 45rpx;
-  color: #FFC125;
-  position: relative;
-  bottom: 140rpx;
-  left: 75%;
+.star-area {
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: right
+}
+
+.star-style {
+    width: 28rpx;
+    height: 28rpx;
+    margin-right: 2rpx;
+    margin-left: 2rpx;
+    margin-top: 15rpx;
+}
+
+/*item价格显示*/
+.food-price {
+    font-size: 45rpx;
+    color: #FFC125;
+    margin-left: auto;
+    margin-right: 10rpx;
+    width: 20%;
+    line-height: 180rpx;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.order-num {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    margin-top: 20rpx;
+}
+
+.food-num {
+    font-size: 25rpx;
+    margin-right: 10rpx;
 }
 
 /*加减控件*/
-.stepper {
-    position: relative;
-    right: 34%;
-    bottom: 50rpx;
-    width: 110rpx;
+.stepper {  
+    width: 132rpx;
     height: 32rpx;
-    margin-left: auto;
     display: flex;
     flex-wrap: row wrap;
     justify-content: space-between;
@@ -120,13 +187,14 @@
   
 /*加号和减号*/  
 .stepper text {
-    width: 34rpx;
+    width: 32rpx;
     height: 32rpx;
-    line-height: 32rpx;
+    line-height: 30rpx;
     text-align: center;
+    vertical-align: middle;
     float: left;
     font-size: 32rpx;
-    vertical-align: middle;
+    margin-left: 2rpx;
 }
 
 /*数值*/  
