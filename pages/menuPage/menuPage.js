@@ -4,6 +4,8 @@ Page({
         currentTab: 0,
         currentMenu: 0,
         sum_money: 0,
+        order_view_height: 100,
+        show_order: false,
         classListStyle: 'class-list',
         imgUrls: [
             'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg',
@@ -12,6 +14,8 @@ Page({
         ],
         arr: [
             {
+                id: 1,
+                menu: 0,
                 src: "./image/1.jpg",
                 name: "北京烤鸭",
                 star: 4,
@@ -19,60 +23,76 @@ Page({
                 price: 10
             },
             {
+                id: 2,
+                menu: 1,
                 src: "./image/1.jpg",
-                name: "北京烤鸭",
+                name: "广东烤鸭",
                 star: 3,
                 num: 0,
-                price: 10
+                price: 8
             },
             {
+                id: 3,
+                menu: 3,
                 src: "./image/1.jpg",
-                name: "北京烤鸭",
+                name: "四川烤鸭",
                 star: 2,
                 num: 0,
-                price: 10
+                price: 5
             },
             {
+                id: 4,
+                menu:4,
                 src: "./image/1.jpg",
-                name: "北京烤鸭",
+                name: "湖南烤鸭",
                 star: 5,
                 num: 0,
-                price: 10
+                price: 4
             },
             {
+                id: 5,
+                menu: 5,
                 src: "./image/1.jpg",
-                name: "北京烤鸭",
+                name: "浙江烤鸭",
                 star: 5,
                 num: 0,
-                price: 10
+                price: 7
             },
             {
+                id: 6,
+                menu: 1,
                 src: "./image/1.jpg",
-                name: "北京烤鸭",
+                name: "潮汕烤鸭",
                 star: 5,
                 num: 0,
-                price: 10
+                price: 50
             },
             {
+                id: 7,
+                menu: 2,
                 src: "./image/1.jpg",
-                name: "北京烤鸭",
+                name: "江苏烤鸭",
                 star: 5,
                 num: 0,
-                price: 10
+                price: 9
             },
             {
+                id: 8,
+                menu: 4,
                 src: "./image/1.jpg",
-                name: "北京烤鸭",
+                name: "上海烤鸭",
                 star: 5,
                 num: 0,
-                price: 10
+                price: 8
             },
             {
+                id: 9,
+                menu: 3,
                 src: "./image/1.jpg",
-                name: "北京烤鸭",
+                name: "天津烤鸭",
                 star: 5,
                 num: 0,
-                price: 10
+                price: 6
             }
         ],
         totalStar: 5
@@ -95,6 +115,15 @@ Page({
         })
     },
 
+    showOrderMenu: function(e) {
+      var change = false;
+      if (!this.data.show_order) {
+        change = true;
+      }
+      this.setData({
+        show_order: change,
+      })
+    },
     // 页面滑动
     scrollPage: function(e) {
         console.log(e.detail.scrollTop)
@@ -118,7 +147,7 @@ Page({
     },
 
     swiperMenu: function (e) {
-        console.log(e.target.dataset.currentmenu)
+        //console.log(e.target.dataset.currentmenu)
         this.setData({
             currentMenu: e.target.dataset.currentmenu,
         })
@@ -163,25 +192,43 @@ Page({
             sum_money: sum_money
         })
     },
-
     navigateTo: function () {
+        function Order() {
+          this.dish_id = 0;
+          this.dish_name = "";
+          this.price = 0;
+          this.amount = 0;
+        }
+        var order = new Array();
+        var order_index = 0;
+        for(var i = 0; i < this.data.arr.length; i++){
+          if(this.data.arr[i].num > 0) {
+            var temp = new Order();
+            temp.dish_id = this.data.arr[i].id;
+            temp.dish_name = this.data.arr[i].name;
+            temp.price = this.data.arr[i].price;
+            temp.amount = this.data.arr[i].num;
+            order.push(temp);
+          }
+        }
 
-        // testing
+        console.log(order.length);
+        /* testing
         var order = [
             {
                 dish_id: 1,
                 dish_name: "铁板牛肉",
                 price: 10.00,
-                amount: 2
+                amount: 1
             },
             {
-                dish_id: 1,
+                dish_id: 2,
                 dish_name: "榴莲披萨",
                 price: 20.00,
                 amount: 1
             }
         ];
-
+        */
         wx.setStorage({
             key: "order",
             data: order

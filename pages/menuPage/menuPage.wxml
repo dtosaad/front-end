@@ -9,7 +9,6 @@
         <view class="tab-item {{currentTab==1 ? 'on' : ''}}" data-current="1" bindtap="swichNav">桌位</view>
         <view class='blank'></view>
     </view>
-    
     <!--内容主体-->
     <swiper class="swiper" current="{{currentTab}}" duration="200" bindchange="swiperChange">
         <!--菜单-->
@@ -37,9 +36,9 @@
 
                     <!--菜单列表-->
                     <view class='order-list'>
-                        <view wx:for = "{{arr}}" wx:for-index="index" class='list-item'>
+                          <view wx:for = "{{arr}}" wx:if = "{{item.menu == currentMenu}}" wx:for-index="index" class='list-item'>
                             <image class="food-img" src="{{item.src}}" mode='aspectFill'></image>
-                            <view class="list-item-info">
+                            <view  class="list-item-info">
                                 <text class='food-name'>{{item.name}}</text>
                                 <view class="star-area">
                                     <view wx:for = "{{item.star}}" wx:key="index">
@@ -67,11 +66,10 @@
                                     </view>
                                 </view>
                             </view>
-                            <text class='food-price'>￥10</text>
-                        </view>
+                            <text class='food-price'>{{item.price}}</text>
+                          </view>
                     </view>
                 </view>
-            </scroll-view>
             <!--菜单按钮-->
             <view class="class-list-fixed" hidden="{{classListStyle === 'class-list'?true:false}}">
                 <view class="btn {{currentMenu == 0 ? 'btn_on' : ''}}" data-currentmenu="0" bindtap="swiperMenu">我吃过</view>
@@ -81,19 +79,39 @@
                 <view class="btn {{currentMenu == 4 ? 'btn_on' : ''}}" data-currentmenu="4" bindtap="swiperMenu">小吃</view>
                 <view class="btn {{currentMenu == 5 ? 'btn_on' : ''}}" data-currentmenu="5" bindtap="swiperMenu">饮料</view>
             </view>
+          </scroll-view>
         </swiper-item>
-        
         <!--桌位-->
         <swiper-item>
             <view>桌位</view>
         </swiper-item>
     </swiper>
 
-        
+    <view wx:if = "{{show_order}}" class='ordered-menu' style='height:{{order_view_height}}rpx'>
+      <text class='ordered-title'>我点了</text>
+      <view class='ordered-item'>
+        <text class='ordered-name'>铁板牛肉</text>
+        <text class='ordered-price'>￥10</text>
+        <view class="stepper ordered-stepper">
+          <!-- 减号 -->
+          <view class="stepper-button, disable">
+              <text>-</text>  
+          </view>
+          <!-- 数值 -->
+          <view class="stepper-num">
+              <text>1</text>
+          </view>
+          <!-- 加号 -->
+          <view class="stepper-button, normal">
+              <text>+</text>
+          </view>
+        </view>
+      </view>
+    </view>
 
     <!--付款菜单-->
     <view class='pay-menu'>
-        <text class='pay-menu-title'>合计</text>
+        <text class='pay-menu-title' bindtap='showOrderMenu'>合计</text>
         <text class='pay-menu-money'>￥{{sum_money}}</text>
         <text class='pay-menu-button' bindtap="navigateTo">点餐完毕</text>
     </view>
