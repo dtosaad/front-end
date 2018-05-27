@@ -12,6 +12,7 @@ Page({
             'http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg',
             'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
         ],
+        ordermenu:[],
         arr: [
             {
                 id: 1,
@@ -116,13 +117,131 @@ Page({
     },
 
     showOrderMenu: function(e) {
+      function orderedItem() {
+        this.dish_id = 0;
+        this.dish_name = "";
+        this.price = 0;
+        this.amount = 0;
+      }
       var change = false;
       if (!this.data.show_order) {
         change = true;
+        this.data.ordermenu.length = 0;
+        for (var i = 0; i < this.data.arr.length; i++) {
+          if (this.data.arr[i].num > 0) {
+            var temp = new orderedItem();
+            temp.dish_id = this.data.arr[i].id;
+            temp.dish_name = this.data.arr[i].name;
+            temp.price = this.data.arr[i].price;
+            temp.amount = this.data.arr[i].num;
+            this.data.ordermenu.push(temp);
+          }
+        }
+        this.data.order_view_height = this.data.ordermenu.length * 70 + 40;
       }
       this.setData({
+        ordermenu: this.data.ordermenu,
+        order_view_height: this.data.order_view_height,
         show_order: change,
       })
+      //console.log(this.data.ordermenu.length);
+    },
+
+    orderMinus: function(e) {
+      //struct orderedItem
+      function orderedItem() {
+        this.dish_id = 0;
+        this.dish_name = "";
+        this.price = 0;
+        this.amount = 0;
+      }
+
+      var index = e.target.dataset.id;
+      var sum_money = this.data.sum_money
+      var count = 0;
+      var i;
+      for (i = 0; i < this.data.arr.length; i++) {
+        if (this.data.arr[i].id == index) {
+          count = this.data.arr[i].num;
+          if (count >= 1) {
+            count--;
+            sum_money = sum_money - this.data.arr[i].price;
+            this.data.arr[i].num = count;
+            this.data.ordermenu.length = 0;
+
+            //change ordermenu
+            for (var j = 0; j < this.data.arr.length; j++) {
+              if (this.data.arr[j].num > 0) {
+                var temp = new orderedItem();
+                temp.dish_id = this.data.arr[j].id;
+                temp.dish_name = this.data.arr[j].name;
+                temp.price = this.data.arr[j].price;
+                temp.amount = this.data.arr[j].num;
+                this.data.ordermenu.push(temp);
+              }
+            }
+            //change order view height
+            this.data.order_view_height = this.data.ordermenu.length * 70 + 40;
+          }
+          break;
+        }
+      }
+
+      var minus = "arr[" + i + "].num"
+      this.setData({
+        [minus]: count,
+        sum_money: sum_money,
+        ordermenu: this.data.ordermenu,
+        order_view_height: this.data.order_view_height,
+      })
+      //console.log(index);
+    },
+
+    orderPlus: function(e) {
+      //struct orderedItem
+      function orderedItem() {
+        this.dish_id = 0;
+        this.dish_name = "";
+        this.price = 0;
+        this.amount = 0;
+      }
+
+      var index = e.target.dataset.id;
+      var sum_money = this.data.sum_money
+      var count = 0;
+      var i;
+      for (i = 0; i < this.data.arr.length; i++) {
+        if (this.data.arr[i].id == index) {
+          count = this.data.arr[i].num;
+          count++;
+          sum_money = sum_money + this.data.arr[i].price;
+
+          //change ordermenu
+          this.data.arr[i].num = count;
+          this.data.ordermenu.length = 0;
+          for (var j = 0; j < this.data.arr.length; j++) {
+            if (this.data.arr[j].num > 0) {
+              var temp = new orderedItem();
+              temp.dish_id = this.data.arr[j].id;
+              temp.dish_name = this.data.arr[j].name;
+              temp.price = this.data.arr[j].price;
+              temp.amount = this.data.arr[j].num;
+              this.data.ordermenu.push(temp);
+            }
+          }
+          //change order view height
+          this.data.order_view_height = this.data.ordermenu.length * 70 + 40;
+          break;
+        }
+      }
+      var minus = "arr[" + i + "].num"
+      this.setData({
+        [minus]: count,
+        sum_money: sum_money,
+        ordermenu: this.data.ordermenu,
+        order_view_height: this.data.order_view_height,
+      })
+      //console.log(index);
     },
     // 页面滑动
     scrollPage: function(e) {
@@ -155,6 +274,14 @@ Page({
 
     // 减号
     bindMinus: function (e) {
+        //struct orderedItem
+        function orderedItem() {
+          this.dish_id = 0;
+          this.dish_name = "";
+          this.price = 0;
+          this.amount = 0;
+        }
+
         var id = e.target.dataset.id
         var count = this.data.arr[id].num
         var price = this.data.arr[id].price
@@ -162,6 +289,7 @@ Page({
 
         if (count >= 1) {
             count--
+            this.data.arr[id].num = count;
             sum_money -= price
         }
 
@@ -169,41 +297,86 @@ Page({
         var minusStatus = count < 1 ? 'disabled' : 'normal'
 
         var minus = "arr[" + id + "].num"
+
+        this.data.ordermenu.length = 0;
+        //change ordermenu
+        for (var j = 0; j < this.data.arr.length; j++) {
+          if (this.data.arr[j].num > 0) {
+            var temp = new orderedItem();
+            temp.dish_id = this.data.arr[j].id;
+            temp.dish_name = this.data.arr[j].name;
+            temp.price = this.data.arr[j].price;
+            temp.amount = this.data.arr[j].num;
+            this.data.ordermenu.push(temp);
+          }
+        }
+        //change order view height
+        this.data.order_view_height = this.data.ordermenu.length * 70 + 40;
+
         this.setData({
             [minus]: count,
             sum_money: sum_money,
-            minusStatus: minusStatus
+            minusStatus: minusStatus,
+            ordermenu: this.data.ordermenu,
+            order_view_height: this.data.order_view_height,
         })
     },
 
     // 加号
     bindPlus: function (e) {
+        //struct orderedItem
+        function orderedItem() {
+          this.dish_id = 0;
+          this.dish_name = "";
+          this.price = 0;
+          this.amount = 0;
+        }
+
         var id = e.target.dataset.id
         var minus = "arr[" + id + "].num"
         var count = this.data.arr[id].num
         var sum_money = this.data.sum_money
         var price = this.data.arr[id].price
 
-        count++
-        sum_money += price
+        count++;
+        this.data.arr[id].num = count;
+        sum_money += price;
+
+        this.data.ordermenu.length = 0;
+        //change ordermenu
+        for (var j = 0; j < this.data.arr.length; j++) {
+          if (this.data.arr[j].num > 0) {
+            var temp = new orderedItem();
+            temp.dish_id = this.data.arr[j].id;
+            temp.dish_name = this.data.arr[j].name;
+            temp.price = this.data.arr[j].price;
+            temp.amount = this.data.arr[j].num;
+            this.data.ordermenu.push(temp);
+          }
+        }
+        //change order view height
+        this.data.order_view_height = this.data.ordermenu.length * 70 + 40;
 
         this.setData({
             [minus]: count,
-            sum_money: sum_money
+            sum_money: sum_money,
+            ordermenu: this.data.ordermenu,
+            order_view_height: this.data.order_view_height,
         })
     },
     navigateTo: function () {
-        function Order() {
-          this.dish_id = 0;
-          this.dish_name = "";
-          this.price = 0;
-          this.amount = 0;
-        }
+      //struct orderedItem
+      function orderedItem() {
+        this.dish_id = 0;
+        this.dish_name = "";
+        this.price = 0;
+        this.amount = 0;
+      }
         var order = new Array();
         var order_index = 0;
         for(var i = 0; i < this.data.arr.length; i++){
           if(this.data.arr[i].num > 0) {
-            var temp = new Order();
+            var temp = new orderedItem();
             temp.dish_id = this.data.arr[i].id;
             temp.dish_name = this.data.arr[i].name;
             temp.price = this.data.arr[i].price;

@@ -66,7 +66,7 @@
                                     </view>
                                 </view>
                             </view>
-                            <text class='food-price'>{{item.price}}</text>
+                            <text class='food-price'>￥{{item.price}}</text>
                           </view>
                     </view>
                 </view>
@@ -89,21 +89,21 @@
 
     <view wx:if = "{{show_order}}" class='ordered-menu' style='height:{{order_view_height}}rpx'>
       <text class='ordered-title'>我点了</text>
-      <view class='ordered-item'>
-        <text class='ordered-name'>铁板牛肉</text>
-        <text class='ordered-price'>￥10</text>
+      <view wx:for = "{{ordermenu}}" wx:for-item = "orderitem" class='ordered-item'>
+        <text class='ordered-name'>{{orderitem.dish_name}}</text>
+        <text class='ordered-price'>￥{{orderitem.price}}</text>
         <view class="stepper ordered-stepper">
           <!-- 减号 -->
           <view class="stepper-button, disable">
-              <text>-</text>  
+              <text data-id = "{{orderitem.dish_id}}" bindtap = "orderMinus">-</text>  
           </view>
           <!-- 数值 -->
           <view class="stepper-num">
-              <text>1</text>
+              <text>{{orderitem.amount}}</text>
           </view>
           <!-- 加号 -->
           <view class="stepper-button, normal">
-              <text>+</text>
+              <text data-id = "{{orderitem.dish_id}}" bindtap = "orderPlus">+</text>
           </view>
         </view>
       </view>
