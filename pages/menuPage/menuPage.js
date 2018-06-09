@@ -1,3 +1,5 @@
+var config = require('../../config')
+
 Page({
     data: {
         // tab切换  
@@ -412,8 +414,56 @@ Page({
         })
     },
 
+    login: function () {
+        wx.login({
+            success: function(res) {
+                console.log("wx res", res)
+                if (res.code) {
+                    var code = res.code
+                    wx.getUserInfo({
+                        
+                        success: function (res) {
+                            console.log("获取用户信息成功")
+                            var userInfo = res.userInfo
+                            var nickName = userInfo.nickName
+                            var avatarUrl = userInfo.avatarUrl
+                            var location = userInfo.country + ' ' + userInfo.city
+                            console.log('获取用户所有信息')
+                            console.log(res.userInfo)
+                            wx.request({
+                                url: config.service.loginUrl,
+                                data: {
+                                    code: code,
+                                    wechat_name: nickName,
+                                    wechat_avator: avatarUrl,
+                                    location: location
+                                },
+                                success: function (data) {
+                                    console.log("登陆接口返回", data)
+                                    wx.setStorage({
+                                        userid: data.userid
+                                    })
+                                },
+                                fail: function (res) {
+                                    wx.showToast({
+                                        title: '登陆失败'
+                                    })
+                                }
+                            })
+                        }
+                    })
+                } else {
+                    wx.showToast({
+                        title: '登陆失败'
+                    })
+                }
+            }
+        })
+    },
+
     onLoad: function (options) {
         // 生命周期函数--监听页面加载
+        this.login()
     },
     onReady: function () {
         // 生命周期函数--监听页面初次渲染完成

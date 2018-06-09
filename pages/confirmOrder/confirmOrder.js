@@ -127,6 +127,11 @@ Page({
         }
     },
 
+    postOrder: function() {
+        var that = this
+        
+    },
+
     // 加载本地缓存的菜单
     onLoad: function (options) {
         var order = this.data.order;
