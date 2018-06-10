@@ -83,12 +83,29 @@
         </swiper-item>
         <!--桌位-->
         <swiper-item>
-            <view>桌位</view>
+            <view class='top_view'>
+                <view class='door'>
+                    <text class='door_name'>大门</text>
+                    <image class='door_image' src='./image/door.png' mode='scaleToFill'></image>
+                </view>
+                <view class='table_text'>
+                    <text class='s_table'>A: 1-2人桌</text>
+                    <text class='m_table'>B: 3-5人桌</text>
+                    <text class='b_table'>C: 6-10人桌</text>
+                </view>
+            </view>
+            <view class='table_list'>
+                <view  wx:for = "{{table_list}}" wx:for-index = "table_index" class="table table_left {{(table_index - 1)%4 == 0 ? 'table_right' : ''}}">
+                    <view class='middle_message'>{{item.status}}</view>
+                    <view class="table_id {{item.color == 1 ? 's_table_color':''}} {{item.color == 2 ? 'm_table_color':''}} {{item.color == 3 ? 'b_table_color':''}}" >{{item.id}}</view>
+                </view>
+            </view>
         </swiper-item>
     </swiper>
 
     <view wx:if = "{{show_order}}" class='ordered-menu' style='height:{{order_view_height}}rpx'>
       <text class='ordered-title'>我点了</text>
+      <view class='ordered-line'></view>
       <view wx:for = "{{ordermenu}}" wx:for-item = "orderitem" class='ordered-item'>
         <text class='ordered-name'>{{orderitem.dish_name}}</text>
         <text class='ordered-price'>￥{{orderitem.price}}</text>
@@ -111,9 +128,12 @@
 
     <!--付款菜单-->
     <view class='pay-menu'>
-        <text class='pay-menu-title' bindtap='showOrderMenu'>合计</text>
         <text class='pay-menu-money'>￥{{sum_money}}</text>
         <text class='pay-menu-button' bindtap="navigateTo">点餐完毕</text>
+    </view>
+
+    <view class='pay-menu-title'>
+    <image class='pay-menu-image' bindtap='showOrderMenu' src='./image/shopping.png' mode='aspectFit'></image>
     </view>
 
 </view>
