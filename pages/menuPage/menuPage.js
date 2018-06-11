@@ -421,7 +421,6 @@ Page({
                 if (res.code) {
                     var code = res.code
                     wx.getUserInfo({
-                        
                         success: function (res) {
                             console.log("获取用户信息成功")
                             var userInfo = res.userInfo
@@ -430,8 +429,10 @@ Page({
                             var location = userInfo.country + ' ' + userInfo.city
                             console.log('获取用户所有信息')
                             console.log(res.userInfo)
+                            console.log(code)
                             wx.request({
                                 url: config.service.loginUrl,
+                                method: "POST",
                                 data: {
                                     code: code,
                                     wechat_name: nickName,

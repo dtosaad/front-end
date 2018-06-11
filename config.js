@@ -4,6 +4,7 @@
 
 // 此处主机域名修改成腾讯云解决方案分配的域名
 var host = 'https://fjttesdn.qcloud.la';
+// var host = 'https://793673217.sysuadc.club';
 
 var config = {
 
@@ -12,7 +13,7 @@ var config = {
         host,
 
         // 登录地址，用于建立会话
-        loginUrl: `${host}/users/signin`,
+        loginUrl: `${host}/weapp/users/signin`,
 
         // 测试的请求地址，用于测试会话
         requestUrl: `${host}/weapp/user`,
