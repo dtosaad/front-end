@@ -574,19 +574,23 @@ Page({
                             console.log('获取用户所有信息')
                             console.log(res.userInfo)
                             console.log(code)
+                            console.log(location)
                             wx.request({
                                 url: config.service.loginUrl,
                                 method: "POST",
                                 data: {
                                     code: code,
                                     wechat_name: nickName,
-                                    wechat_avator: avatarUrl,
+                                    wechat_avatar: avatarUrl,
                                     location: location
                                 },
                                 success: function (data) {
                                     console.log("登陆接口返回", data)
                                     wx.setStorage({
-                                        userid: data.userid
+                                        userid: data.data.userid,
+                                        success: function(res) {
+                                            console.log(res)
+                                        }
                                     })
                                 },
                                 fail: function (res) {
