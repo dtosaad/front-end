@@ -26,25 +26,25 @@
                 <view class="main-content">
                     <!--菜单按钮-->
                     <view class="class-list" hidden="{{classListStyle === 'class-list-fixed'?true:false}}">
-                        <view class="btn {{currentMenu == 0 ? 'btn_on' : ''}}" data-currentmenu="0" bindtap="swiperMenu">我吃过</view>
-                        <view class="btn {{currentMenu == 1 ? 'btn_on' : ''}}" data-currentmenu="1" bindtap="swiperMenu">铁板</view>
-                        <view class="btn {{currentMenu == 2 ? 'btn_on' : ''}}" data-currentmenu="2" bindtap="swiperMenu">披萨</view>
-                        <view class="btn {{currentMenu == 3 ? 'btn_on' : ''}}" data-currentmenu="3" bindtap="swiperMenu">焗饭</view>
-                        <view class="btn {{currentMenu == 4 ? 'btn_on' : ''}}" data-currentmenu="4" bindtap="swiperMenu">小吃</view>
-                        <view class="btn {{currentMenu == 5 ? 'btn_on' : ''}}" data-currentmenu="5" bindtap="swiperMenu">饮料</view>
+                        <view class="btn {{currentMenu == '我吃过' ? 'btn_on' : ''}}" data-currentmenu="我吃过" bindtap="swiperMenu">我吃过</view>
+                        <view class="btn {{currentMenu == '铁板' ? 'btn_on' : ''}}" data-currentmenu="铁板" bindtap="swiperMenu">铁板</view>
+                        <view class="btn {{currentMenu == '披萨' ? 'btn_on' : ''}}" data-currentmenu="披萨" bindtap="swiperMenu">披萨</view>
+                        <view class="btn {{currentMenu == '焗饭' ? 'btn_on' : ''}}" data-currentmenu="焗饭" bindtap="swiperMenu">焗饭</view>
+                        <view class="btn {{currentMenu == '小吃' ? 'btn_on' : ''}}" data-currentmenu="小吃" bindtap="swiperMenu">小吃</view>
+                        <view class="btn {{currentMenu == '饮料' ? 'btn_on' : ''}}" data-currentmenu="饮料" bindtap="swiperMenu">饮料</view>
                     </view>
 
                     <!--菜单列表-->
                     <view class='order-list'>
-                          <view wx:for = "{{arr}}" wx:if = "{{item.menu == currentMenu}}" wx:for-index="index" class='list-item'>
-                            <image class="food-img" src="{{item.src}}" mode='aspectFill'></image>
+                          <view wx:for = "{{dishes_list}}" wx:if = "{{item.type == currentMenu}}" wx:for-index="index" class='list-item'>
+                            <image class="food-img" src="{{item.image}}" mode='aspectFill'></image>
                             <view  class="list-item-info">
-                                <text class='food-name'>{{item.name}}</text>
+                                <text class='food-name'>{{item.dish_name}}</text>
                                 <view class="star-area">
-                                    <view wx:for = "{{item.star}}" wx:key="index">
+                                    <view wx:for = "{{item.star_count}}" wx:key="index">
                                         <image class='star-style' src='./image/good.png' mode='aspectFit'></image>
                                     </view>
-                                    <view wx:for = '{{totalStar-item.star}}' wx:key="index">
+                                    <view wx:for = '{{totalStar-item.star_count}}' wx:key="index">
                                         <image class='star-style' src='./image/bad.png' mode='aspectFit'></image>
                                     </view>
                                 </view>
@@ -72,12 +72,12 @@
                 </view>
             <!--菜单按钮-->
             <view class="class-list-fixed" hidden="{{classListStyle === 'class-list'?true:false}}">
-                <view class="btn {{currentMenu == 0 ? 'btn_on' : ''}}" data-currentmenu="0" bindtap="swiperMenu">我吃过</view>
-                <view class="btn {{currentMenu == 1 ? 'btn_on' : ''}}" data-currentmenu="1" bindtap="swiperMenu">铁板</view>
-                <view class="btn {{currentMenu == 2 ? 'btn_on' : ''}}" data-currentmenu="2" bindtap="swiperMenu">披萨</view>
-                <view class="btn {{currentMenu == 3 ? 'btn_on' : ''}}" data-currentmenu="3" bindtap="swiperMenu">焗饭</view>
-                <view class="btn {{currentMenu == 4 ? 'btn_on' : ''}}" data-currentmenu="4" bindtap="swiperMenu">小吃</view>
-                <view class="btn {{currentMenu == 5 ? 'btn_on' : ''}}" data-currentmenu="5" bindtap="swiperMenu">饮料</view>
+                <view class="btn {{currentMenu == '我吃过' ? 'btn_on' : ''}}" data-currentmenu="我吃过" bindtap="swiperMenu">我吃过</view>
+                <view class="btn {{currentMenu == '铁板' ? 'btn_on' : ''}}" data-currentmenu="铁板" bindtap="swiperMenu">铁板</view>
+                <view class="btn {{currentMenu == '披萨' ? 'btn_on' : ''}}" data-currentmenu="披萨" bindtap="swiperMenu">披萨</view>
+                <view class="btn {{currentMenu == '焗饭' ? 'btn_on' : ''}}" data-currentmenu="焗饭" bindtap="swiperMenu">焗饭</view>
+                <view class="btn {{currentMenu == '小吃' ? 'btn_on' : ''}}" data-currentmenu="小吃" bindtap="swiperMenu">小吃</view>
+                <view class="btn {{currentMenu == '饮料' ? 'btn_on' : ''}}" data-currentmenu="饮料" bindtap="swiperMenu">饮料</view>
             </view>
           </scroll-view>
         </swiper-item>
@@ -133,7 +133,7 @@
     </view>
 
     <view class='pay-menu-title'>
-    <image class='pay-menu-image' bindtap='showOrderMenu' src='./image/shopping.png' mode='aspectFit'></image>
+        <image class='pay-menu-image' bindtap='showOrderMenu' src='./image/shopping.png' mode='aspectFit'></image>
     </view>
 
 </view>

@@ -1,249 +1,32 @@
+
 var config = require('../../config')
+var login = require('controllers/loginController')
+var menuPageData = require('menuPageData')
 
 Page({
     data: {
-        // tab切换  
+        // 切换顶部导航栏
         currentTab: 0,
         currentMenu: 0,
+
+        // 订单相关
         sum_money: 0,
         order_view_height: 100,
         show_order: false,
         classListStyle: 'class-list',
-        table_list: [
-            {
-                id: "A1",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "A2",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "A3",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "A4",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "A5",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "A6",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "A7",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "A8",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "A9",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "A10",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "A11",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "A12",
-                status: "订",
-                color: 1,
-            },
-            {
-                id: "B1",
-                status: "订",
-                color: 2,
-            },
-            {
-                id: "B2",
-                status: "订",
-                color: 2,
-            },
-            {
-                id: "B3",
-                status: "订",
-                color: 2,                
-            },
-            {
-                id: "B4",
-                status: "订",
-                color: 2,
-            },
-            {
-                id: "B5",
-                status: "订",
-                color: 2,
-            },
-            {
-                id: "B6",
-                status: "订",
-                color: 2,
-            },
-            {
-                id: "B7",
-                status: "订",
-                color: 2,
-            },
-            {
-                id: "B8",
-                status: "订",
-                color: 2,
-            },
-            {
-                id: "C1",
-                status: "订",
-                color: 3,
-            },
-            {
-                id: "C2",
-                status: "订",
-                color: 3,
-            },
-            {
-                id: "C3",
-                status: "订",
-                color: 3,
-            },
-            {
-                id: "C4",
-                status: "订",
-                color: 3,
-            },
-            {
-                id: "C5",
-                status: "订",
-                color: 3,
-            },
-            {
-                id: "C6",
-                status: "订",
-                color: 3,
-            },
-            {
-                id: "C7",
-                status: "订",
-                color: 3,
-            },
-            {
-                id: "C8",
-                status: "订",
-                color: 3,
-            }
-        ],
+        table_list: menuPageData.table_list,
         imgUrls: [
             'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg',
             'http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg',
             'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
         ],
-        ordermenu:[],
-        arr: [
-            {
-                id: 1,
-                menu: 0,
-                src: "./image/1.jpg",
-                name: "北京烤鸭",
-                star: 4,
-                num: 0,
-                price: 10
-            },
-            {
-                id: 2,
-                menu: 1,
-                src: "./image/1.jpg",
-                name: "广东烤鸭",
-                star: 3,
-                num: 0,
-                price: 8
-            },
-            {
-                id: 3,
-                menu: 3,
-                src: "./image/1.jpg",
-                name: "四川烤鸭",
-                star: 2,
-                num: 0,
-                price: 5
-            },
-            {
-                id: 4,
-                menu:4,
-                src: "./image/1.jpg",
-                name: "湖南烤鸭",
-                star: 5,
-                num: 0,
-                price: 4
-            },
-            {
-                id: 5,
-                menu: 5,
-                src: "./image/1.jpg",
-                name: "浙江烤鸭",
-                star: 5,
-                num: 0,
-                price: 7
-            },
-            {
-                id: 6,
-                menu: 1,
-                src: "./image/1.jpg",
-                name: "潮汕烤鸭",
-                star: 5,
-                num: 0,
-                price: 50
-            },
-            {
-                id: 7,
-                menu: 2,
-                src: "./image/1.jpg",
-                name: "江苏烤鸭",
-                star: 5,
-                num: 0,
-                price: 9
-            },
-            {
-                id: 8,
-                menu: 4,
-                src: "./image/1.jpg",
-                name: "上海烤鸭",
-                star: 5,
-                num: 0,
-                price: 8
-            },
-            {
-                id: 9,
-                menu: 3,
-                src: "./image/1.jpg",
-                name: "天津烤鸭",
-                star: 5,
-                num: 0,
-                price: 6
-            }
-        ],
+        ordermenu: [],
+        dishes_list: [],
         totalStar: 5
     },
+
+    // 切换顶部导航栏
     swichNav: function (e) {
-        //console.log(e);
         var that = this;
         if (this.data.currentTab === e.target.dataset.current) {
             return false;
@@ -253,164 +36,15 @@ Page({
             })
         }
     },
+
+    // 记录变化的顶部导航栏的当前标签
     swiperChange: function (e) {
-        console.log(e);
         this.setData({
             currentTab: e.detail.current,
         })
     },
 
-    showOrderMenu: function(e) {
-      //struct orderedItem
-      function orderedItem() {
-        this.dish_id = 0;
-        this.dish_name = "";
-        this.price = 0;
-        this.amount = 0;
-      }
-
-      var change = false;
-      if (!this.data.show_order) {
-        change = true;
-        this.data.ordermenu.length = 0;
-        for (var i = 0; i < this.data.arr.length; i++) {
-          if (this.data.arr[i].num > 0) {
-            var temp = new orderedItem();
-            temp.dish_id = this.data.arr[i].id;
-            temp.dish_name = this.data.arr[i].name;
-            temp.price = this.data.arr[i].price;
-            temp.amount = this.data.arr[i].num;
-            this.data.ordermenu.push(temp);
-          }
-        }
-        this.data.order_view_height = this.data.ordermenu.length * 70 + 40;
-      }
-      this.setData({
-        ordermenu: this.data.ordermenu,
-        order_view_height: this.data.order_view_height,
-        show_order: change,
-      })
-      //console.log(this.data.ordermenu.length);
-    },
-
-    orderMinus: function(e) {
-      //struct orderedItem
-      function orderedItem() {
-        this.dish_id = 0;
-        this.dish_name = "";
-        this.price = 0;
-        this.amount = 0;
-      }
-
-      var index = e.target.dataset.id;
-      var sum_money = this.data.sum_money
-      var count = 0;
-      var i;
-      for (i = 0; i < this.data.arr.length; i++) {
-        if (this.data.arr[i].id == index) {
-          count = this.data.arr[i].num;
-          if (count >= 1) {
-            count--;
-            sum_money = sum_money - this.data.arr[i].price;
-            this.data.arr[i].num = count;
-            this.data.ordermenu.length = 0;
-
-            //change ordermenu
-            for (var j = 0; j < this.data.arr.length; j++) {
-              if (this.data.arr[j].num > 0) {
-                var temp = new orderedItem();
-                temp.dish_id = this.data.arr[j].id;
-                temp.dish_name = this.data.arr[j].name;
-                temp.price = this.data.arr[j].price;
-                temp.amount = this.data.arr[j].num;
-                this.data.ordermenu.push(temp);
-              }
-            }
-            //change order view height
-            this.data.order_view_height = this.data.ordermenu.length * 70 + 40;
-          }
-          break;
-        }
-      }
-
-      var minus = "arr[" + i + "].num"
-      this.setData({
-        [minus]: count,
-        sum_money: sum_money,
-        ordermenu: this.data.ordermenu,
-        order_view_height: this.data.order_view_height,
-      })
-      //console.log(index);
-    },
-
-    orderPlus: function(e) {
-      //struct orderedItem
-      function orderedItem() {
-        this.dish_id = 0;
-        this.dish_name = "";
-        this.price = 0;
-        this.amount = 0;
-      }
-
-      var index = e.target.dataset.id;
-      var sum_money = this.data.sum_money
-      var count = 0;
-      var i;
-      for (i = 0; i < this.data.arr.length; i++) {
-        if (this.data.arr[i].id == index) {
-          count = this.data.arr[i].num;
-          count++;
-          sum_money = sum_money + this.data.arr[i].price;
-
-          //change ordermenu
-          this.data.arr[i].num = count;
-          this.data.ordermenu.length = 0;
-          for (var j = 0; j < this.data.arr.length; j++) {
-            if (this.data.arr[j].num > 0) {
-              var temp = new orderedItem();
-              temp.dish_id = this.data.arr[j].id;
-              temp.dish_name = this.data.arr[j].name;
-              temp.price = this.data.arr[j].price;
-              temp.amount = this.data.arr[j].num;
-              this.data.ordermenu.push(temp);
-            }
-          }
-          //change order view height
-          this.data.order_view_height = this.data.ordermenu.length * 70 + 40;
-          break;
-        }
-      }
-      var minus = "arr[" + i + "].num"
-      this.setData({
-        [minus]: count,
-        sum_money: sum_money,
-        ordermenu: this.data.ordermenu,
-        order_view_height: this.data.order_view_height,
-      })
-      //console.log(index);
-    },
-    // 页面滑动
-    scrollPage: function(e) {
-        console.log(e.detail.scrollTop)
-        var classListStyle = this.data.classListStyle;
-        if (e.detail.scrollTop >= 170) {
-            if (classListStyle !== 'class-list-fixed') {
-                this.setData({
-                    classListStyle: 'class-list-fixed'
-                })
-            }
-            console.log("fixed")
-        }
-        else if (e.detail.scrollTop < 170) {
-            if (classListStyle === 'class-list-fixed') {
-                this.setData({
-                    classListStyle: 'class-list'
-                })
-            }
-            console.log("no-fixed")
-        }
-    },
-
+    // 记录当前访问的菜单
     swiperMenu: function (e) {
         //console.log(e.target.dataset.currentmenu)
         this.setData({
@@ -418,139 +52,173 @@ Page({
         })
     },
 
-    // 减号
-    bindMinus: function (e) {
-        //struct orderedItem
-        function orderedItem() {
-          this.dish_id = 0;
-          this.dish_name = "";
-          this.price = 0;
-          this.amount = 0;
+    // 更新订单
+    updateOrderMenu: function () {
+        var ordermenu = []
+        var order_view_height = 0
+        var dishes_list = this.data.dishes_list
+
+        // 更新订单信息（将数量大于0的菜品算作订单）
+        for (var i = 0; i < dishes_list.length; i++) {
+            if (dishes_list[i].num > 0) {
+                var temp = {
+                    dish_id: dishes_list[i].dish_id,
+                    dish_name: dishes_list[i].dish_name,
+                    price: dishes_list[i].price,
+                    amount: dishes_list[i].num
+                }
+                ordermenu.push(temp);
+            }
         }
 
-        var id = e.target.dataset.id
-        var count = this.data.arr[id].num
-        var price = this.data.arr[id].price
-        var sum_money = this.data.sum_money
+        // 更新菜单高度
+        order_view_height = this.data.ordermenu.length * 70 + 40;
 
+        // 保存信息
+        this.setData({
+            ordermenu: ordermenu,
+            order_view_height: order_view_height
+        })
+    },
+
+    // 显示订单
+    showOrderMenu: function (e) {
+        var change = false
+        if (!this.data.show_order) {
+            change = true;
+            this.updateOrderMenu()
+        }
+        this.setData({
+            show_order: change
+        })
+    },
+
+    // 订单减号
+    orderMinus: function (e) {
+
+        // 获得当前点击的行数
+        var index = e.target.dataset.id;
+        var sum_money = this.data.sum_money
+        var dishes_list = this.data.dishes_list
+
+        for (var i = 0; i < dishes_list.length; i++) {
+            if (dishes_list[i].dish_id == index) {
+                // 若数量大于0才能减
+                if (dishes_list[i].num >= 1) {
+                    dishes_list[i].num--;
+                    sum_money = sum_money - dishes_list[i].price;
+
+                    // 保存并更新数据
+                    var minus = "dishes_list[" + i + "].num"
+                    this.setData({
+                        [minus]: dishes_list[i].num,
+                        sum_money: sum_money
+                    })
+                    this.updateOrderMenu()
+                }
+                break;
+            }
+        }
+    },
+
+    // 订单加号
+    orderPlus: function (e) {
+
+        // 获得当前点击的行数
+        var index = e.target.dataset.id;
+        var sum_money = this.data.sum_money
+        var dishes_list = this.data.dishes_list
+
+        for (var i = 0; i < dishes_list.length; i++) {
+            if (dishes_list[i].dish_id == index) {
+                dishes_list[i].num++;
+                sum_money = sum_money + dishes_list[i].price;
+
+                // 保存并更新数据
+                var minus = "dishes_list[" + i + "].num"
+                this.setData({
+                    [minus]: dishes_list[i].num,
+                    sum_money: sum_money
+                })
+                this.updateOrderMenu()
+                break;
+            }
+        }
+    },
+
+    // 页面滑动
+    scrollPage: function (e) {
+        // console.log(e.detail.scrollTop)
+        var classListStyle = this.data.classListStyle;
+        if (e.detail.scrollTop >= 170) {
+            if (classListStyle !== 'class-list-fixed') {
+                this.setData({
+                    classListStyle: 'class-list-fixed'
+                })
+            }
+            // console.log("fixed")
+        }
+        else if (e.detail.scrollTop < 170) {
+            if (classListStyle === 'class-list-fixed') {
+                this.setData({
+                    classListStyle: 'class-list'
+                })
+            }
+            // console.log("no-fixed")
+        }
+    },
+
+    // 减号
+    bindMinus: function (e) {
+        var id = e.target.dataset.id
+        var sum_money = this.data.sum_money
+        var count = this.data. dishes_list[id].num
+        var price = this.data.dishes_list[id].price
+        var minus = "dishes_list[" + id + "].num"
+        
         if (count >= 1) {
             count--
-            this.data.arr[id].num = count;
             sum_money -= price
         }
 
         // 只有大于一件的时候，才能normal状态，否则disable状态  
         var minusStatus = count < 1 ? 'disabled' : 'normal'
-
-        var minus = "arr[" + id + "].num"
-
-        this.data.ordermenu.length = 0;
-        //change ordermenu
-        for (var j = 0; j < this.data.arr.length; j++) {
-          if (this.data.arr[j].num > 0) {
-            var temp = new orderedItem();
-            temp.dish_id = this.data.arr[j].id;
-            temp.dish_name = this.data.arr[j].name;
-            temp.price = this.data.arr[j].price;
-            temp.amount = this.data.arr[j].num;
-            this.data.ordermenu.push(temp);
-          }
-        }
-        //change order view height
-        this.data.order_view_height = this.data.ordermenu.length * 70 + 40;
-
+        
+        // 保存并更新数据
         this.setData({
             [minus]: count,
             sum_money: sum_money,
             minusStatus: minusStatus,
-            ordermenu: this.data.ordermenu,
-            order_view_height: this.data.order_view_height,
         })
+        this.updateOrderMenu()
     },
 
     // 加号
     bindPlus: function (e) {
-        //struct orderedItem
-        function orderedItem() {
-          this.dish_id = 0;
-          this.dish_name = "";
-          this.price = 0;
-          this.amount = 0;
-        }
-
         var id = e.target.dataset.id
-        var minus = "arr[" + id + "].num"
-        var count = this.data.arr[id].num
         var sum_money = this.data.sum_money
-        var price = this.data.arr[id].price
+        var count = this.data.dishes_list[id].num
+        var price = this.data.dishes_list[id].price
+        var minus = "dishes_list[" + id + "].num"
 
-        count++;
-        this.data.arr[id].num = count;
-        sum_money += price;
-
-        this.data.ordermenu.length = 0;
-        //change ordermenu
-        for (var j = 0; j < this.data.arr.length; j++) {
-          if (this.data.arr[j].num > 0) {
-            var temp = new orderedItem();
-            temp.dish_id = this.data.arr[j].id;
-            temp.dish_name = this.data.arr[j].name;
-            temp.price = this.data.arr[j].price;
-            temp.amount = this.data.arr[j].num;
-            this.data.ordermenu.push(temp);
-          }
-        }
-        //change order view height
-        this.data.order_view_height = this.data.ordermenu.length * 70 + 40;
-
+        count++
+        sum_money += price
+        
+        // 保存并更新数据
         this.setData({
             [minus]: count,
             sum_money: sum_money,
-            ordermenu: this.data.ordermenu,
-            order_view_height: this.data.order_view_height,
+            minusStatus: minusStatus,
         })
+        this.updateOrderMenu()
     },
-    navigateTo: function () {
-      //struct orderedItem
-      function orderedItem() {
-        this.dish_id = 0;
-        this.dish_name = "";
-        this.price = 0;
-        this.amount = 0;
-      }
-        var order = new Array();
-        var order_index = 0;
-        for(var i = 0; i < this.data.arr.length; i++){
-          if(this.data.arr[i].num > 0) {
-            var temp = new orderedItem();
-            temp.dish_id = this.data.arr[i].id;
-            temp.dish_name = this.data.arr[i].name;
-            temp.price = this.data.arr[i].price;
-            temp.amount = this.data.arr[i].num;
-            order.push(temp);
-          }
-        }
 
-        console.log(order.length);
-        /* testing
-        var order = [
-            {
-                dish_id: 1,
-                dish_name: "铁板牛肉",
-                price: 10.00,
-                amount: 1
-            },
-            {
-                dish_id: 2,
-                dish_name: "榴莲披萨",
-                price: 20.00,
-                amount: 1
-            }
-        ];
-        */
+    // 导航到下一页
+    navigateTo: function () {
+        var that = this
         wx.setStorage({
             key: "order",
-            data: order
+            data: that.data.ordermenu
         });
 
         wx.navigateTo({
@@ -558,61 +226,45 @@ Page({
         })
     },
 
-    login: function () {
-        wx.login({
-            success: function(res) {
-                console.log("wx res", res)
-                if (res.code) {
-                    var code = res.code
-                    wx.getUserInfo({
-                        success: function (res) {
-                            console.log("获取用户信息成功")
-                            var userInfo = res.userInfo
-                            var nickName = userInfo.nickName
-                            var avatarUrl = userInfo.avatarUrl
-                            var location = userInfo.country + ' ' + userInfo.city
-                            console.log('获取用户所有信息')
-                            console.log(res.userInfo)
-                            console.log(code)
-                            console.log(location)
-                            wx.request({
-                                url: config.service.loginUrl,
-                                method: "POST",
-                                data: {
-                                    code: code,
-                                    wechat_name: nickName,
-                                    wechat_avatar: avatarUrl,
-                                    location: location
-                                },
-                                success: function (data) {
-                                    console.log("登陆接口返回", data)
-                                    wx.setStorage({
-                                        userid: data.data.userid,
-                                        success: function(res) {
-                                            console.log(res)
-                                        }
-                                    })
-                                },
-                                fail: function (res) {
-                                    wx.showToast({
-                                        title: '登陆失败'
-                                    })
-                                }
-                            })
-                        }
-                    })
-                } else {
-                    wx.showToast({
-                        title: '登陆失败'
-                    })
+    // 获取菜单数据
+    getDishes: function () {
+        var dishes = []
+        var that = this
+        wx.request({
+            url: config.service.dishesUrl,
+            method: "GET",
+            success: function (data) {
+                console.log('getDishes')
+                console.log(data)
+                for (var i = 0; i < data.length; i++) {
+                    var temp_dishes = {
+                        dish_id: data[i].dish_id,
+                        type: data[i].type,
+                        image: data[i].image,
+                        dish_name: data[i].dish_name,
+                        ordered_count: data[i].ordered_count,
+                        price: data[i].price,
+                        star_count: Math.round(data[i].star_count / (data[i].star_times * 5)),
+                        num: 0
+                    }
+                    console.log(temp_dishes)
+                    dishes.push(temp_dishes)
                 }
+                console.log(dishes)
+                that.setData({
+                    dishes_list: dishes
+                })
+            },
+            fail: function (res) {
+                console.log("Get dishes failed!")
             }
         })
     },
 
     onLoad: function (options) {
         // 生命周期函数--监听页面加载
-        this.login()
+        login(options)
+        this.getDishes()
     },
     onReady: function () {
         // 生命周期函数--监听页面初次渲染完成
