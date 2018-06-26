@@ -7,7 +7,7 @@ Page({
     data: {
         // 切换顶部导航栏
         currentTab: 0,
-        currentMenu: 0,
+        currentMenu: '我吃过',
 
         // 订单相关
         sum_money: 0,
@@ -15,14 +15,11 @@ Page({
         show_order: false,
         classListStyle: 'class-list',
         table_list: menuPageData.table_list,
-        imgUrls: [
-            'http://img02.tooopen.com/images/20150928/tooopen_sy_143912755726.jpg',
-            'http://img06.tooopen.com/images/20160818/tooopen_sy_175866434296.jpg',
-            'http://img06.tooopen.com/images/20160818/tooopen_sy_175833047715.jpg'
-        ],
+        imgUrls: [],
         ordermenu: [],
         dishes_list: [],
-        totalStar: 5
+        totalStar: 5,
+        minusStatus: 'disabled'
     },
 
     // 切换顶部导航栏
@@ -60,6 +57,7 @@ Page({
 
         // 更新订单信息（将数量大于0的菜品算作订单）
         for (var i = 0; i < dishes_list.length; i++) {
+            if (dishes_list[i] == undefined) continue
             if (dishes_list[i].num > 0) {
                 var temp = {
                     dish_id: dishes_list[i].dish_id,
@@ -208,7 +206,7 @@ Page({
         this.setData({
             [minus]: count,
             sum_money: sum_money,
-            minusStatus: minusStatus,
+            minusStatus: 'normal'
         })
         this.updateOrderMenu()
     },
@@ -228,35 +226,79 @@ Page({
 
     // 获取菜单数据
     getDishes: function () {
-        var dishes = []
         var that = this
         wx.request({
             url: config.service.dishesUrl,
             method: "GET",
             success: function (data) {
-                console.log('getDishes')
-                console.log(data)
-                for (var i = 0; i < data.length; i++) {
+                var data_from_server = data.data
+                var dishes = new Array(data_from_server.length)
+                console.log(dishes)
+                for (var i = 0; i < data_from_server.length; i++) {
                     var temp_dishes = {
-                        dish_id: data[i].dish_id,
-                        type: data[i].type,
-                        image: data[i].image,
-                        dish_name: data[i].dish_name,
-                        ordered_count: data[i].ordered_count,
-                        price: data[i].price,
-                        star_count: Math.round(data[i].star_count / (data[i].star_times * 5)),
+                        dish_id: data_from_server[i].dish_id,
+                        type: data_from_server[i].type,
+                        image: data_from_server[i].image,
+                        dish_name: data_from_server[i].dish_name,
+                        ordered_count: data_from_server[i].ordered_count,
+                        price: data_from_server[i].price,
+                        star_count: Math.round(data_from_server[i].star_count / (data_from_server[i].star_times * 5)),
                         num: 0
                     }
+                    dishes[temp_dishes.dish_id] = temp_dishes
                     console.log(temp_dishes)
-                    dishes.push(temp_dishes)
                 }
                 console.log(dishes)
                 that.setData({
                     dishes_list: dishes
                 })
+                that.getMyDishes()
             },
             fail: function (res) {
                 console.log("Get dishes failed!")
+            }
+        })
+    },
+
+    // 获取我吃过的菜谱(未完成)
+    getMyDishes: function() {
+        var that = this
+        wx.getStorage({
+            key: 'userid',
+            success: function(res) {
+                var userid = res.data
+                wx.request({
+                    url: config.service.dishesUrl + '?userid=' + userid,
+                    method: 'GET',
+                    success: function(server_res) {
+                        var myDishes = server_res.data
+                        var dishes = that.data.dishes_list
+                        for (var i = 0; i < myDishes.length; i++) {
+                            
+                        }
+                        console.log('ser', server_res)
+                    }
+                })
+            }
+        })
+    },
+
+    // 获取每日推荐的图片链接(未完成)
+    getRecommendedImage: function() {
+        console.log('getRecommendedImage')
+        var that = this
+        wx.request({
+            url: config.service.recommendedUrl + '3',
+            method: 'GET',
+            success: function(server_res) {
+                var pic = server_res.data
+                for(var i = 0; i < pic.length; i++) {
+                    pic[i] = config.service.imageUrl + pic[i]
+                }
+                that.setData({
+                    imgUrls: server_res.data
+                })
+                console.log(pic)
             }
         })
     },
@@ -265,6 +307,7 @@ Page({
         // 生命周期函数--监听页面加载
         login(options)
         this.getDishes()
+        this.getRecommendedImage()
     },
     onReady: function () {
         // 生命周期函数--监听页面初次渲染完成

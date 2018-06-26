@@ -63,7 +63,12 @@ Page({
             addressDetail: addressDetail,
             addressStatus: addressStatus,
             name: self.data.name,
-            phone: self.data.phone
+            phone: self.data.phone,
+            takeout_info: {
+                name: self.data.name,
+                phone: self.data.phone,
+                location: address + ' ' + addressDetail
+            }
         });
         wx.navigateBack();
     },

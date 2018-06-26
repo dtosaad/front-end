@@ -18,6 +18,15 @@ var config = {
         // 获取菜单
         dishesUrl: `${host}/weapp/dishes`,
 
+        // 获取每日推荐图片
+        recommendedUrl: `${host}/weapp/images/recommendation?number=`,
+
+        // 图片
+        imageUrl: `${host}/weapp`,
+
+        // 提交订单
+        postOrderUrl: `${host}/weapp/orders`,
+
         // 测试的请求地址，用于测试会话
         requestUrl: `${host}/weapp/user`,
 

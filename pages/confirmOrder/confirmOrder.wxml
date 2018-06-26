@@ -14,7 +14,8 @@
     <view class="my-container">
         <view class="order-member">
             <view>用餐人数</view>
-            <view class="order-member-tips">（茶位费：1元/人）</view>
+            <view wx:if="{{extendStatus == 1 ? true : false}}" class="order-member-tips">（茶位费：1元/人）</view>
+            <view wx:if="{{extendStatus == 1 ? false : true}}" class="order-member-tips">（打包费：1元/人）</view>
             <view class="stepper">  
                 <!-- 减号 -->
                 <view class="stepper-button, {{minusStatus}}">

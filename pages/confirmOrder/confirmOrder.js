@@ -1,4 +1,5 @@
 // confirmOrder.js
+var config = require('../../config')
 
 Page({
     // 初始化数据
@@ -22,7 +23,8 @@ Page({
         phone: "",
         name: "",
         buttonWord: "提交订单",
-        total: 1
+        total: 1,
+        takeout_info: {}
     },
 
 
@@ -102,7 +104,7 @@ Page({
     navigateTo: function() {
         var extendStatus = this.data.extendStatus;
         var userNumber = this.data.num;
-
+        
         // 保存数据
         wx.setStorage({
             key: "userNumber",
@@ -115,21 +117,42 @@ Page({
             })
         } 
         else {
+            // 提交订单
+            this.postOrder()
+
             // 清空本地数据
-            try {
+            /*try {
                 wx.clearStorageSync()
             } catch (e) {
                 console.log("Clear storage failed!")
             }
             wx.reLaunch({
                 url: "../menuPage/menuPage"
-            })
+            })*/
         }
     },
 
     postOrder: function() {
         var that = this
-        
+        var userid = wx.getStorageSync('userid')
+        console.log(userid)
+        var myPostData = {
+            userid: userid,
+            dishes: this.data.order,
+            people_count: this.data.num,
+            dinning_choice: this.data.extendStatus,
+            note: this.data.note,
+            takeout_info: this.data.takeout_info,
+            discount_id: null
+        }
+        wx.request({
+            url: config.service.postOrderUrl,
+            method: 'POST',
+            data: myPostData,
+            success: function(postOrder_res) {
+                console.log(postOrder_res)
+            }
+        })
     },
 
     // 加载本地缓存的菜单
@@ -149,7 +172,7 @@ Page({
         } catch (e) {
             console.log("Get local data failed!");
         }
-
+        console.log(order)
         this.setData({
             order: order,
             total: total
