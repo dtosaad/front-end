@@ -377,6 +377,7 @@ page {
 }
 
 .table {
+    position: relative;
     width: 15%;
     height: 12%;
     border-radius: 10rpx;
@@ -394,13 +395,14 @@ page {
 .middle_message {
     position: relative;
     margin-top: 25%;
-    margin-left: 25%;
-    width: 50%;
-    height: 40%;
+    margin-left: auto;
+    margin-right: auto;
+    width: 45%;
+    height: 38%;
     background: rgba(245, 166, 35, 1);
     border-radius: 10rpx;
     border: 3rpx solid white;
-    font-size: 30rpx;
+    font-size: 27rpx;
     color: white;
     vertical-align: middle;
     text-align: center;
@@ -408,15 +410,16 @@ page {
 }
 
 .table_id {
-    position: relative;
-    margin-top: 2%;
-    margin-left: 48%;
+    position: absolute;
+    float: left;
+    bottom: 0;
+    right: 0;
     width: 50%;
-    height: 30%;
+    height: 25%;
     border-top-left-radius: 10rpx;
     border-bottom-right-radius: 10rpx;
     border: 3rpx solid white;
-    font-size: 25rpx;
+    font-size: 20rpx;
     color: white;
     text-align: center;
 }
@@ -431,4 +434,10 @@ page {
 
 .b_table_color {
     background: rgba(49, 188, 40, 0.9);
+}
+
+.user_avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 10rpx;
 }

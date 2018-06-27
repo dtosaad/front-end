@@ -1,5 +1,5 @@
 // reviewPage.js
-
+var config = require("../../config")
 Page({
     // 初始化数据
     data: {
@@ -8,6 +8,18 @@ Page({
     },
 
     navigateTo: function () {
+        var user_id = wx.getStorageSync('userid')
+        var order = this.data.order
+        for (var i = 0 ; i < order.length; i++) {
+            wx.request({
+                url: config.service.dishesUrl + '/:' + order[i].dish_id + '/review?user_id=' + user_id,
+                method: 'POST',
+                data: {
+                    star: order[i].star
+                } 
+            })
+        }
+
         // 清空本地数据
         try {
             wx.clearStorageSync()

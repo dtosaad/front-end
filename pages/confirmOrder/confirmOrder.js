@@ -106,10 +106,7 @@ Page({
         var userNumber = this.data.num;
         
         // 保存数据
-        wx.setStorage({
-            key: "userNumber",
-            data: userNumber
-        });
+        wx.setStorageSync("userNumber", userNumber);
 
         if (extendStatus === 1) {
             wx.reLaunch({
@@ -121,28 +118,28 @@ Page({
             this.postOrder()
 
             // 清空本地数据
-            /*try {
+            try {
                 wx.clearStorageSync()
             } catch (e) {
                 console.log("Clear storage failed!")
             }
             wx.reLaunch({
                 url: "../menuPage/menuPage"
-            })*/
+            })
         }
     },
 
     postOrder: function() {
         var that = this
         var userid = wx.getStorageSync('userid')
-        console.log(userid)
+        var takeout_info = (this.data.extendStatus == 3) ? this.data.takeout_info : null
         var myPostData = {
-            userid: userid,
+            user_id: userid,
             dishes: this.data.order,
             people_count: this.data.num,
             dinning_choice: this.data.extendStatus,
             note: this.data.note,
-            takeout_info: this.data.takeout_info,
+            takeout_info: takeout_info,
             discount_id: null
         }
         wx.request({

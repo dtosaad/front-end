@@ -6,10 +6,13 @@ Page({
     },
     
     callService: function(e) {
-        console.log("叫服务员？？？")
+        wx.showToast({
+            title: '已呼叫，请稍等'
+        })
     },
 
     addMeal: function (e) {
+        wx.setStorageSync('addMeal', true)
         wx.navigateTo({
             url: "../menuPage/menuPage"
         })

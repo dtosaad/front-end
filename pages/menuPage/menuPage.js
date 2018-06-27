@@ -54,6 +54,7 @@ Page({
         var ordermenu = []
         var order_view_height = 0
         var dishes_list = this.data.dishes_list
+        var sum_money = 0
 
         // 更新订单信息（将数量大于0的菜品算作订单）
         for (var i = 0; i < dishes_list.length; i++) {
@@ -66,6 +67,7 @@ Page({
                     amount: dishes_list[i].num
                 }
                 ordermenu.push(temp);
+                sum_money += temp.price * temp.amount
             }
         }
 
@@ -75,7 +77,8 @@ Page({
         // 保存信息
         this.setData({
             ordermenu: ordermenu,
-            order_view_height: order_view_height
+            order_view_height: order_view_height,
+            sum_money: sum_money
         })
     },
 
@@ -214,14 +217,28 @@ Page({
     // 导航到下一页
     navigateTo: function () {
         var that = this
-        wx.setStorage({
-            key: "order",
-            data: that.data.ordermenu
-        });
-
-        wx.navigateTo({
-            url: "../confirmOrder/confirmOrder"
+        var res = wx.setStorageSync("order", that.data.ordermenu);
+        console.log(res)
+        wx.getStorage({
+            key: 'addMeal',
+            success: function(res) {
+                if (res.data) {
+                    wx.reLaunch({
+                        url: "../usingPage/usingPage"
+                    })
+                } else {
+                    wx.navigateTo({
+                        url: "../confirmOrder/confirmOrder"
+                    })
+                }
+            },
+            fail: function() {
+                wx.navigateTo({
+                    url: "../confirmOrder/confirmOrder"
+                })
+            }
         })
+        
     },
 
     // 获取菜单数据
@@ -237,7 +254,7 @@ Page({
                 for (var i = 0; i < data_from_server.length; i++) {
                     var temp_dishes = {
                         dish_id: data_from_server[i].dish_id,
-                        type: data_from_server[i].type,
+                        type: [data_from_server[i].type, '没吃过'],
                         image: data_from_server[i].image,
                         dish_name: data_from_server[i].dish_name,
                         ordered_count: data_from_server[i].ordered_count,
@@ -260,7 +277,7 @@ Page({
         })
     },
 
-    // 获取我吃过的菜谱(未完成)
+    // 获取我吃过的菜谱
     getMyDishes: function() {
         var that = this
         wx.getStorage({
@@ -274,9 +291,11 @@ Page({
                         var myDishes = server_res.data
                         var dishes = that.data.dishes_list
                         for (var i = 0; i < myDishes.length; i++) {
-                            
+                            dishes[myDishes[i].dish_id].type[1] = '我吃过'
                         }
-                        console.log('ser', server_res)
+
+                        // 恢复我吃过的菜
+                        that.recoverOrder()
                     }
                 })
             }
@@ -303,11 +322,73 @@ Page({
         })
     },
 
+    // 恢复点单数据
+    recoverOrder: function() {
+        var order = wx.getStorageSync('order')
+        var dishes_list = this.data.dishes_list
+        for(var i = 0; i < order.length; i++) {
+            console.log('dishes_list[order[i].dish_id]', dishes_list[order[i].dish_id])
+            dishes_list[order[i].dish_id].num = order[i].amount
+        }
+        this.setData({
+            ordermenu: order,
+            dishes_list: dishes_list
+        })
+        this.updateOrderMenu()
+        console.log(this.data.ordermenu)
+        console.log('recover', order)
+    },
+
+    // 获取所有的桌位信息
+    getTableInfo: function() {
+        var table_list = []
+        var that = this
+        wx.request({
+            url: config.service.tablesInfoUrl,
+            method: 'GET',
+            success: function(server_res) {
+                console.log('tables', server_res)
+                var allTables = server_res.data
+                for (var i = 0; i < allTables.length; i++) {
+                    var table = {
+                        table_id: allTables[i].table_id,
+                        number: allTables[i].number,
+                        status: allTables[i].user_id2 == null ? '订' : '预',
+                        color: allTables[i].number[0] == 'A' ? 1 : allTables[i].number[0] == 'B' ? 2 : 3,
+                        user_avatar: allTables[i].user_avatar
+                    }
+                    table_list.push(table)
+                }
+                //console.log(table_list)
+                that.setData({
+                    table_list: table_list
+                })
+            }
+        })
+    },
+
+    // 预定座位(未完成)
+    bookTable: function(e) {
+        var table_id = e.target.dataset.id
+        console.log(table_id)
+        var user_id = wx.getStorageSync('userid')
+        var that = this
+        wx.request({
+            url: config.service.tablesInfoUrl + '/:' + table_id + '/reservation?user_id=' + user_id,
+            method: 'POST',
+            success: function(res) {
+                that.getTableInfo()
+                console.log(res)
+            }
+        })
+    },
+
     onLoad: function (options) {
         // 生命周期函数--监听页面加载
         login(options)
         this.getDishes()
         this.getRecommendedImage()
+        this.getTableInfo()
     },
     onReady: function () {
         // 生命周期函数--监听页面初次渲染完成

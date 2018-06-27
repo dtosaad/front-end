@@ -36,7 +36,7 @@
 
                     <!--菜单列表-->
                     <view class='order-list'>
-                          <view wx:for = "{{dishes_list}}" wx:if = "{{item.type == currentMenu}}" wx:for-index="index" class='list-item'>
+                          <view wx:for = "{{dishes_list}}" wx:if = "{{item.type[0] == currentMenu || item.type[1] == currentMenu}}" wx:for-index="index" class='list-item'>
                             <image class="food-img" src="{{item.image}}" mode='aspectFill'></image>
                             <view  class="list-item-info">
                                 <text class='food-name'>{{item.dish_name}}</text>
@@ -96,8 +96,9 @@
             </view>
             <view class='table_list'>
                 <view  wx:for = "{{table_list}}" wx:for-index = "table_index" class="table table_left {{(table_index - 1)%4 == 0 ? 'table_right' : ''}}">
-                    <view class='middle_message'>{{item.status}}</view>
-                    <view class="table_id {{item.color == 1 ? 's_table_color':''}} {{item.color == 2 ? 'm_table_color':''}} {{item.color == 3 ? 'b_table_color':''}}" >{{item.id}}</view>
+                    <view wx:if = "{{item.status == '订'}}" class='middle_message' bindtap="bookTable" data-id = "{{item.table_id}}">{{item.status}}</view>
+                    <image class="user_avatar" wx:if = "{{item.status == '预'}}" src="{{item.user_avatar}}" mode='aspectFit'></image>
+                    <view class="table_id {{item.color == 1 ? 's_table_color':''}} {{item.color == 2 ? 'm_table_color':''}} {{item.color == 3 ? 'b_table_color':''}}" >{{item.number}}</view>
                 </view>
             </view>
         </swiper-item>
