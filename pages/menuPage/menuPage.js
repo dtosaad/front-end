@@ -19,7 +19,11 @@ Page({
         ordermenu: [],
         dishes_list: [],
         totalStar: 5,
-        minusStatus: 'disabled'
+        minusStatus: 'disabled',
+        
+        // 协同点单相关
+        isTogether: false,
+        togetherMenu: []
     },
 
     // 切换顶部导航栏
@@ -101,8 +105,9 @@ Page({
         var index = e.target.dataset.id;
         var sum_money = this.data.sum_money
         var dishes_list = this.data.dishes_list
-
+        console.log(dishes_list)
         for (var i = 0; i < dishes_list.length; i++) {
+            if (dishes_list[i] == undefined) continue
             if (dishes_list[i].dish_id == index) {
                 // 若数量大于0才能减
                 if (dishes_list[i].num >= 1) {
@@ -131,6 +136,8 @@ Page({
         var dishes_list = this.data.dishes_list
 
         for (var i = 0; i < dishes_list.length; i++) {
+            if (dishes_list[i] == undefined) continue
+
             if (dishes_list[i].dish_id == index) {
                 dishes_list[i].num++;
                 sum_money = sum_money + dishes_list[i].price;
@@ -353,7 +360,7 @@ Page({
                     var table = {
                         table_id: allTables[i].table_id,
                         number: allTables[i].number,
-                        status: allTables[i].user_id2 == null ? '订' : '预',
+                        status: allTables[i].user_id == null ? '订' : '预',
                         color: allTables[i].number[0] == 'A' ? 1 : allTables[i].number[0] == 'B' ? 2 : 3,
                         user_avatar: allTables[i].user_avatar
                     }
@@ -373,12 +380,90 @@ Page({
         console.log(table_id)
         var user_id = wx.getStorageSync('userid')
         var that = this
+        var bookTableUrl = config.service.tablesInfoUrl + '/' + table_id + '/reservation?user_id=' + user_id
+        console.log('booktableurl', bookTableUrl)
         wx.request({
-            url: config.service.tablesInfoUrl + '/:' + table_id + '/reservation?user_id=' + user_id,
+            url: bookTableUrl,
             method: 'POST',
             success: function(res) {
                 that.getTableInfo()
                 console.log(res)
+            }
+        })
+    },
+
+    // 扫描桌上二维码(测试)
+    scanTable: function() {
+        var that = this
+        var user_id = wx.getStorageSync('userid')
+        var table_id = 13
+        wx.setStorageSync('table_id', table_id)
+        wx.request({
+            url: config.service.tablesInfoUrl + '/' + table_id + '?user_id=' + user_id,
+            method: 'GET',
+            success: function(res) {
+                var table_info = res.data
+                console.log(table_info.user_id)
+                console.log(user_id)
+                if (table_info.user_id != user_id) {
+                    wx.showModal({
+                        title: '提示',
+                        content: '是否进入协同点餐？',
+                        success: function() {
+                            that.orderTogether(table_id, user_id)
+                        }
+                    })
+                }
+                console.log('scan table', res)
+            }
+        })
+    },
+
+    // 确认协同点餐
+    orderTogether: function(table_id, user_id) {
+        var that = this
+        var url = config.service.tablesInfoUrl + '/' + table_id + '/together?userid=' + user_id
+        wx.request({
+            url: url,
+            method: 'POST',
+            success: function(res) {
+                that.setData({
+                    isTogether: true
+                })
+            },
+            fail: function(res) {
+                that.setData({
+                    isTogether: false
+                })
+            }
+        })
+    },
+
+    // 上传我点的菜，拉下一起点的菜？
+    uploadOrder: function() {
+        var table_id = wx.getStorageSync('table_id')
+        var user_id = wx.getStorageSync('userid')
+        var url = config.service.tablesInfoUrl + '/' + table_id + '/dishes?userid=' + user_id
+
+        var ordermenu = this.data.ordermenu
+        var uploadData = []
+        for (var i = 0; i < ordermenu.length; i++) {
+            var temp = {
+                dish_id: ordermenu[i].dish_id,
+                name: ordermenu[i].dish_name,
+                ordered_count: ordermenu[i].amount
+            }
+            uploadData.push(temp)
+        }
+        console.log(uploadData)
+        wx.request({
+            url: url,
+            method: 'POST',
+            data: uploadData,
+            success: function(res) {
+                console.log('upload', res)
+                var togetherOrder = res.data
+                
             }
         })
     },
@@ -389,7 +474,10 @@ Page({
         this.getDishes()
         this.getRecommendedImage()
         this.getTableInfo()
+        this.scanTable()
+        setInterval(this.uploadOrder, 3000)
     },
+
     onReady: function () {
         // 生命周期函数--监听页面初次渲染完成
     },
