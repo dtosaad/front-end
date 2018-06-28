@@ -1,0 +1,3 @@
+<view hidden='{{eye}}'>
+    <button open-type="getUserInfo" hover-class='none' bindgetuserinfo="getUserInfoFun">授权吧兄弟！</button> 
+</view>

@@ -35,9 +35,11 @@ var getUserInfo = function getUserInfo(login_res) {
     var code = login_res.code
     wx.getUserInfo({
         success: function (info_res) {
+            console.log('获取信息成功')
             postDataToServer(info_res.userInfo, code)
         },
         fail: function(res) {
+            console.log('获取信息失败')
             wx.showToast({
                 title: '获取用户信息失败'
             })

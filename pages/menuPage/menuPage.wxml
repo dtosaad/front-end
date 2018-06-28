@@ -1,5 +1,4 @@
 <view>
-
     <!--顶部导航栏-->
     <view class="swiper-tab">
         <view class='blank'></view>
