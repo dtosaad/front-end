@@ -273,16 +273,9 @@ Page({
                     dishes[temp_dishes.dish_id] = temp_dishes
                     console.log(temp_dishes)
                 }
-                let type_list = []
-                for (let dish of dishes) {
-                  if (type_list.indexOf(dish.type) !== -1) {
-                    type_list.push(dish.type);
-                  }
-                }
                 console.log(dishes)
                 that.setData({
-                    dishes_list: dishes,
-                    type_list: type_list
+                    dishes_list: dishes
                 });
                 that.getMyDishes()
             },
@@ -325,12 +318,15 @@ Page({
             url: config.service.recommendedUrl + '3',
             method: 'GET',
             success: function(server_res) {
+                console.log(server_res)
                 var pic = server_res.data
                 for(var i = 0; i < pic.length; i++) {
-                    pic[i] = config.service.imageUrl + pic[i]
+                  pic[i] = `${config.service.host}/${pic[i]}`
+                  console.log('******', pic[i])
+                  // pic[i] = config.service.host + pic[i]
                 }
                 that.setData({
-                    imgUrls: server_res.data
+                  imgUrls: server_res.data
                 })
                 console.log(pic)
             }
@@ -481,8 +477,8 @@ Page({
         login()
         this.getDishes()
         this.getRecommendedImage()
-        this.getTableInfo()
-        this.scanTable()
+        // this.getTableInfo()
+        // this.scanTable()
         setInterval(this.uploadOrder, 3000)
     },
 
