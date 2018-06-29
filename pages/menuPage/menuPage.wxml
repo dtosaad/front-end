@@ -25,12 +25,7 @@
                 <view class="main-content">
                     <!--菜单按钮-->
                     <view class="class-list" hidden="{{classListStyle === 'class-list-fixed'?true:false}}">
-                        <view class="btn {{currentMenu == '我吃过' ? 'btn_on' : ''}}" data-currentmenu="我吃过" bindtap="swiperMenu">我吃过</view>
-                        <view class="btn {{currentMenu == '铁板' ? 'btn_on' : ''}}" data-currentmenu="铁板" bindtap="swiperMenu">铁板</view>
-                        <view class="btn {{currentMenu == '披萨' ? 'btn_on' : ''}}" data-currentmenu="披萨" bindtap="swiperMenu">披萨</view>
-                        <view class="btn {{currentMenu == '焗饭' ? 'btn_on' : ''}}" data-currentmenu="焗饭" bindtap="swiperMenu">焗饭</view>
-                        <view class="btn {{currentMenu == '小吃' ? 'btn_on' : ''}}" data-currentmenu="小吃" bindtap="swiperMenu">小吃</view>
-                        <view class="btn {{currentMenu == '饮料' ? 'btn_on' : ''}}" data-currentmenu="饮料" bindtap="swiperMenu">饮料</view>
+                        <view wx:for="{{type_list}}" class="btn {{currentMenu == item ? 'btn_on' : ''}}" data-currentmenu="{{item}}" bindtap="swiperMenu">{{item}}</view>
                     </view>
 
                     <!--菜单列表-->
@@ -71,12 +66,7 @@
                 </view>
             <!--菜单按钮-->
             <view class="class-list-fixed" hidden="{{classListStyle === 'class-list'?true:false}}">
-                <view class="btn {{currentMenu == '我吃过' ? 'btn_on' : ''}}" data-currentmenu="我吃过" bindtap="swiperMenu">我吃过</view>
-                <view class="btn {{currentMenu == '铁板' ? 'btn_on' : ''}}" data-currentmenu="铁板" bindtap="swiperMenu">铁板</view>
-                <view class="btn {{currentMenu == '披萨' ? 'btn_on' : ''}}" data-currentmenu="披萨" bindtap="swiperMenu">披萨</view>
-                <view class="btn {{currentMenu == '焗饭' ? 'btn_on' : ''}}" data-currentmenu="焗饭" bindtap="swiperMenu">焗饭</view>
-                <view class="btn {{currentMenu == '小吃' ? 'btn_on' : ''}}" data-currentmenu="小吃" bindtap="swiperMenu">小吃</view>
-                <view class="btn {{currentMenu == '饮料' ? 'btn_on' : ''}}" data-currentmenu="饮料" bindtap="swiperMenu">饮料</view>
+                <view wx:for="{{type_list}}" class="btn {{currentMenu == item ? 'btn_on' : ''}}" data-currentmenu="{{item}}" bindtap="swiperMenu">{{item}}</view>
             </view>
           </scroll-view>
         </swiper-item>

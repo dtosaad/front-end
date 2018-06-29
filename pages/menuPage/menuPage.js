@@ -271,15 +271,15 @@ Page({
                         num: 0
                     }
                     dishes[temp_dishes.dish_id] = temp_dishes
-                    console.log(temp_dishes)
                 }
-                let type_list = []
+                let type_list = ["我吃过"]
                 for (let dish of dishes) {
-                  if (type_list.indexOf(dish.type) !== -1) {
-                    type_list.push(dish.type);
-                  }
+                    if (dish == undefined) continue
+                    if (type_list.indexOf(dish.type[0]) == -1) {
+                        type_list.push(dish.type[0]);
+                    }
                 }
-                console.log(dishes)
+                console.log('type_list', type_list)
                 that.setData({
                     dishes_list: dishes,
                     type_list: type_list
