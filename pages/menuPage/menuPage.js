@@ -5,6 +5,10 @@ var menuPageData = require('menuPageData')
 
 Page({
     data: {
+        hidden_modal: false,
+        reserved: false,
+        table_no: '',
+        hidden_modal_table: true,
         // 切换顶部导航栏
         currentTab: 0,
         currentMenu: '我吃过',
@@ -25,6 +29,42 @@ Page({
         // 协同点单相关
         isTogether: false,
         togetherMenu: []
+    },
+
+	cancel: function() {
+        this.setData({
+            hidden_modal: true
+        });
+    },
+
+    confirm: function() {
+        console.log('table_no:', this.data.table_no);
+        this.setData({
+            hidden_modal: true
+        });
+    },
+
+    cancel_table: function() {
+        this.setData({
+            hidden_modal_table: true
+        });
+    },
+
+    confirm_table: function() {
+        this.setData({
+            hidden_modal_table: true
+        });
+    },
+
+    free_table: function(e) {
+        let table_id = e.target.dataset.index
+        console.log(index)
+    },
+
+    input_table_no: function(e) {
+        this.setData({
+            table_no: e.detail.value
+        });
     },
 
     // 切换顶部导航栏
@@ -307,7 +347,6 @@ Page({
                         for (var i = 0; i < myDishes.length; i++) {
                             dishes[myDishes[i].dish_id].type[1] = '我吃过'
                         }
-
                         // 恢复我吃过的菜
                         that.recoverOrder()
                     }
@@ -347,6 +386,7 @@ Page({
     recoverOrder: function() {
         var order = wx.getStorageSync('order')
         var dishes_list = this.data.dishes_list
+        if (dishes_list.length === 0) return
         for(var i = 0; i < order.length; i++) {
             console.log('dishes_list[order[i].dish_id]', dishes_list[order[i].dish_id])
             dishes_list[order[i].dish_id].num = order[i].amount
@@ -372,20 +412,28 @@ Page({
                 var allTables = server_res.data
                 for (var i = 0; i < allTables.length; i++) {
                     var table = {
+                        // index: i,
                         table_id: allTables[i].table_id,
                         number: allTables[i].number,
-                        status: allTables[i].user_id == null ? '订' : '预',
+                        status_: allTables[i].user_id == null ? '订' : '预',
                         color: allTables[i].number[0] == 'A' ? 1 : allTables[i].number[0] == 'B' ? 2 : 3,
-                        user_avatar: allTables[i].user_avatar
-                    }
-                    table_list.push(table)
+                        user_avatar: allTables[i].user_avatar,
+                        status: allTables[i].status,
+                        user_id: allTables[i].user_id,
+                    };
+                    table_list.push(table);
                 }
-                //console.log(table_list)
                 that.setData({
                     table_list: table_list
                 })
             }
         })
+    },
+
+    bookOrTakeTable: function() {
+        this.setData({
+            hidden_modal_table: false,
+        });
     },
 
     // 预定座位(未完成)
@@ -488,7 +536,7 @@ Page({
         this.getDishes()
         this.getRecommendedImage()
         this.getTableInfo()
-        this.scanTable()
+        // this.scanTable()
         // setInterval(this.uploadOrder, 3000)
     },
 
