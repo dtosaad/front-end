@@ -263,7 +263,7 @@ Page({
                     var temp_dishes = {
                         dish_id: data_from_server[i].dish_id,
                         type: [data_from_server[i].type, '没吃过'],
-                        image: data_from_server[i].image,
+                        image: `${config.service.host}/images/dishes_tiny/${data_from_server[i].dish_id}.jpeg`,
                         dish_name: data_from_server[i].dish_name,
                         ordered_count: data_from_server[i].ordered_count,
                         price: data_from_server[i].price,
@@ -335,8 +335,12 @@ Page({
                   imgUrls: server_res.data
                 })
                 console.log(pic)
+            },
+            fail: (err) => {
+                console.log('******', err)
             }
         })
+
     },
 
     // 恢复点单数据
@@ -483,9 +487,9 @@ Page({
         login()
         this.getDishes()
         this.getRecommendedImage()
-        // this.getTableInfo()
-        // this.scanTable()
-        setInterval(this.uploadOrder, 3000)
+        this.getTableInfo()
+        this.scanTable()
+        // setInterval(this.uploadOrder, 3000)
     },
 
     onReady: function () {
