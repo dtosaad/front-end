@@ -1,0 +1,21 @@
+<!--payPage.wxml-->
+<view>
+    <!-- 订单列表 -->
+    <view class="my-container">
+        <view wx:for="{{ order }}" wx:for-index="dish_id" wx:key="dish_id" class="order-items">
+            <view class="order-left">{{ item.dish_name }}</view>
+            <view class="star-area">
+                <view wx:for = "{{item.star}}" wx:key="index">
+                    <image class='star-style' src='./image/full.png' mode='aspectFit' bindtap="deleteStar" data-index="{{index}}" data-id="{{dish_id}}"></image>
+                </view>
+                <view wx:for = '{{totalStar-item.star}}' wx:key="index">
+                    <image class='star-style' src='./image/blank.png' mode='aspectFit' bindtap="addStar" data-index="{{index}}" data-id="{{dish_id}}"></image>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <view class="confirm-button" bindtap="navigateTo">
+        <text>确定</text>
+    </view>
+</view>

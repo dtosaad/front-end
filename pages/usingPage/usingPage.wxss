@@ -1,0 +1,130 @@
+page {
+    background: #F6F6F6;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+ /*订单容器*/
+.my-container {
+    height: auto;
+    width: 100%;
+    background: #FFFFFF;
+    padding-top: 5rpx;
+    padding-bottom: 5rpx;
+    margin-bottom: 10rpx;
+}
+
+.order-items {
+    font-size: 32rpx;
+    margin: 20rpx;
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+}
+
+/*订单item*/
+.order-left {
+    width: 50%;
+    text-align: left;
+}
+
+.order-center {
+    width: 20%;
+    text-align: center;
+}
+
+.order-right {
+    width: 30%;
+}
+
+.order-finish {
+    margin-left: auto;
+    width: 34rpx;
+    height: 34rpx;
+    border-radius: 50%;
+    background: rgb(245, 166, 35);
+    line-height: 36rpx;
+    vertical-align: middle;
+    color: #FFFFFF;
+    font-size: 28rpx;
+    display: flex;
+    justify-content: center;
+    font-weight: 500;
+}
+
+.order-unfinish {
+    margin-left: auto;
+    width: 60rpx;
+    height: 40rpx;
+    border-radius: 10rpx;
+    background: rgb(245, 166, 35);
+    border: 1rpx solid #FFFFFF;
+    line-height: 40rpx;
+    vertical-align: middle;
+    color: #FFFFFF;
+    font-size: 28rpx;
+    display: flex;
+    justify-content: center;
+    border: 2rpx solid #FFFFFF;
+    font-weight: 500;
+    box-shadow: 2rpx 2rpx 2rpx 2rpx #888888;
+}
+
+/*用餐服务*/
+.service {
+    font-size: 32rpx;
+    margin: 20rpx;
+}
+
+.service-title {
+    color: #888888;
+    font-size: 28rpx;
+}
+
+.service-button-area {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
+
+.service-button {
+    background-color: rgb(86, 86, 86);
+    margin-top: 30rpx;
+    width: 200rpx;
+    height: 64rpx;
+    border-radius: 10rpx;
+    border: 1rpx solid #FFFFFF;
+    display: flex;
+    justify-content: center;
+    box-shadow: 2rpx 2rpx 2rpx 2rpx #888888;
+}
+
+.service-button text {
+    margin-top: auto;
+    margin-bottom: auto;
+    color: #FFFFFF;
+}
+
+/*底部*/
+.finish-bar {
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+    background: black;
+    width: 100%;
+    height: 75rpx;
+    position: fixed;
+    bottom: 0px;
+    font-size: 34rpx;
+    line-height: 75rpx;
+    vertical-align: middle;
+    font-weight: 500;
+}
+
+.finish-button {
+    background: rgb(245, 166, 35);
+    color: white;
+    padding-right: 30rpx;
+    padding-left: 30rpx;
+    margin-left: auto;
+}

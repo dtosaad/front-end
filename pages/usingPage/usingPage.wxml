@@ -1,0 +1,36 @@
+<!--usingPage.wxml-->
+<view>
+    <!-- 订单列表 -->
+    <view class="my-container">
+        <view wx:for="{{ order }}" wx:key="{{index}}" class="order-items">
+            <view class="order-left">{{ item.dish_name }}</view>
+            <view class="order-center">×{{ item.amount }}</view>
+            <view class="order-right" wx:if="{{item.isServe ? true : false}}">
+                <view class="order-finish">√</view>
+            </view>
+            <view class="order-right" wx:if="{{item.isServe ? false : true}}">
+                <view class="order-unfinish" bindtap="urgeToServe" data-index="{{index}}">催</view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 用餐服务 -->
+    <view class="my-container">
+        <view class="service">
+            <text class="service-title">需要更多服务？</text>
+            <view class="service-button-area">
+                <view class="service-button" bindtap="callService">
+                    <text>服务员</text>
+                </view>
+                <view class="service-button" bindtap="addMeal">
+                    <text>加餐</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!--用餐完毕-->
+    <view class='finish-bar'>
+        <navigator url="../payPage/payPage" class='finish-button'>用餐完毕</navigator>
+    </view>
+</view>

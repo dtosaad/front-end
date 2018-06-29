@@ -1,0 +1,163 @@
+<view>
+    <!--顶部导航栏-->
+    <view class="swiper-tab">
+        <view class='blank'></view>
+        <view class="tab-item {{currentTab==0 ? 'on' : ''}}" data-current="0" bindtap="swichNav">菜单</view>
+        <view class='blank'></view>
+        <view class='blank'></view>
+        <view class="tab-item {{currentTab==1 ? 'on' : ''}}" data-current="1" bindtap="swichNav">桌位</view>
+        <view class='blank'></view>
+    </view>
+    <!--内容主体-->
+    <swiper class="swiper" current="{{currentTab}}" duration="200" bindchange="swiperChange">
+        <!--菜单-->
+        <swiper-item>
+            <scroll-view scroll-y="true" class="main-scroll-view" bindscroll="scrollPage">
+                <!--推荐菜单滚动-->
+                <swiper class="marquee" indicator-dots="true" autoplay="true" interval='5000' duration='2000'>
+                    <block wx:for="{{imgUrls}}">
+                        <swiper-item>
+                            <image src="{{item}}" mode='aspectFill'/>
+                        </swiper-item>
+                    </block>
+                </swiper>
+
+                <view class="main-content">
+                    <!--菜单按钮-->
+                    <view class="class-list" hidden="{{classListStyle === 'class-list-fixed'?true:false}}">
+                        <view class="btn {{currentMenu == '我吃过' ? 'btn_on' : ''}}" data-currentmenu="我吃过" bindtap="swiperMenu">我吃过</view>
+                        <view class="btn {{currentMenu == '铁板' ? 'btn_on' : ''}}" data-currentmenu="铁板" bindtap="swiperMenu">铁板</view>
+                        <view class="btn {{currentMenu == '披萨' ? 'btn_on' : ''}}" data-currentmenu="披萨" bindtap="swiperMenu">披萨</view>
+                        <view class="btn {{currentMenu == '焗饭' ? 'btn_on' : ''}}" data-currentmenu="焗饭" bindtap="swiperMenu">焗饭</view>
+                        <view class="btn {{currentMenu == '小吃' ? 'btn_on' : ''}}" data-currentmenu="小吃" bindtap="swiperMenu">小吃</view>
+                        <view class="btn {{currentMenu == '饮料' ? 'btn_on' : ''}}" data-currentmenu="饮料" bindtap="swiperMenu">饮料</view>
+                    </view>
+
+                    <!--菜单列表-->
+                    <view class='order-list'>
+                          <view wx:for = "{{dishes_list}}" wx:if = "{{item.type[0] == currentMenu || item.type[1] == currentMenu}}" wx:for-index="index" class='list-item'>
+                            <image class="food-img" src="{{item.image}}" mode='aspectFill'></image>
+                            <view  class="list-item-info">
+                                <text class='food-name'>{{item.dish_name}}</text>
+                                <view class="star-area">
+                                    <view wx:for = "{{item.star_count}}" wx:key="index">
+                                        <image class='star-style' src='./image/good.png' mode='aspectFit'></image>
+                                    </view>
+                                    <view wx:for = '{{totalStar-item.star_count}}' wx:key="index">
+                                        <image class='star-style' src='./image/bad.png' mode='aspectFit'></image>
+                                    </view>
+                                </view>
+                                <view class='order-num'>
+                                    <text class='food-num'>数量</text>
+                                    <view class="stepper">
+                                        <!-- 减号 -->
+                                        <view class="stepper-button, disable">
+                                            <text data-id = "{{index}}" bindtap="bindMinus">-</text>  
+                                        </view>
+                                        <!-- 数值 -->
+                                        <view class="stepper-num">
+                                            <text>{{item.num}}</text>
+                                        </view>
+                                        <!-- 加号 -->
+                                        <view class="stepper-button, normal">
+                                            <text data-id = "{{index}}" bindtap="bindPlus">+</text>
+                                        </view>
+                                    </view>
+                                </view>
+                            </view>
+                            <text class='food-price'>￥{{item.price}}</text>
+                          </view>
+                    </view>
+                </view>
+            <!--菜单按钮-->
+            <view class="class-list-fixed" hidden="{{classListStyle === 'class-list'?true:false}}">
+                <view class="btn {{currentMenu == '我吃过' ? 'btn_on' : ''}}" data-currentmenu="我吃过" bindtap="swiperMenu">我吃过</view>
+                <view class="btn {{currentMenu == '铁板' ? 'btn_on' : ''}}" data-currentmenu="铁板" bindtap="swiperMenu">铁板</view>
+                <view class="btn {{currentMenu == '披萨' ? 'btn_on' : ''}}" data-currentmenu="披萨" bindtap="swiperMenu">披萨</view>
+                <view class="btn {{currentMenu == '焗饭' ? 'btn_on' : ''}}" data-currentmenu="焗饭" bindtap="swiperMenu">焗饭</view>
+                <view class="btn {{currentMenu == '小吃' ? 'btn_on' : ''}}" data-currentmenu="小吃" bindtap="swiperMenu">小吃</view>
+                <view class="btn {{currentMenu == '饮料' ? 'btn_on' : ''}}" data-currentmenu="饮料" bindtap="swiperMenu">饮料</view>
+            </view>
+          </scroll-view>
+        </swiper-item>
+        <!--桌位-->
+        <swiper-item>
+            <view class='top_view'>
+                <view class='door'>
+                    <text class='door_name'>大门</text>
+                    <image class='door_image' src='./image/door.png' mode='scaleToFill'></image>
+                </view>
+                <view class='table_text'>
+                    <text class='s_table'>A: 1-2人桌</text>
+                    <text class='m_table'>B: 3-5人桌</text>
+                    <text class='b_table'>C: 6-10人桌</text>
+                </view>
+            </view>
+            <view class='table_list'>
+                <view  wx:for = "{{table_list}}" wx:for-index = "table_index" class="table table_left {{(table_index - 1)%4 == 0 ? 'table_right' : ''}}">
+                    <view wx:if = "{{item.status == '订'}}" class='middle_message' bindtap="bookTable" data-id = "{{item.table_id}}">{{item.status}}</view>
+                    <image class="user_avatar" wx:if = "{{item.status == '预'}}" src="{{item.user_avatar}}" mode='aspectFit'></image>
+                    <view class="table_id {{item.color == 1 ? 's_table_color':''}} {{item.color == 2 ? 'm_table_color':''}} {{item.color == 3 ? 'b_table_color':''}}" >{{item.number}}</view>
+                </view>
+            </view>
+        </swiper-item>
+    </swiper>
+
+    <view wx:if = "{{show_order}}" class='ordered-menu' style='height:{{order_view_height}}rpx'>
+        <view wx:if = '{{isTogether}}'>
+            <text class='ordered-title'>大家点了</text>
+            <view class='ordered-line'></view>
+            <view wx:for = "{{ordermenu}}" wx:for-item = "orderitem" class='ordered-item'>
+                <text class='ordered-name'>{{orderitem.dish_name}}</text>
+                <text class='ordered-price'>￥{{orderitem.price}}</text>
+                <view class="stepper ordered-stepper">
+                    <!-- 减号 -->
+                    <view class="stepper-button, disable">
+                        <text data-id = "{{orderitem.dish_id}}" bindtap = "orderMinus">-</text>  
+                    </view>
+                    <!-- 数值 -->
+                    <view class="stepper-num">
+                        <text>{{orderitem.amount}}</text>
+                    </view>
+                    <!-- 加号 -->
+                    <view class="stepper-button, normal">
+                        <text data-id = "{{orderitem.dish_id}}" bindtap = "orderPlus">+</text>
+                    </view>
+                </view>
+            </view>
+        </view>
+        
+
+      <text class='ordered-title'>我点了</text>
+      <view class='ordered-line'></view>
+      <view wx:for = "{{ordermenu}}" wx:for-item = "orderitem" class='ordered-item'>
+        <text class='ordered-name'>{{orderitem.dish_name}}</text>
+        <text class='ordered-price'>￥{{orderitem.price}}</text>
+        <view class="stepper ordered-stepper">
+          <!-- 减号 -->
+          <view class="stepper-button, disable">
+              <text data-id = "{{orderitem.dish_id}}" bindtap = "orderMinus">-</text>  
+          </view>
+          <!-- 数值 -->
+          <view class="stepper-num">
+              <text>{{orderitem.amount}}</text>
+          </view>
+          <!-- 加号 -->
+          <view class="stepper-button, normal">
+              <text data-id = "{{orderitem.dish_id}}" bindtap = "orderPlus">+</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!--付款菜单-->
+    <view class='pay-menu'>
+        <text class='pay-menu-money'>￥{{sum_money}}</text>
+        <text class='pay-menu-button' bindtap="navigateTo">点餐完毕</text>
+    </view>
+
+    <view class='pay-menu-title'>
+        <image class='pay-menu-image' bindtap='showOrderMenu' src='./image/shopping.png' mode='aspectFit'></image>
+    </view>
+
+</view>

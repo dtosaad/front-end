@@ -1,5 +1,8 @@
 {
 	"description": "项目配置文件。",
+	"packOptions": {
+		"ignore": []
+	},
 	"setting": {
 		"urlCheck": true,
 		"es6": true,
@@ -8,9 +11,9 @@
 		"newFeature": true
 	},
 	"compileType": "miniprogram",
-	"libVersion": "1.9.94",
-	"appid": "wx6688a796f5a6d4b4",
-	"projectname": "SYSU%20canteen%200",
+	"libVersion": "1.9.98",
+	"appid": "wxde99d98b14941b95",
+	"projectname": "%E4%B8%AD%E5%A4%A7%E9%9B%B6%E9%A5%AD",
 	"isGameTourist": false,
 	"condition": {
 		"search": {

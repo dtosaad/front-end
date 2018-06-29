@@ -1,12 +1,21 @@
 {
   "pages":[
+    "pages/authorizationPage/authorizationPage",
+    "pages/menuPage/menuPage",
     "pages/index/index",
-    "pages/logs/logs"
+    "pages/addCgi/addCgi",
+    "pages/confirmOrder/confirmOrder",
+    "pages/notePage/notePage",
+    "pages/addressPage/addressPage",
+    "pages/usingPage/usingPage",
+    "pages/payPage/payPage",
+    "pages/reviewPage/reviewPage"
   ],
   "window":{
-    "backgroundTextStyle":"light",
-    "navigationBarBackgroundColor": "#fff",
-    "navigationBarTitleText": "WeChat",
+    "backgroundColor":"#F6F6F6",
+    "backgroundTextStyle":"dark",
+    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarTitleText": "Wafer Quick Start",
     "navigationBarTextStyle":"black"
   }
 }

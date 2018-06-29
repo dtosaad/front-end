@@ -1,0 +1,134 @@
+page {
+    background: #F6F6F6;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+ /*订单容器*/
+.my-container {
+    height: auto;
+    width: 100%;
+    background: #FFFFFF;
+    padding-top: 5rpx;
+    padding-bottom: 5rpx;
+    margin-bottom: 10rpx;
+}
+
+.order-items {
+    font-size: 32rpx;
+    margin: 20rpx;
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+}
+
+/*订单item*/
+.order-left {
+    width: 50%;
+    text-align: left;
+}
+
+.order-center {
+    width: 20%;
+    text-align: center;
+}
+
+.order-right {
+    width: 30%;
+    text-align: right;
+}
+
+/*用餐人数*/
+.order-member {
+    font-size: 32rpx;
+    display: flex;
+    flex-wrap: row wrap;
+    margin: 20rpx;
+    justify-content: space-between;
+}
+
+.order-member-tips {
+    height: 100%;
+    line-height: 42rpx;
+    font-size: 24rpx;
+    color: #888888;
+    vertical-align: middle;
+}
+
+/*加减控件*/
+.stepper {  
+    width: 132rpx;
+    height: 32rpx;
+    margin-left: auto;
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+    border: 1rpx solid rgb(245, 166, 35);
+    border-radius: 50rpx;
+}  
+  
+/*加号和减号*/  
+.stepper text {
+    width: 34rpx;
+    height: 32rpx;
+    line-height: 32rpx;
+    text-align: center;
+    float: left;
+    font-size: 32rpx;
+    vertical-align: middle;
+}
+
+/*数值*/  
+.stepper-num {  
+    width: auto;
+}  
+
+.stepper-button {
+    border: 0 solid rgb(245, 166, 35);
+    border-radius: 50rpx;
+}
+
+/*普通样式*/  
+.stepper .normal{  
+    color: black;
+    background: rgb(245, 166, 35);
+}
+
+/*禁用样式*/  
+.stepper .disabled{  
+    color: #888888;  
+}
+
+/*底部*/
+.pay-menu {
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+    background: black;
+    width: 100%;
+    height: 75rpx;
+    position: fixed;
+    bottom: 0px;
+    font-size: 34rpx;
+    line-height: 75rpx;
+    vertical-align: middle;
+    font-weight: 500;
+}
+
+.pay-menu-title {
+    color: #FFFFFF;
+    margin-left: 20rpx;
+}
+
+.pay-menu-money {
+    color: rgb(245, 166, 35);
+    margin-left: 20rpx;
+    margin-right: auto;
+}
+
+.pay-menu-button {
+    background: rgb(245, 166, 35);
+    color: white;
+    padding-right: 30rpx;
+    padding-left: 30rpx;
+}

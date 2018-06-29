@@ -1,0 +1,96 @@
+<!--index.wxml-->
+<view>
+    <!-- 订单列表 -->
+    <view class="my-container">
+        <view wx:for="{{ order }}" wx:key="{{ order }}" class="order-items">
+            <view class="order-left">{{ item.dish_name }}</view>
+            <view class="order-center">×{{ item.amount }}</view>
+            <view class="order-right">￥{{ item.price * item.amount }}</view>
+        </view>
+    </view>
+    
+
+    <!-- 用餐人数 -->
+    <view class="my-container">
+        <view class="order-member">
+            <view>用餐人数</view>
+            <view wx:if="{{extendStatus == 1 ? true : false}}" class="order-member-tips">（茶位费：1元/人）</view>
+            <view wx:if="{{extendStatus == 1 ? false : true}}" class="order-member-tips">（打包费：1元/人）</view>
+            <view class="stepper">  
+                <!-- 减号 -->
+                <view class="stepper-button, {{minusStatus}}">
+                    <text bindtap="bindMinus">-</text>  
+                </view>
+                <!-- 数值 -->
+                <view class="stepper-num">
+                    <text>{{ num }}</text>
+                </view>
+                <!-- 加号 -->
+                <view class="stepper-button, normal">
+                    <text bindtap="bindPlus">+</text>
+                </view>
+            </view>
+        </view>
+    </view>
+
+    <!-- 用餐方式 -->
+    <view class="my-container">
+        <view class="eatstyle">
+            <view>用餐方式</view>
+            <radio-group class="my-radio-group" bindchange="radioChange">
+                <label class="radio-group-label" wx:for="{{items}}" wx:key="{{items}}">
+                    <text>{{item.value}}</text>
+                    <radio value="{{item.name}}" checked="{{item.checked}}" color="rgb(245, 166, 35)"/>
+                </label>
+            </radio-group>
+        </view>
+    </view>
+
+    <!-- 送餐信息 -->
+    <view class="my-container" wx:if="{{extendStatus == 3 ? true : false}}">
+        <view class="address">
+            <label class="title">送餐信息</label>
+            <view class="address-detail">
+                <navigator url="../addressPage/addressPage?addressStatus={{addressStatus}}&address={{address}}&addressDetail={{addressDetail}}&name={{name}}&phone={{phone}}" open-type="navigate">
+                    <text class="{{addressStatus}}">{{ address }} {{ addressDetail }}</text>
+                    <view class="contact-info" hidden="{{addressStatus=='address-unchanged'?true:false}}">
+                        <text>{{ name }}</text>
+                        <text class="phone">{{ phone }}</text>
+                    </view>
+                </navigator>
+                <label class="arrow">></label>
+            </view>
+        </view>
+    </view>
+
+    <!-- 备注 -->
+    <view class="my-container">
+        <view class="note">
+            <label class="title">备注</label>
+            <navigator url="../notePage/notePage?noteStatus={{noteStatus}}&note={{note}}" open-type="navigate">
+                <text class="{{noteStatus}}">{{ note }}</text>
+            </navigator>
+            <label class="arrow">></label>
+        </view>
+    </view>
+
+    <!-- 抵用券 -->
+    <!--
+    <view class="my-container" wx:if="{{extendStatus == 1 ? false : true}}">
+        <view class="coupon">
+            <label class="title">抵用券</label>
+            <navigator url="../confirmOrder/confirmOrder" open-type="navigate">
+                <text class="{{couponStatus}}">{{ coupon }}</text>
+            </navigator>
+            <label class="arrow">></label>
+        </view>
+    </view>
+    -->
+    
+    <!--付款菜单-->
+    <view class='pay-menu'>
+        <text class='pay-menu-title'>合计</text>
+        <text class='pay-menu-money'>￥{{ total }}</text>
+        <text class='pay-menu-button' bindtap="navigateTo">{{ buttonWord }}</text>
+    </view>
+</view>
