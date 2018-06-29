@@ -1,6 +1,10 @@
 var config = require('../../../config')
 
 var postDataToServer = function postDataToServer(userInfo, code) {
+    console.log('code:', code)
+    console.log('wechat_name:', userInfo.nickName)
+    console.log('wechat_avatar:', userInfo.avatarUrl)
+    console.log('location:', userInfo.country + ' ' + userInfo.city)
     wx.request({
         url: config.service.loginUrl,
         method: "POST",

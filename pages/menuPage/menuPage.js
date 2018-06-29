@@ -17,6 +17,7 @@ Page({
         table_list: menuPageData.table_list,
         imgUrls: [],
         ordermenu: [],
+        type_list: [],
         dishes_list: [],
         totalStar: 5,
         minusStatus: 'disabled',
@@ -272,10 +273,17 @@ Page({
                     dishes[temp_dishes.dish_id] = temp_dishes
                     console.log(temp_dishes)
                 }
+                let type_list = []
+                for (let dish of dishes) {
+                  if (type_list.indexOf(dish.type) !== -1) {
+                    type_list.push(dish.type);
+                  }
+                }
                 console.log(dishes)
                 that.setData({
-                    dishes_list: dishes
-                })
+                    dishes_list: dishes,
+                    type_list: type_list
+                });
                 that.getMyDishes()
             },
             fail: function (res) {
