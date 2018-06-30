@@ -61,11 +61,11 @@ Page({
             if (chosen_table.status === 2) {
                 this.sitdown(table_index)
             }
-            wx.showToast({
-                title: 'OK，请点餐',
-                icon: 'success',
-                duration: 3000,
-            })
+            // wx.showToast({
+            //     title: 'OK，请点餐',
+            //     icon: 'success',
+            //     duration: 3000,
+            // })
             return true
         }
         for (let i = 0; i < table_list.length; ++i) {
@@ -119,8 +119,10 @@ Page({
                 table_list[table_index].user_id = null
                 that.setData({
                     table_list,
+                    isTogether: false,
                 })
                 wx.removeStorageSync('table_id')
+                wx.removeStorageSync('is_together')
             },
             fail: function(res) {
                 console.log("离开桌子失败", res)
@@ -136,6 +138,7 @@ Page({
         let that = this
         // 坐下
         console.log('userid', user_id)
+        console.log(33333333333333333, table)
         wx.setStorageSync("table_id", table.table_id)
         wx.request({
             url: `${config.service.tablesInfoUrl}/${table.table_id}?status=${status}&user_id=${user_id}`,
@@ -232,7 +235,13 @@ Page({
     },
 
     confirm_take: function() {
-        this.sitdown_or_reserve(this.data.table_index, this.data.sitdown ? 0 : 1)
+        if (this.data.sitdown) {
+            console.log(111111111111111)
+            this.sitdown(this.data.table_index)
+        } else {
+            console.log(222222222222222)
+            this.reserve(this.data.table_index)
+        }
         this.setData({
             hidden_modal_table: true
         });
@@ -630,9 +639,8 @@ Page({
                     }
                 }
                 if (get_tables_first && !has_table) {
-                    wx.removeStorageSync('table_id')
                     that.setData({
-                        hidden_modal: false
+                        hidden_modal: false,
                     })
                 }
                 that.setData({
@@ -654,18 +662,11 @@ Page({
                 console.log(res.data)
                 let { orderers_count } = res.data
                 if (orderers_count > 1) {
-                    wx.getStorage({
-                        key: 'is_together',
-                        success: function(res) {
-                            if (!res.data) {
-                                that.orderTogether()
-                            }
-                        },
-                        fail: function(res) {
-                            that.orderTogether()
-                        }
-                    })
-                    
+                    let is_together = wx.getStorageSync('is_together')
+                    console.log('&&&&&&&&&', orderers_count, is_together)
+                    if (!is_together) {
+                        that.orderTogether()
+                    }
                 }
             }
         })
@@ -714,7 +715,7 @@ Page({
         var table_id = wx.getStorageSync('table_id')
         var user_id = wx.getStorageSync('userid')
         var url = config.service.tablesInfoUrl + '/' + table_id + '/dishes?userid=' + user_id
-
+        console.log(4444444444444, table_id, url)
         var ordermenu = this.data.ordermenu
         var dishes_list = this.data.dishes_list
         var last_dishes_array = this.data.last_dishes_array
@@ -761,7 +762,7 @@ Page({
     onLoad: function (options) {
         try {
             var isLogin = wx.getStorageSync('isLogin')
-            let table_id = wx.getStorage('table_id')
+            let table_id = wx.getStorageSync('table_id')
             console.log(isLogin)
             if (!isLogin) {
                 login().then(() => {
