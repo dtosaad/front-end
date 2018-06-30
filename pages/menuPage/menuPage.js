@@ -452,7 +452,8 @@ Page({
         }
         else {
             wx.showToast({
-                title: '请先点餐'
+                title: '请先点餐',
+                icon: 'none'
             })
         }
     },

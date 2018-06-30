@@ -62,7 +62,8 @@ Page({
             addressDetail == "" || addressStatus == "address-unchanged"||
             self.data.name == "" || self.data.phone == "") {
             wx.showToast({
-                title: '请补全信息'
+                title: '请补全信息',
+                icon: 'none'
             })
         } else {
             prevPage.setData({

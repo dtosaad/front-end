@@ -117,7 +117,8 @@ Page({
             var takeout_info = (this.data.extendStatus == 3) ? this.data.takeout_info : null
             if ((this.data.extendStatus == 3) && takeout_info == undefined) {
                 wx.showToast({
-                    title: '请补全信息！'
+                    title: '请补全信息！',
+                    icon: 'none'
                 })
             }
             else {
@@ -127,6 +128,7 @@ Page({
                 // 清空本地数据
                 try {
                     wx.removeStorageSync('order')
+                    wx.removeStorageSync('userNumber')
                 } catch (e) {
                     console.log("Clear storage failed!")
                 }
