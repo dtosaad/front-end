@@ -672,7 +672,7 @@ Page({
                 })
                 setInterval(() => {
                     let need_upload = wx.getStorageSync('need_upload')
-                    if (!need_upload) return
+                    if (!need_upload || that.data.currentTab === 1) return
                     that.uploadOrder()
                 }, 3000)
             },
@@ -762,8 +762,5 @@ Page({
         } catch(e) {
             console.log('Get isLogin fail!')
         }
-
-        // this.scanTable()
-        // setInterval(this.uploadOrder, 3000)
     }
 })
