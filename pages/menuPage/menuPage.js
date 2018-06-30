@@ -763,6 +763,7 @@ Page({
     onLoad: function (options) {
         try {
             var isLogin = wx.getStorageSync('isLogin')
+            let table_id = wx.getStorage('table_id')
             console.log(isLogin)
             if (!isLogin) {
                 login().then(() => {
@@ -774,6 +775,9 @@ Page({
                         if (that.data.currentTab !== 1) return
                         that.getTableInfo()
                     }, 3000)
+                    if (table_id) {
+                        this.getSingleTableInfo(table_id)
+                    }
                 })
                 console.log('login success')
             } else {
@@ -785,6 +789,9 @@ Page({
                     if (that.data.currentTab !== 1) return
                     that.getTableInfo()
                 }, 3000)
+                if (table_id) {
+                    this.getSingleTableInfo(table_id)
+                }
             }
         } catch(e) {
             console.log('Get isLogin fail!')
