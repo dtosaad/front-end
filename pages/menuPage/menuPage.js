@@ -694,10 +694,13 @@ Page({
         var ordermenu = this.data.ordermenu
         var dishes_list = this.data.dishes_list
         var last_dishes_array = this.data.last_dishes_array
-        var delta = new Array(last_dishes_array.length) 
+        var delta = new Array(last_dishes_array.length)
+        console.log('dishes_list', dishes_list)
+        console.log('last_dishes_array.length', last_dishes_array.length)
         for (var i = 0; i < dishes_list.length; i++) {
-            delta[i] = last_dishes_array[i] - dishes_list[i].num
-            last_dishes_array[i] = dishes_list[i].num
+            if (dishes_list[i] == undefined) continue
+            delta[i - 1] = dishes_list[i].num - last_dishes_array[i - 1]
+            last_dishes_array[i - 1] = dishes_list[i].num
         }
 
         var togetherMenu = []
@@ -711,19 +714,19 @@ Page({
                 console.log('togetherMenu', res)
                 var togetherArr = res.data
                 var dishes_list = that.data.dishes_list
-                if (togetherArr.length != 0) {
-                    for (var i = 0; i < togetherArr.length; i++) {
+                for (var i = 0; i < togetherArr.length; i++) {
+                    if (togetherArr[i] > 0) {
                         var temp = {
-                            dish_id: togetherArr[i].dish_id,
-                            dish_name: togetherArr[i].name,
-                            price: dishes_list[togetherArr[i].dish_id].price,
-                            amount: togetherArr[i].ordered_count
+                            dish_id: i + 1,
+                            dish_name: dishes_list[i + 1].dish_name,
+                            price: dishes_list[i + 1].price,
+                            amount: togetherArr[i]
                         }
                         console.log('temp', temp)
                         togetherMenu.push(temp)
                     }
-                    console.log(togetherMenu)
                 }
+
                 that.setData({
                     togetherMenu: togetherMenu
                 })
