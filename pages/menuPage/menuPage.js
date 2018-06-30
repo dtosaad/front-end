@@ -33,6 +33,20 @@ Page({
         togetherMenu: []
     },
 
+    get_table_index(table_id) {
+        let tables = this.data.table_list
+        for (let i = 0; i < tables.length; ++i) {
+            if (tables[i].table_id === table_id) {
+                return i
+            }
+        }
+        return -1
+    },
+
+    choose_table(table_index) {
+        
+    },
+
     table_has_user(e) {
         let index = e.target.dataset.index
         let table = this.data.table_list[index]
@@ -130,30 +144,33 @@ Page({
         let user_id = wx.getStorageSync('userid')
         let index = 0
         let matched = false
+        let table_id = wx.getStorageSync('table_id')
+        let table_index = this.get_table_index(table_id)
+        let table = table_list[table_index]
         for (let table of table_list) {
             if (table.number === number) {
                 matched = true
-                if (table.status === 0) {
-                    this.sitdown(index)
-                } else if (table.user_id === user_id) {
-                    if (table.status === 2) {  // 如果是预订则坐下
-                        this.sitdown()
-                        wx.showToast({
-                            title: 'OK，开始点餐吧',
-                            icon: 'success',
-                            duration: 3000,
-                        })
-                    } else {
-                        wx.showToast({
-                            title: '您已经在这张桌子上啦，直接点餐吧',
-                            icon: 'success',
-                            duration: 3000,
-                        })
-                    }
-                } else {
+                // 如果是其它桌子的主人
+                if (table_id && index !== table_index && table.user_id === user_id) {
                     wx.showToast({
-                        title: '抱歉，这张桌子有人了',
+                        title: '抱歉，你已经在另外一张桌子了，不能重复选择桌子',
                         icon: 'none',
+                        duration: 3000,
+                    })
+                }
+                else if () {
+
+                }
+                // 没定过桌子且要坐的桌子是空桌
+                else if (!table_id && table.status === 0) {
+                    this.sitdown(index)
+                }
+                // 如果选择自己的预订桌子
+                else if (table.user_id === user_id && table.status === 2) {
+                    this.sitdown()
+                    wx.showToast({
+                        title: 'OK，开始点餐吧',
+                        icon: 'success',
                         duration: 3000,
                     })
                 }
