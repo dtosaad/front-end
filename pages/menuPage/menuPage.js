@@ -30,7 +30,8 @@ Page({
         
         // 协同点单相关
         isTogether: false,
-        togetherMenu: []
+        togetherMenu: [],
+        delta_dishes_array: []
     },
 
     table_has_user(e) {
@@ -475,6 +476,8 @@ Page({
             success: function (data) {
                 var data_from_server = data.data
                 var dishes = new Array(data_from_server.length)
+                var delta_dishes_array = new Array(data_from_server.length)
+
                 console.log('all dishes', dishes)
                 for (var i = 0; i < data_from_server.length; i++) {
                     var temp_dishes = {
@@ -500,7 +503,8 @@ Page({
                 that.setData({
                     type_list: type_list,
                     dishes_list: dishes,
-                    currentMenu: type_list[1]
+                    currentMenu: type_list[1],
+                    delta_dishes_array: delta_dishes_array
                 });
                 console.log('this.getMyDishes');
                 
@@ -684,21 +688,38 @@ Page({
         var url = config.service.tablesInfoUrl + '/' + table_id + '/dishes?userid=' + user_id
 
         var ordermenu = this.data.ordermenu
-        var uploadData = []
+        var delta_dishes_array = this.data.delta_dishes_array
         for (var i = 0; i < ordermenu.length; i++) {
-            var temp = {
-                dish_id: ordermenu[i].dish_id,
-                name: ordermenu[i].dish_name,
-                ordered_count: ordermenu[i].amount
-            }
-            uploadData.push(temp)
+            delta_dishes_array[ordermenu[i].dish_id - 1] = ordermenu[i].amount - delta_dishes_array[ordermenu[i].dish_id - 1]
         }
+
+        var togetherMenu = []
+        var that = this
+        console.log(delta_dishes_array)
         wx.request({
             url: url,
             method: 'POST',
-            data: uploadData,
+            data: delta_dishes_array,
             success: function(res) {
-                console.log(res)
+                console.log('togetherMenu', res)
+                var togetherArr = res.data
+                var dishes_list = that.data.dishes_list
+                if (togetherArr.length != 0) {
+                    for (var i = 0; i < togetherArr.length; i++) {
+                        var temp = {
+                            dish_id: togetherArr[i].dish_id,
+                            dish_name: togetherArr[i].name,
+                            price: dishes_list[togetherArr[i].dish_id].price,
+                            amount: togetherArr[i].ordered_count
+                        }
+                        console.log('temp', temp)
+                        togetherMenu.push(temp)
+                    }
+                    console.log(togetherMenu)
+                }
+                that.setData({
+                    togetherMenu: togetherMenu
+                })
             }
         })
     },

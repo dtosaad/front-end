@@ -101,20 +101,7 @@
                 <view  class='ordered-item'>
                     <text class='ordered-name'>{{togetheritem.dish_name}}</text>
                     <text class='ordered-price'>￥{{togetheritem.price}}</text>
-                    <view class="stepper ordered-stepper">
-                        <!-- 减号 -->
-                        <view class="stepper-button, disable">
-                            <text data-id = "{{togetheritem.dish_id}}" bindtap = "orderMinus">-</text>  
-                        </view>
-                        <!-- 数值 -->
-                        <view class="stepper-num">
-                            <text>{{togetheritem.amount}}</text>
-                        </view>
-                        <!-- 加号 -->
-                        <view class="stepper-button, normal">
-                            <text data-id = "{{togetheritem.dish_id}}" bindtap = "orderPlus">+</text>
-                        </view>
-                    </view>
+                    <text>×{{togetheritem.amount}}</text>
                 </view>
                 <view class='ordered-item-line'></view>
             </view>
