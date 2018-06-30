@@ -585,7 +585,7 @@ Page({
                     }
                 }
                 if (!has_table) {
-                    wx.removeStorage('table_id')
+                    wx.removeStorageSync('table_id')
                     this.setData({
                         hidden_modal: false
                     })
