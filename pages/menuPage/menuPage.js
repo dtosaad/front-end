@@ -4,7 +4,7 @@ var menuPageData = require('menuPageData')
 
 Page({
     data: {
-        hidden_modal: false,
+        hidden_modal: true,
         sitdown: true,
         table_no: '',
         hidden_modal_table: true,
@@ -39,6 +39,7 @@ Page({
         let status = which === 0 ? 1 : 2
         let that = this
         // 坐下
+        wx.setStorageSync("table_id", table.table_id)
         wx.request({
             url: `${config.service.tablesInfoUrl}/${table.table_id}?status=${status}&user_id=${user_id}`,
             method: 'POST',
@@ -150,34 +151,8 @@ Page({
         this.setData({
             hidden_modal_table: true
         });
-        let status = this.data.sitdown ? 1 : 2;
         let index = this.data.table_index
-        let table_id = this.data.table_id
-        let that = this
-        let user_id = wx.getStorageSync('userid')
-        wx.request({
-            url: `${config.service.tablesInfoUrl}/${table_id}?status=${status}&user_id=${user_id}`,
-            method: "POST",
-            success: function(data) {
-                let table_list = that.data.table_list;
-                table_list[index].status_ = '预'
-                table_list[index].user_avatar = wx.getStorageSync('avatar')
-                table_list[index].status = status
-                table_list[index].user_id = user_id
-                that.setData({
-                    table_list,
-                })
-                let title = that.data.sitdown ? '成功' : '预订成功'
-                wx.showToast({
-                    title,
-                    icon: 'success',
-                    duration: 3000,
-                })
-            },
-            fail: function (res) {
-                console.log(res)
-            }
-        })
+        this.sitdown_or_reserve(index, this.data.sitdown ? 0 : 1)
     },
 
     free_table: function(e) {
@@ -205,6 +180,7 @@ Page({
                             that.setData({
                                 table_list,
                             })
+                            wx.removeStorageSync('table_id')
                         },
                         fail: function (res) {
                             console.log("离开桌子失败：", table)
@@ -572,12 +548,14 @@ Page({
     getTableInfo: function() {
         var table_list = []
         var that = this
+        let user_id = wx.getStorageSync('userid')
         wx.request({
             url: config.service.tablesInfoUrl,
             method: 'GET',
             success: function(server_res) {
                 console.log('tables', server_res)
                 var allTables = server_res.data
+                let has_table = false
                 for (var i = 0; i < allTables.length; i++) {
                     var table = {
                         index: i,
@@ -590,6 +568,16 @@ Page({
                         user_id: allTables[i].user_id,
                     };
                     table_list.push(table);
+                    if (table.user_id === user_id) {
+                        has_table = true
+                        wx.setStorageSync('table_id', table.table_id)
+                    }
+                }
+                if (!has_table) {
+                    wx.removeStorage('table_id')
+                    this.setData({
+                        hidden_modal: false
+                    })
                 }
                 that.setData({
                     table_list: table_list
@@ -601,6 +589,15 @@ Page({
     bookOrTakeTable: function(e) {
         let table_index = e.target.dataset.index
         let table_id = e.target.dataset.id
+        let table_id_old = wx.getStorageSync('table_id')
+        if (table_id_old) {
+            wx.showToast({
+                title: '抱歉，您已经选了位置，不能重复选择桌位',
+                icon: 'none',
+                duration: 3000,
+            })
+            return
+        }
         this.setData({
             hidden_modal_table: false,
             table_index,
@@ -658,19 +655,17 @@ Page({
     },
 
     onLoad: function (options) {
-
         try {
             var isLogin = wx.getStorageSync('isLogin')
             console.log(isLogin)
             if (!isLogin) {
-                login().then(()=>{
+                login().then(() => {
                     this.getDishes()
                     this.getRecommendedImage()
                     this.getTableInfo()
                 })
                 console.log('login success')
-            }
-            else {
+            } else {
                 this.getDishes()
                 this.getRecommendedImage()
                 this.getTableInfo()
@@ -678,8 +673,7 @@ Page({
         } catch(e) {
             console.log('Get isLogin fail!')
         }
-        
-        
+
         // this.scanTable()
         // setInterval(this.uploadOrder, 3000)
     }
