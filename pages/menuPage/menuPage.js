@@ -586,7 +586,7 @@ Page({
                 }
                 if (!has_table) {
                     wx.removeStorageSync('table_id')
-                    this.setData({
+                    that.setData({
                         hidden_modal: false
                     })
                 }
