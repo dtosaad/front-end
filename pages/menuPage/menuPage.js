@@ -32,6 +32,45 @@ Page({
         togetherMenu: []
     },
 
+    sitdown_or_reserve(table_index, which) {
+        let table_list = this.data.table_list
+        let table = table_list[table_index]
+        let user_id = wx.getStorageSync('userid')
+        let status = which === 0 ? 1 : 2
+        let that = this
+        // 坐下
+        wx.request({
+            url: `${config.service.tablesInfoUrl}/${table.table_id}?status=${status}&user_id=${user_id}`,
+            method: 'POST',
+            success: function() {
+                table_list[table_index].status_ = '预'
+                table_list[table_index].user_avatar = wx.getStorageSync('avatar')
+                table_list[table_index].status = status
+                table_list[table_index].user_id = user_id
+                console.log('new table_list', table_list)
+                that.setData({
+                    table_list,
+                })
+                wx.showToast({
+                    title: '成功',
+                    icon: 'success',
+                    duration: 3000,
+                })
+            },
+            fail: function (err) {
+                console.log(err)
+            }
+        })
+    },
+
+    sitdown(table_index) {
+        this.sitdown_or_reserve(table_index, 0)
+    },
+
+    reserve(table_index) {
+        this.sitdown_or_reserve(table_index, 1)
+    },
+
 	cancel: function() {
         this.setData({
             hidden_modal: true
@@ -40,9 +79,65 @@ Page({
 
     confirm: function() {
         console.log('table_no:', this.data.table_no);
-        this.setData({
-            hidden_modal: true
-        });
+        let number = this.data.table_no.toUpperCase()
+        let table_list = this.data.table_list
+        let status = this.data.sitdown ? 1 : 2
+        if (table_list.length === 0) {
+            wx.showToast({
+                title: '抱歉，获取桌位信息出错，请稍后再试',
+                icon: 'none',
+                duration: 3000,
+            })
+            this.setData({
+                hidden_modal: true
+            });
+            return
+        }
+        let user_id = wx.getStorageSync('userid')
+        let index = 0
+        let matched = false
+        for (let table of table_list) {
+            if (table.number === number) {
+                matched = true
+                if (table.status === 0) {
+                    this.sitdown(index)
+                } else if (table.user_id === user_id) {
+                    if (table.status === 2) {  // 如果是预订则坐下
+                        this.sitdown()
+                        wx.showToast({
+                            title: 'OK，开始点餐吧',
+                            icon: 'success',
+                            duration: 3000,
+                        })
+                    } else {
+                        wx.showToast({
+                            title: '您已经在这张桌子上啦，直接点餐吧',
+                            icon: 'success',
+                            duration: 3000,
+                        })
+                    }
+                } else {
+                    wx.showToast({
+                        title: '抱歉，这张桌子有人了',
+                        icon: 'none',
+                        duration: 3000,
+                    })
+                }
+                break
+            }
+            ++index
+        }
+        if (!matched) {
+            wx.showToast({
+                title: '桌号输入有误，再来',
+                icon: 'none',
+                duration: 3000,
+            })
+        } else {
+            this.setData({
+                hidden_modal: true
+            });
+        }
     },
 
     cancel_table: function() {
@@ -512,33 +607,6 @@ Page({
             table_index,
             table_id,
         });
-    },
-
-    // 扫描桌上二维码(测试)
-    scanTable: function() {
-        var that = this
-        var user_id = wx.getStorageSync('userid')
-        var table_id = 13
-        wx.setStorageSync('table_id', table_id)
-        wx.request({
-            url: config.service.tablesInfoUrl + '/' + table_id + '?user_id=' + user_id,
-            method: 'GET',
-            success: function(res) {
-                var table_info = res.data
-                console.log(table_info.user_id)
-                console.log(user_id)
-                if (table_info.user_id != user_id) {
-                    wx.showModal({
-                        title: '提示',
-                        content: '是否进入协同点餐？',
-                        success: function() {
-                            that.orderTogether(table_id, user_id)
-                        }
-                    })
-                }
-                console.log('scan table', res)
-            }
-        })
     },
 
     // 确认协同点餐
