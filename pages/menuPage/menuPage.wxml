@@ -86,7 +86,7 @@
             <view class='table_list'>
                 <view  wx:for = "{{table_list}}" wx:for-index = "table_index" class="table table_left {{(table_index - 1)%4 == 0 ? 'table_right' : ''}}">
                     <view wx:if = "{{item.status_ == '订'}}" class='middle_message' bindtap="bookOrTakeTable" data-id = "{{item.table_id}}" data-index="{{item.index}}">{{item.status_}}</view>
-                    <image class="user_avatar" wx:if = "{{item.status_ == '预'}}" src="{{item.user_avatar}}" data-index="{{item.index}}" mode='aspectFit' bindtap="table_has_user"></image>
+                    <image class="user_avatar" wx:if = "{{item.status_ == '预'}}" src="{{item.user_avatar}}" data-index="{{item.index}}" mode='aspectFit' bindtap="table_avatar_click"></image>
                     <view class="table_id {{item.color == 1 ? 's_table_color':''}} {{item.color == 2 ? 'm_table_color':''}} {{item.color == 3 ? 'b_table_color':''}}" >{{item.number}}</view>
                 </view>
             </view>
@@ -144,7 +144,7 @@
     </view>
 
 </view>
-<modal hidden="{{hidden_modal}}" title="请输入桌号" confirm-text="确定" cancel-text="不用了" bindcancel="cancel" bindconfirm="confirm">
+<modal hidden="{{hidden_modal}}" title="请输入桌号" confirm-text="确定" cancel-text="不用了" bindcancel="cancel_input" bindconfirm="confirm_input">
     <input type="text" placeholder="A1/B2/C3" bindinput="input_table_no" auto-focus/>
     <radio-group class="radio-group" bindchange="bindchange">
         <label class="radio">
@@ -153,7 +153,7 @@
         </label>
     </radio-group>
 </modal>
-<modal hidden="{{hidden_modal_table}}" title="你准备？" confirm-text="确定" cancel-text="算了" bindcancel="cancel_table" bindconfirm="confirm_table">
+<modal hidden="{{hidden_modal_table}}" title="你准备？" confirm-text="确定" cancel-text="算了" bindcancel="cancel_take" bindconfirm="confirm_take">
     <radio-group class="radio-group" bindchange="bindchange">
         <label class="radio">
             <radio value="sitdown" checked="{{true}}"/>坐下
