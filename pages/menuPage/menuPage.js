@@ -498,7 +498,7 @@ Page({
                 for (var i = 0; i < data_from_server.length; i++) {
                     last_dishes_array[i] = 0
                 }
-
+                
                 console.log('all dishes', dishes)
                 for (var i = 0; i < data_from_server.length; i++) {
                     var temp_dishes = {
@@ -528,7 +528,8 @@ Page({
                     last_dishes_array: last_dishes_array
                 });
                 console.log('this.getMyDishes');
-                
+                wx.setStorageSync('dishes_list', dishes)
+
                 that.getMyDishes()
             },
             fail: function (res) {
@@ -663,6 +664,11 @@ Page({
                     if (!is_together) {
                         that.orderTogether(table_id, user_id)
                     }
+                } else {
+                    wx.setStorageSync('is_together', false)
+                    that.setData({
+                        is_together: false
+                    })
                 }
             }
         })

@@ -27,7 +27,9 @@ Page({
         takeout_info: undefined,
         pickerIndex: 0,
         pickerArray: ['不使用'],
-        myDiscount: []
+        myDiscount: [],
+
+        is_together: null
     },
 
 
@@ -112,9 +114,14 @@ Page({
         wx.setStorageSync("userNumber", userNumber);
 
         if (extendStatus === 1) {
-            wx.reLaunch({
-                url:"../usingPage/usingPage"
-            })
+            if (this.data.is_together) {
+                this.posterOrderTogether()
+            }
+            else {
+                wx.reLaunch({
+                    url: "../usingPage/usingPage"
+                })
+            }
         } 
         else {
             var takeout_info = (this.data.extendStatus == 3) ? this.data.takeout_info : null
@@ -142,6 +149,43 @@ Page({
         }
     },
 
+    // 协同上传订单
+    posterOrderTogether: function() {
+        var table_id = wx.getStorageSync('table_id')
+        var that = this
+        wx.request({
+            url: `${config.service.host}/orders/together?table_id=`+table_id,
+            method: 'POST',
+            success: function(res) {
+                console.log('posterOrderTogether', res)
+                setInterval(() => {
+                    that.getTableOrderCount()
+                }, 3000)
+            }
+        })
+    },
+
+    // 轮询查剩余的未完成人数
+    getTableOrderCount: function() {
+        
+        var table_id = wx.getStorageSync('table_id')
+        
+        wx.request({
+            url: `${config.service.tablesInfoUrl}/${table_id}`,
+            method: 'GET',
+            success: function(res) {
+                console.log(res.data)
+                let {orderers_count} = res.data
+                if (orderers_count == 0) {
+                    wx.reLaunch({
+                        url: "../usingPage/usingPage"
+                    })
+                }
+            }
+        })
+    },
+
+    // 上传订单
     postOrder: function() {
         var that = this
         var userid = wx.getStorageSync('userid')
@@ -206,27 +250,79 @@ Page({
         })
     },
 
+    // 获取协同菜单
+    getTogetherOrder: function() {
+        var table_id = wx.getStorageSync('table_id')
+        var user_id = wx.getStorageSync('userid')
+        var url = config.service.tablesInfoUrl + '/' + table_id + '/dishes?userid=' + user_id
+        var dishes_list = wx.getStorageSync('dishes_list')
+        var delta = new Array(dishes_list.length)
+        for (var i = 0; i < dishes_list.length - 1; i++) {
+            delta[i] = 0
+        }
+
+        var togetherMenu = []
+        var that = this
+        wx.request({
+            url: url,
+            method: 'POST',
+            data: delta,
+            success: function (res) {
+                console.log('togetherMenu', res)
+                var togetherArr = res.data
+                for (var i = 0; i < togetherArr.length; i++) {
+                    if (togetherArr[i] > 0) {
+                        var temp = {
+                            dish_id: i + 1,
+                            dish_name: dishes_list[i + 1].dish_name,
+                            price: dishes_list[i + 1].price,
+                            amount: togetherArr[i]
+                        }
+                        console.log('temp', temp)
+                        togetherMenu.push(temp)
+                    }
+                }
+
+                that.setData({
+                    order: togetherMenu
+                })
+            }
+        })
+    },
+
     // 加载本地缓存的菜单
     onLoad: function (options) {
         var order = this.data.order;
         var total = this.data.total;
+        var is_together = wx.getStorageSync('is_together') ? true : false
+        this.setData({
+            is_together: is_together
+        })
 
+        var that = this
         // 获取优惠券
         this.getCoupon()
 
-        // 从本地缓存中同步取出order数组
-        try {
-            var value = wx.getStorageSync('order')
-            if (value) {
-                order = value;
-                order.forEach(item => {
-                    total += item.amount * item.price;
-                });
-            }
-        } catch (e) {
-            console.log("Get local data failed!");
+        if (is_together) {
+            setInterval(() => {
+                that.uploadOrder()
+            }, 3000)
         }
-        console.log(order)
+        else {
+            // 从本地缓存中同步取出order数组
+            try {
+                var value = wx.getStorageSync('order')
+                if (value) {
+                    order = value;
+                    order.forEach(item => {
+                        total += item.amount * item.price;
+                    });
+                }
+            } catch (e) {
+                console.log("Get local data failed!");
+            }
+        }
+        
         this.setData({
             order: order,
             total: total
