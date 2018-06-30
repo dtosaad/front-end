@@ -93,7 +93,7 @@
         </swiper-item>
     </swiper>
 
-    <view wx:if = "{{show_order}}" class='ordered-menu'>
+    <view wx:if = "{{show_order}}" class='ordered-menu' hidden="{{currentTab != 0}}">
         <view wx:if = '{{isTogether}}'>
             <text class='ordered-title'>大家点了</text>
             <view class='ordered-line'></view>
@@ -147,12 +147,12 @@
     </view>
 
     <!--付款菜单-->
-    <view class='pay-menu'>
+    <view class='pay-menu' hidden="{{currentTab != 0}}">
         <text class='pay-menu-money'>￥{{sum_money}}</text>
         <text class='pay-menu-button' bindtap="navigateTo">点餐完毕</text>
     </view>
 
-    <view class='pay-menu-title'>
+    <view class='pay-menu-title' hidden="{{currentTab != 0}}">
         <image class='pay-menu-image' bindtap='showOrderMenu' src='./image/shopping.png' mode='aspectFit'></image>
     </view>
 
