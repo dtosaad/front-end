@@ -24,7 +24,7 @@ Page({
         name: "",
         buttonWord: "提交订单",
         total: 1,
-        takeout_info: {}
+        takeout_info: undefined
     },
 
 
@@ -114,18 +114,26 @@ Page({
             })
         } 
         else {
-            // 提交订单
-            this.postOrder()
-
-            // 清空本地数据
-            try {
-                wx.removeStorageSync('order')
-            } catch (e) {
-                console.log("Clear storage failed!")
+            var takeout_info = (this.data.extendStatus == 3) ? this.data.takeout_info : null
+            if ((this.data.extendStatus == 3) && takeout_info == undefined) {
+                wx.showToast({
+                    title: '请补全信息！'
+                })
             }
-            wx.reLaunch({
-                url: "../menuPage/menuPage"
-            })
+            else {
+                // 提交订单
+                this.postOrder()
+
+                // 清空本地数据
+                try {
+                    wx.removeStorageSync('order')
+                } catch (e) {
+                    console.log("Clear storage failed!")
+                }
+                wx.reLaunch({
+                    url: "../menuPage/menuPage"
+                })
+            }
         }
     },
 
@@ -146,7 +154,7 @@ Page({
             url: config.service.postOrderUrl,
             method: 'POST',
             data: myPostData,
-            success: function(postOrder_res) {
+            success: function (postOrder_res) {
                 console.log(postOrder_res)
             }
         })

@@ -434,18 +434,27 @@ Page({
                         url: "../usingPage/usingPage"
                     })
                 } else {
-                    wx.navigateTo({
-                        url: "../confirmOrder/confirmOrder"
-                    })
+                    that.navigateToConfirmOrder()
                 }
             },
             fail: function() {
-                wx.navigateTo({
-                    url: "../confirmOrder/confirmOrder"
-                })
+                that.navigateToConfirmOrder()
             }
         })
-        
+    },
+
+    navigateToConfirmOrder: function() {
+        var num = this.data.ordermenu.length
+        if (num != 0) {
+            wx.navigateTo({
+                url: "../confirmOrder/confirmOrder"
+            })
+        }
+        else {
+            wx.showToast({
+                title: '请先点餐'
+            })
+        }
     },
 
     // 获取菜单数据
