@@ -246,15 +246,23 @@ page {
     width: 100%;
 }
 
-.ordered-item {
+.ordered-item-line {
+    background: #00000040;
+    height: 2rpx;
     width: 100%;
+}
+
+.ordered-item {
+    width: 95%;
     display: flex;
     flex-direction: row;
-    height: 100rpx;
-    padding-left: 3%;
-    line-height: 100rpx;
+    height: 80rpx;
+    margin-left: 3%;
+    margin-right:3%;
+    line-height: 80rpx;
     vertical-align: middle;
     font-size: 28rpx;
+    color: #00000095
 }
 
 .ordered-name {
@@ -267,8 +275,7 @@ page {
 }
 
 .ordered-stepper {
-    margin-right: 20rpx;
-    margin-top: 30rpx;
+    margin-top: 25rpx;
 }
 
 /*底部*/

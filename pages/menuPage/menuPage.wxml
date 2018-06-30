@@ -93,14 +93,40 @@
         </swiper-item>
     </swiper>
 
-    <view wx:if = "{{show_order}}" class='ordered-menu'>
+    <view wx:if = "{{show_order}}" class='ordered-menu' hidden="{{currentTab != 0}}">
         <view wx:if = '{{isTogether}}'>
             <text class='ordered-title'>大家点了</text>
             <view class='ordered-line'></view>
-            <view wx:for = "{{ordermenu}}" wx:for-item = "orderitem" class='ordered-item'>
+            <view wx:for = "{{togetherMenu}}" wx:for-item = "togetheritem">
+                <view  class='ordered-item'>
+                    <text class='ordered-name'>{{togetheritem.dish_name}}</text>
+                    <text class='ordered-price'>￥{{togetheritem.price}}</text>
+                    <view class="stepper ordered-stepper">
+                        <!-- 减号 -->
+                        <view class="stepper-button, disable">
+                            <text data-id = "{{togetheritem.dish_id}}" bindtap = "orderMinus">-</text>  
+                        </view>
+                        <!-- 数值 -->
+                        <view class="stepper-num">
+                            <text>{{togetheritem.amount}}</text>
+                        </view>
+                        <!-- 加号 -->
+                        <view class="stepper-button, normal">
+                            <text data-id = "{{togetheritem.dish_id}}" bindtap = "orderPlus">+</text>
+                        </view>
+                    </view>
+                </view>
+                <view class='ordered-item-line'></view>
+            </view>
+        </view>
+
+        <text class='ordered-title'>我点了</text>
+        <view class='ordered-line'></view>
+        <view wx:for = "{{ordermenu}}" wx:for-item = "orderitem">
+            <view  class='ordered-item'>
                 <text class='ordered-name'>{{orderitem.dish_name}}</text>
                 <text class='ordered-price'>￥{{orderitem.price}}</text>
-                <view class="ordered-stepper stepper">
+                <view class="stepper ordered-stepper">
                     <!-- 减号 -->
                     <view class="stepper-button, disable">
                         <text data-id = "{{orderitem.dish_id}}" bindtap = "orderMinus">-</text>  
@@ -115,37 +141,18 @@
                     </view>
                 </view>
             </view>
-        </view>
-
-        <text class='ordered-title'>我点了</text>
-        <view class='ordered-line'></view>
-        <view wx:for = "{{ordermenu}}" wx:for-item = "orderitem" class='ordered-item'>
-            <text class='ordered-name'>{{orderitem.dish_name}}</text>
-            <text class='ordered-price'>￥{{orderitem.price}}</text>
-            <view class="stepper ordered-stepper">
-                <!-- 减号 -->
-                <view class="stepper-button, disable">
-                    <text data-id = "{{orderitem.dish_id}}" bindtap = "orderMinus">-</text>  
-                </view>
-                <!-- 数值 -->
-                <view class="stepper-num">
-                    <text>{{orderitem.amount}}</text>
-                </view>
-                <!-- 加号 -->
-                <view class="stepper-button, normal">
-                    <text data-id = "{{orderitem.dish_id}}" bindtap = "orderPlus">+</text>
-                </view>
-            </view>
+            
+            <view class='ordered-item-line'></view>
         </view>
     </view>
 
     <!--付款菜单-->
-    <view class='pay-menu'>
+    <view class='pay-menu' hidden="{{currentTab != 0}}">
         <text class='pay-menu-money'>￥{{sum_money}}</text>
         <text class='pay-menu-button' bindtap="navigateTo">点餐完毕</text>
     </view>
 
-    <view class='pay-menu-title'>
+    <view class='pay-menu-title' hidden="{{currentTab != 0}}">
         <image class='pay-menu-image' bindtap='showOrderMenu' src='./image/shopping.png' mode='aspectFit'></image>
     </view>
 

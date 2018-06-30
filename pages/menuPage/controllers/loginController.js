@@ -25,7 +25,8 @@ var postDataToServer = function postDataToServer(userInfo, code) {
             },
             fail: function (res) {
                 wx.showToast({
-                    title: '登陆失败'
+                    title: '登陆失败',
+                    icon: 'none'
                 })
                 rej()
             }
@@ -46,7 +47,8 @@ var getUserInfo = function getUserInfo(login_res) {
             fail: function (res) {
                 console.log('获取信息失败')
                 wx.showToast({
-                    title: '获取用户信息失败'
+                    title: '获取用户信息失败',
+                    icon: 'none'
                 })
                 rej()
             }
@@ -74,14 +76,16 @@ var login = function login(option) {
                     })
                 } else {
                     wx.showToast({
-                        title: '登陆失败'
+                        title: '登陆失败',
+                        icon: 'none'
                     })
                     rej()
                 }
             },
             fail: function (err_msg) {
                 wx.showToast({
-                    title: '登陆失败'
+                    title: '登陆失败',
+                    icon: 'none'
                 })
                 console.log(err_msg)
                 rej()

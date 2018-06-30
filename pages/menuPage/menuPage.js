@@ -13,7 +13,7 @@ Page({
 
         // 切换顶部导航栏
         currentTab: 0,
-        currentMenu: '我吃过',
+        currentMenu: '默认',
 
         // 订单相关
         sum_money: 0,
@@ -410,18 +410,28 @@ Page({
                         url: "../usingPage/usingPage"
                     })
                 } else {
-                    wx.navigateTo({
-                        url: "../confirmOrder/confirmOrder"
-                    })
+                    that.navigateToConfirmOrder()
                 }
             },
             fail: function() {
-                wx.navigateTo({
-                    url: "../confirmOrder/confirmOrder"
-                })
+                that.navigateToConfirmOrder()
             }
         })
-        
+    },
+
+    navigateToConfirmOrder: function() {
+        var num = this.data.ordermenu.length
+        if (num != 0) {
+            wx.navigateTo({
+                url: "../confirmOrder/confirmOrder"
+            })
+        }
+        else {
+            wx.showToast({
+                title: '请先点餐',
+                icon: 'none'
+            })
+        }
     },
 
     // 获取菜单数据
@@ -458,7 +468,8 @@ Page({
                 console.log('type_list', type_list)
                 that.setData({
                     type_list: type_list,
-                    dishes_list: dishes
+                    dishes_list: dishes,
+                    currentMenu: type_list[1]
                 });
                 console.log('this.getMyDishes');
                 

@@ -7,7 +7,8 @@ Page({
     
     callService: function(e) {
         wx.showToast({
-            title: '已呼叫，请稍等'
+            title: '已呼叫，请稍等',
+            icon: 'none'
         })
     },
 

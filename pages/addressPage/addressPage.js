@@ -58,19 +58,30 @@ Page({
             address = "请填写配送地址";
         }
 
-        prevPage.setData({
-            address: address,
-            addressDetail: addressDetail,
-            addressStatus: addressStatus,
-            name: self.data.name,
-            phone: self.data.phone,
-            takeout_info: {
+        if (address == "请填写配送信息" || address == "" ||
+            addressDetail == "" || addressStatus == "address-unchanged"||
+            self.data.name == "" || self.data.phone == "") {
+            wx.showToast({
+                title: '请补全信息',
+                icon: 'none'
+            })
+        } else {
+            prevPage.setData({
+                address: address,
+                addressDetail: addressDetail,
+                addressStatus: addressStatus,
                 name: self.data.name,
                 phone: self.data.phone,
-                location: address + ' ' + addressDetail
-            }
-        });
-        wx.navigateBack();
+                takeout_info: {
+                    name: self.data.name,
+                    phone: self.data.phone,
+                    location: address + ' ' + addressDetail
+                }
+            });
+            wx.navigateBack();
+        }
+
+        
     },
 
     onLoad: function (options) {

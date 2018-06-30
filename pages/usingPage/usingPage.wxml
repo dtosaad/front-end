@@ -6,7 +6,7 @@
             <view class="order-left">{{ item.dish_name }}</view>
             <view class="order-center">×{{ item.amount }}</view>
             <view class="order-right" wx:if="{{item.isServe ? true : false}}">
-                <view class="order-finish">√</view>
+                <view class="order-finish">催</view>
             </view>
             <view class="order-right" wx:if="{{item.isServe ? false : true}}">
                 <view class="order-unfinish" bindtap="urgeToServe" data-index="{{index}}">催</view>

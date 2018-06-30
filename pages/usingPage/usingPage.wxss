@@ -39,17 +39,20 @@ page {
 
 .order-finish {
     margin-left: auto;
-    width: 34rpx;
-    height: 34rpx;
-    border-radius: 50%;
-    background: rgb(245, 166, 35);
-    line-height: 36rpx;
+    width: 60rpx;
+    height: 40rpx;
+    border-radius: 10rpx;
+    background: rgb(86, 86, 86);
+    border: 1rpx solid #FFFFFF;
+    line-height: 40rpx;
     vertical-align: middle;
     color: #FFFFFF;
     font-size: 28rpx;
     display: flex;
     justify-content: center;
+    border: 2rpx solid #FFFFFF;
     font-weight: 500;
+    box-shadow: 2rpx 2rpx 2rpx 2rpx #888888;
 }
 
 .order-unfinish {
