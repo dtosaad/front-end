@@ -119,7 +119,7 @@ Page({
 
             // 清空本地数据
             try {
-                wx.clearStorageSync()
+                wx.removeStorageSync('order')
             } catch (e) {
                 console.log("Clear storage failed!")
             }

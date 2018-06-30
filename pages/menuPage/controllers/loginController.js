@@ -1,10 +1,11 @@
 var config = require('../../../config')
 
+// 信息上传到服务器
 var postDataToServer = function postDataToServer(userInfo, code) {
-    console.log('code:', code)
-    console.log('wechat_name:', userInfo.nickName)
-    console.log('wechat_avatar:', userInfo.avatarUrl)
-    console.log('location:', userInfo.country + ' ' + userInfo.city)
+    // console.log('code:', code)
+    // console.log('wechat_name:', userInfo.nickName)
+    // console.log('wechat_avatar:', userInfo.avatarUrl)
+    // console.log('location:', userInfo.country + ' ' + userInfo.city)
     wx.request({
         url: config.service.loginUrl,
         method: "POST",
@@ -16,16 +17,8 @@ var postDataToServer = function postDataToServer(userInfo, code) {
         },
         success: function (data) {
             // 储存userid
-            wx.setStorage({
-                key: 'userid',
-                data: data.data.userid,
-                success: function(res) {
-                    console.log(res)
-                },
-                fail: function(res) {
-                    console.log(res)
-                }
-            })
+            var userid = data.data.userid
+            wx.setStorageSync('userid', userid)
         },
         fail: function (res) {
             wx.showToast({
@@ -35,6 +28,7 @@ var postDataToServer = function postDataToServer(userInfo, code) {
     })
 }
 
+// 获取用户信息
 var getUserInfo = function getUserInfo(login_res) {
     var code = login_res.code
     wx.getUserInfo({
@@ -57,11 +51,25 @@ var login = function login(option) {
             if (login_res.code) {
                 // 登陆成功，获取用户信息
                 getUserInfo(login_res)
+
+                // 储存登陆成功的状态
+                try {
+                    console.log('储存登录状态')
+                    wx.setStorageSync('isLogin', true)
+                } catch (e) {
+                    console.log(e)
+                }
             } else {
                 wx.showToast({
                     title: '登陆失败'
                 })
             }
+        },
+        fail: function(err_msg) {
+            wx.showToast({
+                title: '登陆失败'
+            })
+            console.log(err_msg)
         }
     })
 }

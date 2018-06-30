@@ -1,4 +1,3 @@
-
 var config = require('../../config')
 var login = require('controllers/loginController')
 var menuPageData = require('menuPageData')
@@ -14,7 +13,7 @@ Page({
         order_view_height: 100,
         show_order: false,
         classListStyle: 'class-list',
-        table_list: menuPageData.table_list,
+        table_list: [],
         imgUrls: [],
         ordermenu: [],
         type_list: [],
@@ -251,6 +250,7 @@ Page({
 
     // 获取菜单数据
     getDishes: function () {
+        console.log('getDishes')
         var that = this
         wx.request({
             url: config.service.dishesUrl,
@@ -258,7 +258,7 @@ Page({
             success: function (data) {
                 var data_from_server = data.data
                 var dishes = new Array(data_from_server.length)
-                console.log(dishes)
+                console.log('all dishes', dishes)
                 for (var i = 0; i < data_from_server.length; i++) {
                     var temp_dishes = {
                         dish_id: data_from_server[i].dish_id,
@@ -267,7 +267,7 @@ Page({
                         dish_name: data_from_server[i].dish_name,
                         ordered_count: data_from_server[i].ordered_count,
                         price: data_from_server[i].price,
-                        star_count: Math.round(data_from_server[i].star_count / (data_from_server[i].star_times * 5)),
+                        star_count: Math.round(data_from_server[i].star_count / data_from_server[i].star_times),
                         num: 0
                     }
                     dishes[temp_dishes.dish_id] = temp_dishes
@@ -281,8 +281,11 @@ Page({
                 }
                 console.log('type_list', type_list)
                 that.setData({
+                    type_list: type_list,
                     dishes_list: dishes
                 });
+                console.log('this.getMyDishes');
+                
                 that.getMyDishes()
             },
             fail: function (res) {
@@ -294,6 +297,7 @@ Page({
     // 获取我吃过的菜谱
     getMyDishes: function() {
         var that = this
+        console.log('carry getMyDishes')
         wx.getStorage({
             key: 'userid',
             success: function(res) {
@@ -307,16 +311,19 @@ Page({
                         for (var i = 0; i < myDishes.length; i++) {
                             dishes[myDishes[i].dish_id].type[1] = '我吃过'
                         }
-
+                        console.log('getMyDishes', myDishes)
                         // 恢复我吃过的菜
                         that.recoverOrder()
                     }
                 })
+            },
+            fail: function(res) {
+                console.log('getUserid fail')
             }
         })
     },
 
-    // 获取每日推荐的图片链接(未完成)
+    // 获取每日推荐的图片链接
     getRecommendedImage: function() {
         console.log('getRecommendedImage')
         var that = this
@@ -391,11 +398,9 @@ Page({
     // 预定座位(未完成)
     bookTable: function(e) {
         var table_id = e.target.dataset.id
-        console.log(table_id)
         var user_id = wx.getStorageSync('userid')
         var that = this
         var bookTableUrl = config.service.tablesInfoUrl + '/' + table_id + '/reservation?user_id=' + user_id
-        console.log('booktableurl', bookTableUrl)
         wx.request({
             url: bookTableUrl,
             method: 'POST',
@@ -483,39 +488,18 @@ Page({
     },
 
     onLoad: function (options) {
-        // 生命周期函数--监听页面加载
-        login()
+
+        try {
+            var isLogin = wx.getStorageSync('isLogin')
+            if (!isLogin) login()
+        } catch(e) {
+            console.log('Get isLogin fail!')
+        }
+
         this.getDishes()
         this.getRecommendedImage()
         this.getTableInfo()
         this.scanTable()
         // setInterval(this.uploadOrder, 3000)
-    },
-
-    onReady: function () {
-        // 生命周期函数--监听页面初次渲染完成
-    },
-    onShow: function () {
-        // 生命周期函数--监听页面显示
-    },
-    onHide: function () {
-        // 生命周期函数--监听页面隐藏
-    },
-    onUnload: function () {
-        // 生命周期函数--监听页面卸载
-    },
-    onPullDownRefresh: function () {
-        // 页面相关事件处理函数--监听用户下拉动作
-    },
-    onReachBottom: function () {
-        // 页面上拉触底事件的处理函数
-    },
-    onShareAppMessage: function () {
-        // 用户点击右上角分享
-        return {
-            title: 'title', // 分享标题
-            desc: 'desc', // 分享描述
-            path: 'path' // 分享路径
-        }
     }
 })
