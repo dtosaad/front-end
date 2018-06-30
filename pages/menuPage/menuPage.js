@@ -17,7 +17,6 @@ Page({
 
         // 订单相关
         sum_money: 0,
-        order_view_height: 100,
         show_order: false,
         classListStyle: 'class-list',
         table_list: [],
@@ -279,10 +278,6 @@ Page({
                 sum_money += temp.price * temp.amount
             }
         }
-
-        // 更新菜单高度
-        order_view_height = this.data.ordermenu.length * 70 + 40;
-
         // 保存信息
         this.setData({
             ordermenu: ordermenu,
@@ -666,14 +661,25 @@ Page({
 
         try {
             var isLogin = wx.getStorageSync('isLogin')
-            if (!isLogin) login()
+            console.log(isLogin)
+            if (!isLogin) {
+                login().then(()=>{
+                    this.getDishes()
+                    this.getRecommendedImage()
+                    this.getTableInfo()
+                })
+                console.log('login success')
+            }
+            else {
+                this.getDishes()
+                this.getRecommendedImage()
+                this.getTableInfo()
+            }
         } catch(e) {
             console.log('Get isLogin fail!')
         }
-
-        this.getDishes()
-        this.getRecommendedImage()
-        this.getTableInfo()
+        
+        
         // this.scanTable()
         // setInterval(this.uploadOrder, 3000)
     }
