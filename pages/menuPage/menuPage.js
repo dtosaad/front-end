@@ -164,10 +164,10 @@ Page({
 
     sitdown(table_index) {
         var that = this
-        console.log('000000000000000000000000')
+        let { table_id } = this.data.table_list[table_index]
         this.sitdown_or_reserve(table_index, 0, () => {
             setInterval(() => {
-                that.getSingleTableInfo()
+                that.getSingleTableInfo(table_id)
             }, 3000)
         })
     },
@@ -644,33 +644,31 @@ Page({
     },
 
     // 获取单独的桌位信息
-    getSingleTableInfo: function() {
-        var table_id = table_id
+    getSingleTableInfo: function(table_id) {
         console.log('table_id in getSingleTableInfo()', table_id)
         var that = this
-        if (table_id) {
-            wx.request({
-                url: `${config.service.tablesInfoUrl}/${table_id}`,
-                method: 'GET',
-                success: function(res) {
-                    console.log(res.data)
-                    if (res.data > 1) {
-                        wx.getStorage({
-                            key: 'is_together',
-                            success: function(res) {
-                                if (!res.data) {
-                                    that.orderTogether()
-                                }
-                            },
-                            fail: function(res) {
+        wx.request({
+            url: `${config.service.tablesInfoUrl}/${table_id}`,
+            method: 'GET',
+            success: function(res) {
+                console.log(res.data)
+                let { orderers_count } = res.data
+                if (orderers_count > 1) {
+                    wx.getStorage({
+                        key: 'is_together',
+                        success: function(res) {
+                            if (!res.data) {
                                 that.orderTogether()
                             }
-                        })
-                        
-                    }
+                        },
+                        fail: function(res) {
+                            that.orderTogether()
+                        }
+                    })
+                    
                 }
-            })
-        }
+            }
+        })
         
     },
 
