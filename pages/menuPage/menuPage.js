@@ -31,7 +31,7 @@ Page({
         // 协同点单相关
         isTogether: false,
         togetherMenu: [],
-        delta_dishes_array: []
+        last_dishes_array: []
     },
 
     table_has_user(e) {
@@ -477,9 +477,9 @@ Page({
             success: function (data) {
                 var data_from_server = data.data
                 var dishes = new Array(data_from_server.length)
-                var delta_dishes_array = new Array(data_from_server.length)
+                var last_dishes_array = new Array(data_from_server.length)
                 for (var i = 0; i < data_from_server.length; i++) {
-                    delta_dishes_array[i] = 0
+                    last_dishes_array[i] = 0
                 }
 
                 console.log('all dishes', dishes)
@@ -508,7 +508,7 @@ Page({
                     type_list: type_list,
                     dishes_list: dishes,
                     currentMenu: type_list[1],
-                    delta_dishes_array: delta_dishes_array
+                    last_dishes_array: last_dishes_array
                 });
                 console.log('this.getMyDishes');
                 
@@ -692,18 +692,21 @@ Page({
         var url = config.service.tablesInfoUrl + '/' + table_id + '/dishes?userid=' + user_id
 
         var ordermenu = this.data.ordermenu
-        var delta_dishes_array = this.data.delta_dishes_array
-        for (var i = 0; i < ordermenu.length; i++) {
-            delta_dishes_array[ordermenu[i].dish_id - 1] = ordermenu[i].amount - delta_dishes_array[ordermenu[i].dish_id - 1]
+        var dishes_list = this.data.dishes_list
+        var last_dishes_array = this.data.last_dishes_array
+        var delta = new Array(last_dishes_array.length) 
+        for (var i = 0; i < dishes_list.length; i++) {
+            delta[i] = last_dishes_array[i] - dishes_list[i].num
+            last_dishes_array[i] = dishes_list[i].num
         }
 
         var togetherMenu = []
         var that = this
-        console.log(delta_dishes_array)
+        console.log('delta', delta)
         wx.request({
             url: url,
             method: 'POST',
-            data: delta_dishes_array,
+            data: delta,
             success: function(res) {
                 console.log('togetherMenu', res)
                 var togetherArr = res.data
