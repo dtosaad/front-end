@@ -761,7 +761,7 @@ Page({
     onLoad: function (options) {
         try {
             var isLogin = wx.getStorageSync('isLogin')
-            let table_id = wx.getStorage('table_id')
+            let table_id = wx.getStorageSync('table_id')
             console.log(isLogin)
             if (!isLogin) {
                 login().then(() => {
