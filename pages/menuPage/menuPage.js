@@ -13,7 +13,7 @@ Page({
 
         // 切换顶部导航栏
         currentTab: 0,
-        currentMenu: '我吃过',
+        currentMenu: '默认',
 
         // 订单相关
         sum_money: 0,
@@ -387,7 +387,8 @@ Page({
                 console.log('type_list', type_list)
                 that.setData({
                     type_list: type_list,
-                    dishes_list: dishes
+                    dishes_list: dishes,
+                    currentMenu: type_list[1]
                 });
                 console.log('this.getMyDishes');
                 

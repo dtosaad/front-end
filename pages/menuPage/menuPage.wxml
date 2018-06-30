@@ -97,10 +97,36 @@
         <view wx:if = '{{isTogether}}'>
             <text class='ordered-title'>大家点了</text>
             <view class='ordered-line'></view>
-            <view wx:for = "{{ordermenu}}" wx:for-item = "orderitem" class='ordered-item'>
+            <view wx:for = "{{togetherMenu}}" wx:for-item = "togetheritem">
+                <view  class='ordered-item'>
+                    <text class='ordered-name'>{{togetheritem.dish_name}}</text>
+                    <text class='ordered-price'>￥{{togetheritem.price}}</text>
+                    <view class="stepper ordered-stepper">
+                        <!-- 减号 -->
+                        <view class="stepper-button, disable">
+                            <text data-id = "{{togetheritem.dish_id}}" bindtap = "orderMinus">-</text>  
+                        </view>
+                        <!-- 数值 -->
+                        <view class="stepper-num">
+                            <text>{{togetheritem.amount}}</text>
+                        </view>
+                        <!-- 加号 -->
+                        <view class="stepper-button, normal">
+                            <text data-id = "{{togetheritem.dish_id}}" bindtap = "orderPlus">+</text>
+                        </view>
+                    </view>
+                </view>
+                <view class='ordered-item-line'></view>
+            </view>
+        </view>
+
+        <text class='ordered-title'>我点了</text>
+        <view class='ordered-line'></view>
+        <view wx:for = "{{ordermenu}}" wx:for-item = "orderitem">
+            <view  class='ordered-item'>
                 <text class='ordered-name'>{{orderitem.dish_name}}</text>
                 <text class='ordered-price'>￥{{orderitem.price}}</text>
-                <view class="ordered-stepper stepper">
+                <view class="stepper ordered-stepper">
                     <!-- 减号 -->
                     <view class="stepper-button, disable">
                         <text data-id = "{{orderitem.dish_id}}" bindtap = "orderMinus">-</text>  
@@ -115,27 +141,8 @@
                     </view>
                 </view>
             </view>
-        </view>
-
-        <text class='ordered-title'>我点了</text>
-        <view class='ordered-line'></view>
-        <view wx:for = "{{ordermenu}}" wx:for-item = "orderitem" class='ordered-item'>
-            <text class='ordered-name'>{{orderitem.dish_name}}</text>
-            <text class='ordered-price'>￥{{orderitem.price}}</text>
-            <view class="stepper ordered-stepper">
-                <!-- 减号 -->
-                <view class="stepper-button, disable">
-                    <text data-id = "{{orderitem.dish_id}}" bindtap = "orderMinus">-</text>  
-                </view>
-                <!-- 数值 -->
-                <view class="stepper-num">
-                    <text>{{orderitem.amount}}</text>
-                </view>
-                <!-- 加号 -->
-                <view class="stepper-button, normal">
-                    <text data-id = "{{orderitem.dish_id}}" bindtap = "orderPlus">+</text>
-                </view>
-            </view>
+            
+            <view class='ordered-item-line'></view>
         </view>
     </view>
 
