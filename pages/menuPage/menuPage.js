@@ -665,7 +665,7 @@ Page({
                 })
                 setInterval(() => {
                     let need_upload = wx.getStorageSync('need_upload')
-                    if (!is_together) return
+                    if (!need_upload) return
                     that.uploadOrder()
                 }, 3000)
             },
@@ -714,6 +714,7 @@ Page({
                     this.getTableInfo()
                     let that = this
                     setInterval(() => {
+                        if (that.data.currentTab !== 1) return
                         that.getTableInfo()
                     }, 3000)
                 })
@@ -724,6 +725,7 @@ Page({
                 this.getTableInfo()
                 let that = this
                 setInterval(() => {
+                    if (that.data.currentTab !== 1) return
                     that.getTableInfo()
                 }, 3000)
             }
