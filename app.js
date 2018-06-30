@@ -32,7 +32,7 @@ App({
 
         // 在小程序被卸载时清除关键数据
         try {
-            wx.removeStorageSync('userid')
+           // wx.clearStorageSync()
         } catch(e) {
             console.log(e)
         }

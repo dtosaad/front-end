@@ -28,7 +28,10 @@ var config = {
         postOrderUrl: `${host}/weapp/orders`,
 
         // 获取桌位信息
-        tablesInfoUrl: `${host}/weapp/tables`
+        tablesInfoUrl: `${host}/weapp/tables`,
+
+        // 获取优惠券
+        discountUrl: `${host}/weapp/discounts`
     }
 };
 

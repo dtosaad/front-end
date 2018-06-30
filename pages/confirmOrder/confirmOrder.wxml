@@ -67,7 +67,7 @@
     <view class="my-container">
         <view class="note">
             <label class="title">备注</label>
-            <navigator url="../notePage/notePage?noteStatus={{noteStatus}}&note={{note}}" open-type="navigate">
+            <navigator url="../notePage/notePage?noteStatus={{noteStatus}} & note={{note}}" open-type="navigate">
                 <text class="{{noteStatus}}">{{ note }}</text>
             </navigator>
             <label class="arrow">></label>
@@ -75,17 +75,19 @@
     </view>
 
     <!-- 抵用券 -->
-    <!--
     <view class="my-container" wx:if="{{extendStatus == 1 ? false : true}}">
         <view class="coupon">
             <label class="title">抵用券</label>
-            <navigator url="../confirmOrder/confirmOrder" open-type="navigate">
-                <text class="{{couponStatus}}">{{ coupon }}</text>
-            </navigator>
+            <picker class="{{couponStatus}}" bindchange="bindPickerChange" value="{{pickerIndex}}" range="{{pickerArray}}">
+                <view>
+                    <text>{{pickerArray[pickerIndex]}}</text>
+                </view>
+            </picker>
+            
+            <!--text class="{{couponStatus}}">{{ coupon }}</text-->
             <label class="arrow">></label>
         </view>
     </view>
-    -->
     
     <!--付款菜单-->
     <view class='pay-menu'>

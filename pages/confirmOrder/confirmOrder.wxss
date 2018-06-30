@@ -158,7 +158,7 @@ radio .wx-radio-input.wx-radio-input-checked::before{
     margin: 20rpx;
 }
 
-.note navigator, .coupon navigator {
+.note navigator, .coupon picker {
     width: 80%;
     text-align: right;
 }

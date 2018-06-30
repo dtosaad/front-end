@@ -132,3 +132,26 @@ page {
     padding-right: 30rpx;
     padding-left: 30rpx;
 }
+
+.coupon {
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+    font-size: 32rpx;
+    margin: 20rpx;
+}
+
+.coupon picker {
+    width: 80%;
+    text-align: right;
+}
+
+.coupon-unchanged {
+    color: #b2b2b2;
+    text-align: right;
+}
+
+.coupon-changed {
+    color: #000000;
+    text-align: right;
+}

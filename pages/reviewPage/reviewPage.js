@@ -26,6 +26,7 @@ Page({
             wx.removeStorageSync('order')
             wx.removeStorageSync('addMeal')
             wx.removeStorageSync('table_id')
+            wx.removeStorageSync('need_upload')
         } catch (e) {
             console.log("Clear storage failed!")
         }
