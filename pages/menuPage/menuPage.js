@@ -87,6 +87,7 @@ Page({
         let status = which === 0 ? 1 : 2
         let that = this
         // 坐下
+        console.log('userid', user_id)
         wx.setStorageSync("table_id", table.table_id)
         wx.request({
             url: `${config.service.tablesInfoUrl}/${table.table_id}?status=${status}&user_id=${user_id}`,
@@ -494,6 +495,9 @@ Page({
                 var data_from_server = data.data
                 var dishes = new Array(data_from_server.length)
                 var delta_dishes_array = new Array(data_from_server.length)
+                for (var i = 0; i < data_from_server.length; i++) {
+                    delta_dishes_array[i] = 0
+                }
 
                 console.log('all dishes', dishes)
                 for (var i = 0; i < data_from_server.length; i++) {
