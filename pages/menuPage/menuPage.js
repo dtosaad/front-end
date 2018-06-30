@@ -61,11 +61,6 @@ Page({
             if (chosen_table.status === 2) {
                 this.sitdown(table_index)
             }
-            // wx.showToast({
-            //     title: 'OK，请点餐',
-            //     icon: 'success',
-            //     duration: 3000,
-            // })
             return true
         }
         for (let i = 0; i < table_list.length; ++i) {
@@ -655,6 +650,7 @@ Page({
     getSingleTableInfo: function(table_id) {
         console.log('table_id in getSingleTableInfo()', table_id)
         var that = this
+        let user_id = wx.getStorageSync('userid')
         wx.request({
             url: `${config.service.tablesInfoUrl}/${table_id}`,
             method: 'GET',
@@ -665,7 +661,7 @@ Page({
                     let is_together = wx.getStorageSync('is_together')
                     console.log('&&&&&&&&&', orderers_count, is_together)
                     if (!is_together) {
-                        that.orderTogether()
+                        that.orderTogether(table_id, user_id)
                     }
                 }
             }
