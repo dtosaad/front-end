@@ -45,39 +45,85 @@ Page({
     },
 
     choose_table(table_index) {
-        
-    },
-
-    table_has_user(e) {
-        let index = e.target.dataset.index
-        let table = this.data.table_list[index]
-        let user_id = wx.getStorageSync('userid')
-        let that = this
-        let table_id = wx.getStorageSync('table_id')
-        // 这个桌子的主人不是他
-        if (!table_id && table.user_id !== user_id) {
-            wx.showModal({
-                title: '提示',
-                content: `该桌子已经有人，是否协同点餐？`,
-                success: function(res) {
-                    if (res.cancel) return
-                    that.orderTogether(table.table_id, user_id)
-                }
-            })
-            return
-        }
-        // 这个桌子的主人是他
-        if (table_id && table.table_id === table_id) {
-            this.free_table(index)
-            return
-        }
-        if (table_id) {
+        let table_list = this.data.table_list
+        if (table_list.length === 0) {
             wx.showToast({
-                title: '抱歉，您已经选了其它桌子，不能参与这个桌子的协同点餐',
+                title: '抱歉，获取桌位信息出错，请稍后再试',
                 icon: 'none',
                 duration: 3000,
             })
+            return
         }
+        let user_id = wx.getStorageSync('userid')
+        // 1. 是这个桌子的主人
+        let own_table_index = -1
+        let chosen_table = table_list[table_index]
+        if (chosen_table.user_id === user_id) {
+            if (chosen_table.status === 2) {
+                this.sitdown(table_index)
+            }
+            wx.showToast({
+                title: 'OK，请点餐',
+                icon: 'success',
+                duration: 3000,
+            })
+            return true
+        }
+        for (let i = 0; i < table_list.length; ++i) {
+            let table = table_list[i]
+            // 2. 是其它桌子的主人
+            if (table.user_id === user_id) {
+                own_table_index = i
+                wx.showToast({
+                    title: '抱歉，不能重复选择桌子',
+                    icon: 'none',
+                    duration: 3000,
+                })
+                return false
+            }
+        }
+        // 3. 不是任一桌子的主人
+        if (own_table_index === -1) {
+            let table = table_list[table_index]
+            // 协同点餐
+            if (table.user_id) {
+                let that = this
+                wx.showModal({
+                    title: '提示',
+                    content: `该桌子有人了，要进入协同点餐吗？`,
+                    success: function(res) {
+                        if (res.cancel) return
+                        that.orderTogether(table.table_id, user_id)
+                    }
+                })
+            } else {  // 坐下，成为这个桌子的主人
+                this.sitdown(table_index)
+            }
+        }
+    },
+
+    free_table(table_index) {
+        let table = this.data.table_list[table_index]
+        let user_id = wx.getStorageSync('userid')
+        let that = this
+        wx.request({
+            url: `${config.service.tablesInfoUrl}/${table.table_id}?user_id=${user_id}`,
+            method: "DELETE",
+            success: function(data) {
+                let table_list = that.data.table_list;
+                table_list[table_index].status_ = '订'
+                table_list[table_index].user_avatar = null
+                table_list[table_index].status = 0
+                table_list[table_index].user_id = null
+                that.setData({
+                    table_list,
+                })
+                wx.removeStorageSync('table_id')
+            },
+            fail: function(res) {
+                console.log("离开桌子失败", res)
+            }
+        })
     },
 
     sitdown_or_reserve(table_index, which) {
@@ -121,125 +167,69 @@ Page({
         this.sitdown_or_reserve(table_index, 1)
     },
 
-	cancel: function() {
+    table_avatar_click(e) {
+        let table_index = e.target.dataset.index
+        let table = this.data.table_list[table_index]
+        let user_id = wx.getStorageSync('userid')
+        // 这个桌子的主人是他
+        if (table.user_id === user_id) {
+            let hint = table.status === 1 ? '离开' : '取消预订'
+            let that = this
+            wx.showModal({
+                title: '提示',
+                content: `您要${hint}这张桌子吗？`,
+                success: function(res) {
+                    if (res.cancel) return
+                    that.free_table(table_index)
+                }
+            })
+            this.free_table(table_index)
+            return
+        }
+        this.choose_table(table_index)
+    },
+
+	cancel_input: function() {
         this.setData({
             hidden_modal: true
         });
     },
 
-    confirm: function() {
-        console.log('table_no:', this.data.table_no);
+    confirm_input: function() {
         let number = this.data.table_no.toUpperCase()
-        let table_list = this.data.table_list
-        let status = this.data.sitdown ? 1 : 2
-        if (table_list.length === 0) {
-            wx.showToast({
-                title: '抱歉，获取桌位信息出错，请稍后再试',
-                icon: 'none',
-                duration: 3000,
-            })
-            this.setData({
-                hidden_modal: true
-            });
-            return
-        }
-        let user_id = wx.getStorageSync('userid')
-        let index = 0
-        let matched = false
-        let table_id = wx.getStorageSync('table_id')
-        let table_index = this.get_table_index(table_id)
-        let table = table_list[table_index]
-        for (let table of table_list) {
-            if (table.number === number) {
-                matched = true
-                // 如果是其它桌子的主人
-                if (table_id && index !== table_index && table.user_id === user_id) {
-                    wx.showToast({
-                        title: '抱歉，你已经在另外一张桌子了，不能重复选择桌子',
-                        icon: 'none',
-                        duration: 3000,
-                    })
-                }
-                // else if () {
-
-                // }
-                // 没定过桌子且要坐的桌子是空桌
-                else if (!table_id && table.status === 0) {
-                    this.sitdown(index)
-                }
-                // 如果选择自己的预订桌子
-                else if (table.user_id === user_id && table.status === 2) {
-                    this.sitdown()
-                    wx.showToast({
-                        title: 'OK，开始点餐吧',
-                        icon: 'success',
-                        duration: 3000,
-                    })
-                }
+        let table_index = -1
+        for (let i = 0; i < this.data.table_list.length; ++i) {
+            if (this.data.table_list[i].number === number) {
+                table_index = i
                 break
             }
-            ++index
         }
-        if (!matched) {
+        if (table_index === -1) {
             wx.showToast({
                 title: '桌号输入有误，再来',
                 icon: 'none',
                 duration: 3000,
             })
         } else {
+            this.choose_table(table_index)
             this.setData({
                 hidden_modal: true
             });
         }
     },
 
-    cancel_table: function() {
+    cancel_take: function() {
         this.setData({
             hidden_modal_table: true
         });
     },
 
-    confirm_table: function() {
+    confirm_take: function() {
         this.setData({
             hidden_modal_table: true
         });
         let index = this.data.table_index
         this.sitdown_or_reserve(index, this.data.sitdown ? 0 : 1)
-    },
-
-    free_table: function(index) {
-        let table = this.data.table_list[index]
-        let user_id = wx.getStorageSync('userid')
-        let that = this
-        if (user_id === table.user_id) {
-            let status = table.status
-            let hint = status === 1 ? '离开' : '取消预订'
-            wx.showModal({
-                title: '提示',
-                content: `您要${hint}这张桌子吗？`,
-                success: function(res) {
-                    if (res.cancel) return
-                    wx.request({
-                        url: `${config.service.tablesInfoUrl}/${table.table_id}?user_id=${user_id}`,
-                        method: "DELETE",
-                        success: function(data) {
-                            let table_list = that.data.table_list;
-                            table_list[index].status_ = '订'
-                            table_list[index].user_avatar = null
-                            table_list[index].status = 0
-                            table_list[index].user_id = null
-                            that.setData({
-                                table_list,
-                            })
-                            wx.removeStorageSync('table_id')
-                        },
-                        fail: function (res) {
-                            console.log("离开桌子失败：", table)
-                        }
-                    })
-                }
-            })
-        }
     },
 
     input_table_no: function(e) {
