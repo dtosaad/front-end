@@ -104,7 +104,6 @@ Page({
                         url: `${config.service.tablesInfoUrl}/${table.table_id}?user_id=${user_id}`,
                         method: "DELETE",
                         success: function(data) {
-                            console.log('0000000000000', data)
                             let table_list = that.data.table_list;
                             table_list[index].status_ = '订'
                             table_list[index].user_avatar = null
