@@ -66,7 +66,7 @@ Page({
         }
     },
 
-    sitdown_or_reserve(table_index, which) {
+    sitdown_or_reserve(table_index, which, callback) {
         let table_list = this.data.table_list
         let table = table_list[table_index]
         let user_id = wx.getStorageSync('userid')
@@ -92,6 +92,7 @@ Page({
                     icon: 'success',
                     duration: 3000,
                 })
+                if (callback) callback()
             },
             fail: function (err) {
                 console.log(err)
@@ -100,7 +101,13 @@ Page({
     },
 
     sitdown(table_index) {
-        this.sitdown_or_reserve(table_index, 0)
+        var that = this
+        console.log('000000000000000000000000')
+        this.sitdown_or_reserve(table_index, 0, () => {
+            setInterval(() => {
+                that.getSingleTableInfo()
+            }, 3000)
+        })
     },
 
     reserve(table_index) {
@@ -638,6 +645,38 @@ Page({
         })
     },
 
+    // 获取单独的桌位信息
+    getSingleTableInfo: function() {
+        var table_id = table_id
+        console.log('table_id in getSingleTableInfo()', table_id)
+        var that = this
+        if (table_id) {
+            wx.request({
+                url: `${config.service.tablesInfoUrl}/${table_id}`,
+                method: 'GET',
+                success: function(res) {
+                    console.log(res.data)
+                    if (res.data > 1) {
+                        wx.getStorage({
+                            key: 'is_together',
+                            success: function(res) {
+                                if (!res.data) {
+                                    that.orderTogether()
+                                }
+                            },
+                            fail: function(res) {
+                                that.orderTogether()
+                            }
+                        })
+                        
+                    }
+                }
+            })
+        }
+        
+    },
+
+    // 预订或者坐下
     bookOrTakeTable: function(e) {
         let table_index = e.target.dataset.index
         let table_id = e.target.dataset.id
