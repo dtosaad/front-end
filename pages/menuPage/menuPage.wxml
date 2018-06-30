@@ -86,7 +86,7 @@
             <view class='table_list'>
                 <view  wx:for = "{{table_list}}" wx:for-index = "table_index" class="table table_left {{(table_index - 1)%4 == 0 ? 'table_right' : ''}}">
                     <view wx:if = "{{item.status_ == '订'}}" class='middle_message' bindtap="bookOrTakeTable" data-id = "{{item.table_id}}" data-index="{{item.index}}">{{item.status_}}</view>
-                    <image class="user_avatar" wx:if = "{{item.status_ == '预'}}" src="{{item.user_avatar}}" data-index="{{item.index}}" mode='aspectFit' bindtap="free_table"></image>
+                    <image class="user_avatar" wx:if = "{{item.status_ == '预'}}" src="{{item.user_avatar}}" data-index="{{item.index}}" mode='aspectFit' bindtap="table_has_user"></image>
                     <view class="table_id {{item.color == 1 ? 's_table_color':''}} {{item.color == 2 ? 'm_table_color':''}} {{item.color == 3 ? 'b_table_color':''}}" >{{item.number}}</view>
                 </view>
             </view>

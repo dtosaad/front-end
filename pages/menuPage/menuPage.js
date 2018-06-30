@@ -10,6 +10,7 @@ Page({
         hidden_modal_table: true,
         table_index: null,
         table_id: null,
+        get_tables_first: true,
 
         // 切换顶部导航栏
         currentTab: 0,
@@ -30,6 +31,38 @@ Page({
         // 协同点单相关
         isTogether: false,
         togetherMenu: []
+    },
+
+    table_has_user(e) {
+        let index = e.target.dataset.index
+        let table = this.data.table_list[index]
+        let user_id = wx.getStorageSync('userid')
+        let that = this
+        let table_id = wx.getStorageSync('table_id')
+        // 这个桌子的主人不是他
+        if (!table_id && table.user_id !== user_id) {
+            wx.showModal({
+                title: '提示',
+                content: `该桌子已经有人，是否协同点餐？`,
+                success: function(res) {
+                    if (res.cancel) return
+                    that.orderTogether(table.table_id, user_id)
+                }
+            })
+            return
+        }
+        // 这个桌子的主人是他
+        if (table_id && table.table_id === table_id) {
+            this.free_table(index)
+            return
+        }
+        if (table_id) {
+            wx.showToast({
+                title: '抱歉，您已经选了其它桌子，不能参与这个桌子的协同点餐',
+                icon: 'none',
+                duration: 3000,
+            })
+        }
     },
 
     sitdown_or_reserve(table_index, which) {
@@ -155,8 +188,7 @@ Page({
         this.sitdown_or_reserve(index, this.data.sitdown ? 0 : 1)
     },
 
-    free_table: function(e) {
-        let index = e.target.dataset.index
+    free_table: function(index) {
         let table = this.data.table_list[index]
         let user_id = wx.getStorageSync('userid')
         let that = this
@@ -203,7 +235,6 @@ Page({
         this.setData({
             sitdown: false,
         })
-        console.log('radio 发生 change 事件，携带 value 值为：', e.detail.value)
     },
 
     // 切换顶部导航栏
@@ -567,6 +598,7 @@ Page({
                 console.log('tables', server_res)
                 var allTables = server_res.data
                 let has_table = false
+                let get_tables_first = that.data.get_tables_first
                 for (var i = 0; i < allTables.length; i++) {
                     var table = {
                         index: i,
@@ -579,19 +611,20 @@ Page({
                         user_id: allTables[i].user_id,
                     };
                     table_list.push(table);
-                    if (table.user_id === user_id) {
+                    if (get_tables_first && table.user_id === user_id) {
                         has_table = true
                         wx.setStorageSync('table_id', table.table_id)
                     }
                 }
-                if (!has_table) {
+                if (get_tables_first && !has_table) {
                     wx.removeStorageSync('table_id')
                     that.setData({
                         hidden_modal: false
                     })
                 }
                 that.setData({
-                    table_list: table_list
+                    table_list: table_list,
+                    get_tables_first: false
                 })
             }
         })
@@ -624,9 +657,17 @@ Page({
             url: url,
             method: 'POST',
             success: function(res) {
+                wx.setStorageSync('table_id', table_id)
+                wx.setStorageSync('is_together', true)
+                wx.setStorageSync('need_upload', true)
                 that.setData({
                     isTogether: true
                 })
+                setInterval(() => {
+                    let need_upload = wx.getStorageSync('need_upload')
+                    if (!is_together) return
+                    that.uploadOrder()
+                }, 3000)
             },
             fail: function(res) {
                 that.setData({
@@ -636,7 +677,7 @@ Page({
         })
     },
 
-    // 上传我点的菜，拉下一起点的菜？
+    // 上传我点的菜，拉下一起点的菜
     uploadOrder: function() {
         var table_id = wx.getStorageSync('table_id')
         var user_id = wx.getStorageSync('userid')
@@ -652,15 +693,12 @@ Page({
             }
             uploadData.push(temp)
         }
-        console.log(uploadData)
         wx.request({
             url: url,
             method: 'POST',
             data: uploadData,
             success: function(res) {
-                console.log('upload', res)
-                var togetherOrder = res.data
-                
+                console.log(res)
             }
         })
     },
@@ -674,12 +712,20 @@ Page({
                     this.getDishes()
                     this.getRecommendedImage()
                     this.getTableInfo()
+                    let that = this
+                    setInterval(() => {
+                        that.getTableInfo()
+                    }, 3000)
                 })
                 console.log('login success')
             } else {
                 this.getDishes()
                 this.getRecommendedImage()
                 this.getTableInfo()
+                let that = this
+                setInterval(() => {
+                    that.getTableInfo()
+                }, 3000)
             }
         } catch(e) {
             console.log('Get isLogin fail!')
