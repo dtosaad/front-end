@@ -158,9 +158,9 @@ Page({
                         duration: 3000,
                     })
                 }
-                else if () {
+                // else if () {
 
-                }
+                // }
                 // 没定过桌子且要坐的桌子是空桌
                 else if (!table_id && table.status === 0) {
                     this.sitdown(index)
@@ -533,27 +533,19 @@ Page({
     getMyDishes: function() {
         var that = this
         console.log('carry getMyDishes')
-        wx.getStorage({
-            key: 'userid',
-            success: function(res) {
-                var userid = res.data
-                wx.request({
-                    url: config.service.dishesUrl + '?userid=' + userid,
-                    method: 'GET',
-                    success: function(server_res) {
-                        var myDishes = server_res.data
-                        var dishes = that.data.dishes_list
-                        for (var i = 0; i < myDishes.length; i++) {
-                            dishes[myDishes[i].dish_id].type[1] = '我吃过'
-                        }
-                        console.log('getMyDishes', myDishes)
-                        // 恢复我吃过的菜
-                        that.recoverOrder()
-                    }
-                })
-            },
-            fail: function(res) {
-                console.log('getUserid fail')
+        let user_id = wx.getStorageSync('userid')
+        wx.request({
+            url: config.service.dishesUrl + '?userid=' + user_id,
+            method: 'GET',
+            success: function(server_res) {
+                var myDishes = server_res.data
+                var dishes = that.data.dishes_list
+                for (var i = 0; i < myDishes.length; i++) {
+                    dishes[myDishes[i].dish_id].type[1] = '我吃过'
+                }
+                console.log('getMyDishes', myDishes)
+                // 恢复我吃过的菜
+                that.recoverOrder()
             }
         })
     },
