@@ -16,18 +16,10 @@ var postDataToServer = function postDataToServer(userInfo, code) {
         },
         success: function (data) {
             // 储存userid
-            wx.setStorage({
-                key: 'userid',
-                data: data.data.userid,
-                success: function(res) {
-                    console.log(res)
-                },
-                fail: function(res) {
-                    console.log(res)
-                }
-            })
+            wx.setStorageSync('userid', data.data.userid)
+            wx.setStorageSync('avatar', userInfo.avatarUrl)
         },
-        fail: function (res) {
+        fail: function(res) {
             wx.showToast({
                 title: '登陆失败'
             })

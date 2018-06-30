@@ -6,9 +6,12 @@ var menuPageData = require('menuPageData')
 Page({
     data: {
         hidden_modal: false,
-        reserved: false,
+        sitdown: true,
         table_no: '',
         hidden_modal_table: true,
+        table_index: null,
+        table_id: null,
+
         // 切换顶部导航栏
         currentTab: 0,
         currentMenu: '我吃过',
@@ -54,17 +57,85 @@ Page({
         this.setData({
             hidden_modal_table: true
         });
+        let status = this.data.sitdown ? 1 : 2;
+        let index = this.data.table_index
+        let table_id = this.data.table_id
+        let that = this
+        let user_id = wx.getStorageSync('userid')
+        wx.request({
+            url: `${config.service.tablesInfoUrl}/${table_id}?status=${status}&user_id=${user_id}`,
+            method: "POST",
+            success: function(data) {
+                let table_list = that.data.table_list;
+                table_list[index].status_ = '预'
+                table_list[index].user_avatar = wx.getStorageSync('avatar')
+                table_list[index].status = status
+                table_list[index].user_id = user_id
+                that.setData({
+                    table_list,
+                })
+                let title = that.data.sitdown ? '成功' : '预订成功'
+                wx.showToast({
+                    title,
+                    icon: 'success',
+                    duration: 3000,
+                })
+            },
+            fail: function (res) {
+                console.log(res)
+            }
+        })
     },
 
     free_table: function(e) {
-        let table_id = e.target.dataset.index
-        console.log(index)
+        let index = e.target.dataset.index
+        let table = this.data.table_list[index]
+        let user_id = wx.getStorageSync('userid')
+        let that = this
+        if (user_id === table.user_id) {
+            let status = table.status
+            let hint = status === 1 ? '离开' : '取消预订'
+            wx.showModal({
+                title: '提示',
+                content: `您要${hint}这张桌子吗？`,
+                success: function(res) {
+                    if (res.cancel) return
+                    wx.request({
+                        url: `${config.service.tablesInfoUrl}/${table.table_id}?user_id=${user_id}`,
+                        method: "DELETE",
+                        success: function(data) {
+                            console.log('0000000000000', data)
+                            let table_list = that.data.table_list;
+                            table_list[index].status_ = '订'
+                            table_list[index].user_avatar = null
+                            table_list[index].status = 0
+                            table_list[index].user_id = null
+                            that.setData({
+                                table_list,
+                            })
+                        },
+                        fail: function (res) {
+                            console.log("离开桌子失败：", table)
+                        }
+                    })
+                }
+            })
+        }
     },
 
     input_table_no: function(e) {
         this.setData({
             table_no: e.detail.value
         });
+    },
+
+    bindchange: function(e) {
+        let value = e.detail.value
+        if (value === 'sitdown') return
+        this.setData({
+            sitdown: false,
+        })
+        console.log('radio 发生 change 事件，携带 value 值为：', e.detail.value)
     },
 
     // 切换顶部导航栏
@@ -412,7 +483,7 @@ Page({
                 var allTables = server_res.data
                 for (var i = 0; i < allTables.length; i++) {
                     var table = {
-                        // index: i,
+                        index: i,
                         table_id: allTables[i].table_id,
                         number: allTables[i].number,
                         status_: allTables[i].user_id == null ? '订' : '预',
@@ -430,28 +501,14 @@ Page({
         })
     },
 
-    bookOrTakeTable: function() {
+    bookOrTakeTable: function(e) {
+        let table_index = e.target.dataset.index
+        let table_id = e.target.dataset.id
         this.setData({
             hidden_modal_table: false,
+            table_index,
+            table_id,
         });
-    },
-
-    // 预定座位(未完成)
-    bookTable: function(e) {
-        var table_id = e.target.dataset.id
-        console.log(table_id)
-        var user_id = wx.getStorageSync('userid')
-        var that = this
-        var bookTableUrl = config.service.tablesInfoUrl + '/' + table_id + '/reservation?user_id=' + user_id
-        console.log('booktableurl', bookTableUrl)
-        wx.request({
-            url: bookTableUrl,
-            method: 'POST',
-            success: function(res) {
-                that.getTableInfo()
-                console.log(res)
-            }
-        })
     },
 
     // 扫描桌上二维码(测试)
