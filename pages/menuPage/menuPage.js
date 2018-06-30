@@ -687,7 +687,7 @@ Page({
     // 确认协同点餐
     orderTogether: function(table_id, user_id) {
         var that = this
-        var url = config.service.tablesInfoUrl + '/' + table_id + '/together?userid=' + user_id
+        var url = config.service.tablesInfoUrl + '/' + table_id + '/together?user_id=' + user_id
         wx.request({
             url: url,
             method: 'POST',
