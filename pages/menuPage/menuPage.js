@@ -8,9 +8,8 @@ Page({
         sitdown: true,
         table_no: '',
         hidden_modal_table: true,
-        table_index: null,
-        table_id: null,
         get_tables_first: true,
+        table_index: -1,
 
         // 切换顶部导航栏
         currentTab: 0,
@@ -97,7 +96,10 @@ Page({
                     }
                 })
             } else {  // 坐下，成为这个桌子的主人
-                this.sitdown(table_index)
+                this.setData({
+                    hidden_modal_table: false,
+                    table_index,
+                });
             }
         }
     },
@@ -183,8 +185,6 @@ Page({
                     that.free_table(table_index)
                 }
             })
-            this.free_table(table_index)
-            return
         }
         this.choose_table(table_index)
     },
@@ -225,11 +225,10 @@ Page({
     },
 
     confirm_take: function() {
+        this.sitdown_or_reserve(this.data.table_index, this.data.sitdown ? 0 : 1)
         this.setData({
             hidden_modal_table: true
         });
-        let index = this.data.table_index
-        this.sitdown_or_reserve(index, this.data.sitdown ? 0 : 1)
     },
 
     input_table_no: function(e) {
@@ -639,21 +638,10 @@ Page({
 
     bookOrTakeTable: function(e) {
         let table_index = e.target.dataset.index
-        let table_id = e.target.dataset.id
-        let table_id_old = wx.getStorageSync('table_id')
-        if (table_id_old) {
-            wx.showToast({
-                title: '抱歉，您已经选了位置，不能重复选择桌位',
-                icon: 'none',
-                duration: 3000,
-            })
-            return
-        }
         this.setData({
-            hidden_modal_table: false,
             table_index,
-            table_id,
-        });
+        })
+        this.choose_table(table_index)
     },
 
     // 确认协同点餐
