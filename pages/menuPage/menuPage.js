@@ -512,11 +512,11 @@ Page({
                 var isLastOne = res.data.orderers_count == 0 ? true : false
                 console.log('If the customer is the last one?', isLastOne)
                 if (isLastOne) {
-                    wx.navigateTo({
+                    wx.reLaunch({
                         url: "../confirmOrder/confirmOrder"
                     })
                 } else {
-                    wx.navigateTo({
+                    wx.reLaunch({
                         url: "../usingPage/usingPage"
                     })
                 }
