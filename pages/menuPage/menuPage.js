@@ -797,5 +797,15 @@ Page({
         } catch(e) {
             console.log('Get isLogin fail!')
         }
-    }
+    },
+
+    onHide: function () {
+        if (this.data.is_together)
+            wx.setStorageSync('need_upload', false)
+    },
+
+    onShow: function () {
+        if (this.data.is_together)
+            wx.setStorageSync('need_upload', true)
+    },
 })

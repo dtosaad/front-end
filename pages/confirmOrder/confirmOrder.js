@@ -29,7 +29,8 @@ Page({
         pickerArray: ['不使用'],
         myDiscount: [],
 
-        is_together: null
+        is_together: null,
+        need_update: null
     },
 
 
@@ -169,7 +170,7 @@ Page({
     getTableOrderCount: function() {
         
         var table_id = wx.getStorageSync('table_id')
-        
+        var that = this
         wx.request({
             url: `${config.service.tablesInfoUrl}/${table_id}`,
             method: 'GET',
@@ -177,6 +178,9 @@ Page({
                 console.log(res.data)
                 let {orderers_count} = res.data
                 if (orderers_count == 0) {
+                    that.setData({
+                        need_update: false
+                    })
                     wx.reLaunch({
                         url: "../usingPage/usingPage"
                     })
@@ -236,7 +240,7 @@ Page({
                     console.log('here')
                     myDiscount = discountArr
                     for (var discount in discountArr) {
-                        pickerArray.push(discount.discount)
+                        pickerArray.push(discount.money)
                     }
                     that.setData({
                         pickerArray: pickerArray,
@@ -296,7 +300,8 @@ Page({
         var total = this.data.total;
         var is_together = wx.getStorageSync('is_together') ? true : false
         this.setData({
-            is_together: is_together
+            is_together: is_together,
+            need_update: is_together,
         })
 
         var that = this
@@ -305,6 +310,7 @@ Page({
 
         if (is_together) {
             setInterval(() => {
+                if (!that.data.need_update) return
                 that.uploadOrder()
             }, 3000)
         }
