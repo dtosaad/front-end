@@ -8,7 +8,7 @@ Page({
     },
 
     navigateTo: function () {
-        var user_id = wx.getStorageSync('userid')
+        var user_id = wx.getStorageSync('user_id')
         var order = this.data.order
         for (var i = 0 ; i < order.length; i++) {
             wx.request({

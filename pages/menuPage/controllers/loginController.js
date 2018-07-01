@@ -18,8 +18,8 @@ var postDataToServer = function postDataToServer(userInfo, code) {
                 location: userInfo.country + ' ' + userInfo.city
             },
             success: function (data) {
-                // 储存userid
-                wx.setStorageSync('userid', data.data.userid)
+                // 储存user_id
+                wx.setStorageSync('user_id', data.data.user_id)
                 wx.setStorageSync('avatar', userInfo.avatarUrl)
                 res()
             },

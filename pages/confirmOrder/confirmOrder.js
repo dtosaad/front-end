@@ -29,8 +29,8 @@ Page({
         pickerArray: ['不使用'],
         myDiscount: [],
 
-        is_together: null,
-        need_update: null
+        is_together: false,
+        order_id: 0
     },
 
 
@@ -105,27 +105,40 @@ Page({
         });
     },
 
+    payOrder: function() {
+        var user_id = wx.getStorageSync('user_id')
+        var order_id = this.data.order
+        var table_id = wx.getStorageSync('table_id')
+        wx.request({
+            url: `${config.service.payUrl}/${order_id}/pay?user_id=${user_id}`,
+            method: 'POST',
+            data: {
+                table_id: table_id
+            },
+            success: function(res) {
+                console.log('Normal pay success!', res)
+            }
+        })
+    },
 
     // 导航
     navigateTo: function() {
+        var that = this
         var extendStatus = this.data.extendStatus;
         var userNumber = this.data.num;
-        
+        var is_together = this.data.is_together
         // 保存数据
         wx.setStorageSync("userNumber", userNumber);
 
         if (extendStatus === 1) {
-            if (this.data.is_together) {
-                this.posterOrderTogether()
-            }
-            else {
+            this.postOrder().then(()=>{
                 wx.reLaunch({
                     url: "../usingPage/usingPage"
                 })
-            }
+            })
         } 
         else {
-            var takeout_info = (this.data.extendStatus == 3) ? this.data.takeout_info : null
+            var takeout_info = (this.data.extendStatus == 3) ? this.data.takeout_info : undefined
             if ((this.data.extendStatus == 3) && takeout_info == undefined) {
                 wx.showToast({
                     title: '请补全信息！',
@@ -134,71 +147,35 @@ Page({
             }
             else {
                 // 提交订单
-                this.postOrder()
-
-                // 清空本地数据
-                try {
-                    wx.removeStorageSync('order')
-                    wx.removeStorageSync('userNumber')
-                } catch (e) {
-                    console.log("Clear storage failed!")
-                }
-                wx.reLaunch({
-                    url: "../menuPage/menuPage"
+                this.postOrder().then(() => {
+                    that.payOrder()
+                    // 清除部分本地缓存数据
+                    try {
+                        wx.removeStorageSync('order')
+                        wx.removeStorageSync('userNumber')
+                    } catch (e) {
+                        console.log("Clear storage failed!")
+                    }
+                    wx.reLaunch({
+                        url: "../menuPage/menuPage"
+                    })
                 })
             }
         }
     },
 
-    // 协同上传订单
-    posterOrderTogether: function() {
-        var table_id = wx.getStorageSync('table_id')
-        var that = this
-        wx.request({
-            url: `${config.service.host}/orders/together?table_id=`+table_id,
-            method: 'POST',
-            success: function(res) {
-                console.log('posterOrderTogether', res)
-                setInterval(() => {
-                    that.getTableOrderCount()
-                }, 3000)
-            }
-        })
-    },
-
-    // 轮询查剩余的未完成人数
-    getTableOrderCount: function() {
-        
-        var table_id = wx.getStorageSync('table_id')
-        var that = this
-        wx.request({
-            url: `${config.service.tablesInfoUrl}/${table_id}`,
-            method: 'GET',
-            success: function(res) {
-                console.log(res.data)
-                let {orderers_count} = res.data
-                if (orderers_count == 0) {
-                    that.setData({
-                        need_update: false
-                    })
-                    wx.reLaunch({
-                        url: "../usingPage/usingPage"
-                    })
-                }
-            }
-        })
-    },
-
     // 上传订单
     postOrder: function() {
         var that = this
-        var userid = wx.getStorageSync('userid')
+        var user_id = wx.getStorageSync('user_id')
+        var table_id = wx.getStorageSync('table_id')
         var takeout_info = (this.data.extendStatus == 3) ? this.data.takeout_info : null
         var myDiscount = this.data.myDiscount
         var discountIndex = this.data.pickerIndex
         var discount_id = discountIndex == 0 ? null : myDiscount[discountIndex - 1].id
+        
         var myPostData = {
-            user_id: userid,
+            table_id: table_id,
             dishes: this.data.order,
             people_count: this.data.num,
             dinning_choice: this.data.extendStatus,
@@ -206,13 +183,23 @@ Page({
             takeout_info: takeout_info,
             discount_id: null
         }
-        wx.request({
-            url: config.service.postOrderUrl,
-            method: 'POST',
-            data: myPostData,
-            success: function (postOrder_res) {
-                console.log(postOrder_res)
-            }
+
+        return new Promise((res, rej) => {
+            wx.request({
+                url: `${config.service.postOrderUrl}?user_id=${user_id}`,
+                method: 'POST',
+                data: myPostData,
+                success: function (postOrder_res) {
+                    console.log('postOrder_res', postOrder_res)
+                    let {order_id} = postOrder_res
+                    that.setData({
+                        order_id: order_id
+                    })
+                    wx.setStorageSync('order_id', order_id)
+                    res()
+                },
+                fail: function() { rej(); }
+            })
         })
     },
 
@@ -226,12 +213,12 @@ Page({
     },
 
     getCoupon: function () {
-        var user_id = wx.getStorageSync('userid')
+        var user_id = wx.getStorageSync('user_id')
         var pickerArray = this.data.pickerArray
         var myDiscount = this.data.myDiscount
         var that = this
         wx.request({
-            url: config.service.discountUrl + '?userid=' + user_id,
+            url: config.service.discountUrl + '?user_id=' + user_id,
             method: 'GET',
             success: function(res) {
                 console.log('getCoupon', res)
@@ -255,10 +242,10 @@ Page({
     },
 
     // 获取协同菜单
-    getTogetherOrder: function() {
+    getTogetherOrder: function () {
         var table_id = wx.getStorageSync('table_id')
-        var user_id = wx.getStorageSync('userid')
-        var url = config.service.tablesInfoUrl + '/' + table_id + '/dishes?userid=' + user_id
+        var user_id = wx.getStorageSync('user_id')
+        var url = config.service.tablesInfoUrl + '/' + table_id + '/dishes?user_id=' + user_id
         var dishes_list = wx.getStorageSync('dishes_list')
         var delta = new Array(dishes_list.length)
         for (var i = 0; i < dishes_list.length - 1; i++) {
@@ -274,6 +261,7 @@ Page({
             success: function (res) {
                 console.log('togetherMenu', res)
                 var togetherArr = res.data
+                var total = that.data.total;
                 for (var i = 0; i < togetherArr.length; i++) {
                     if (togetherArr[i] > 0) {
                         var temp = {
@@ -284,11 +272,13 @@ Page({
                         }
                         console.log('temp', temp)
                         togetherMenu.push(temp)
+                        total += temp.price * temp.amount
                     }
                 }
 
                 that.setData({
-                    order: togetherMenu
+                    order: togetherMenu,
+                    total: total
                 })
             }
         })
@@ -298,21 +288,12 @@ Page({
     onLoad: function (options) {
         var order = this.data.order;
         var total = this.data.total;
-        var is_together = wx.getStorageSync('is_together') ? true : false
+        var is_together = wx.getStorageSync('is_together')
         this.setData({
-            is_together: is_together,
-            need_update: is_together,
+            is_together: is_together
         })
-
-        var that = this
-        // 获取优惠券
-        this.getCoupon()
-
         if (is_together) {
-            setInterval(() => {
-                if (!that.data.need_update) return
-                that.getTogetherOrder()
-            }, 3000)
+            this.getTogetherOrder()
         }
         else {
             // 从本地缓存中同步取出order数组
@@ -327,11 +308,14 @@ Page({
             } catch (e) {
                 console.log("Get local data failed!");
             }
+
+            this.setData({
+                order: order,
+                total: total
+            });
         }
-        
-        this.setData({
-            order: order,
-            total: total
-        });
+
+        // 获取优惠券
+        this.getCoupon()
     }
 })

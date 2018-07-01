@@ -30,7 +30,11 @@ Page({
         // 协同点单相关
         isTogether: false,
         togetherMenu: [],
-        last_dishes_array: []
+        last_dishes_array: [],
+
+        // 加餐相关
+        addMealMenu: [],
+        isAddMeal: false
     },
 
     get_table_index(table_id) {
@@ -53,7 +57,7 @@ Page({
             })
             return
         }
-        let user_id = wx.getStorageSync('userid')
+        let user_id = wx.getStorageSync('user_id')
         // 1. 是这个桌子的主人
         let own_table_index = -1
         let chosen_table = table_list[table_index]
@@ -101,7 +105,7 @@ Page({
 
     free_table(table_index) {
         let table = this.data.table_list[table_index]
-        let user_id = wx.getStorageSync('userid')
+        let user_id = wx.getStorageSync('user_id')
         let that = this
         wx.request({
             url: `${config.service.tablesInfoUrl}/${table.table_id}?user_id=${user_id}`,
@@ -128,11 +132,11 @@ Page({
     sitdown_or_reserve(table_index, which, callback) {
         let table_list = this.data.table_list
         let table = table_list[table_index]
-        let user_id = wx.getStorageSync('userid')
+        let user_id = wx.getStorageSync('user_id')
         let status = which === 0 ? 1 : 2
         let that = this
         // 坐下
-        console.log('userid', user_id)
+        console.log('user_id', user_id)
         console.log(33333333333333333, table)
         wx.setStorageSync("table_id", table.table_id)
         wx.request({
@@ -177,7 +181,7 @@ Page({
     table_avatar_click(e) {
         let table_index = e.target.dataset.index
         let table = this.data.table_list[table_index]
-        let user_id = wx.getStorageSync('userid')
+        let user_id = wx.getStorageSync('user_id')
         // 这个桌子的主人是他
         if (table.user_id === user_id) {
             let hint = table.status === 1 ? '离开' : '取消预订'
@@ -447,6 +451,23 @@ Page({
         this.updateOrderMenu()
     },
 
+    // 上传加餐信息
+    postAddedMeal: function() {
+        var order_id = wx.getStorageSync('order_id')
+        var user_id = wx.getStorageSync('user_id')
+
+        wx.request({
+            url: `${config.service.postOrderUrl}/${order_id}?user_id=${user_id}`,
+            method: 'PUT',
+            success: function(res) {
+                console.log('Post added meal success!', res)
+                wx.reLaunch({
+                    url: "../usingPage/usingPage"
+                })
+            }
+        })
+    },
+ 
     // 导航到下一页
     navigateTo: function () {
         var that = this
@@ -456,9 +477,7 @@ Page({
             key: 'addMeal',
             success: function(res) {
                 if (res.data) {
-                    wx.reLaunch({
-                        url: "../usingPage/usingPage"
-                    })
+                    that.postAddedMeal()
                 } else {
                     that.navigateToConfirmOrder()
                 }
@@ -469,9 +488,48 @@ Page({
         })
     },
 
+    // 协同告诉后台我点完单了
+    posterOrderTogether: function () {
+        var user_id = wx.getStorageSync('user_id')
+        var table_id = wx.getStorageSync('table_id')
+        var that = this
+        wx.request({
+            url: `${config.service.host}/orders/together?table_id=${table_id}?user_id=${user_id}`,
+            method: 'POST',
+            success: function (res) {
+                console.log('posterOrderTogether', res)
+                that.uploadOrder()
+                var isLastOne = res.data.orderers_count == 0 ? true : false
+                console.log('If the customer is the last one?', isLastOne)
+                if (isLastOne) {
+                    wx.navigateTo({
+                        url: "../confirmOrder/confirmOrder"
+                    })
+                } else {
+                    wx.navigateTo({
+                        url: "../usingPage/usingPage"
+                    })
+                }
+            }
+        })
+    },
+
+
     navigateToConfirmOrder: function() {
         var num = this.data.ordermenu.length
-        if (num != 0) {
+        var is_together = this.data.is_together
+        var that = this
+        if (is_together) {
+            wx.showModal({
+                title: '提示',
+                content: '点餐完毕后无法修改订单，是否确认提交？',
+                success: function(res) {
+                    if (res.cancel) return
+                    that.posterOrderTogether()
+                }
+            })
+        }
+        else if (num != 0) {
             wx.navigateTo({
                 url: "../confirmOrder/confirmOrder"
             })
@@ -488,8 +546,9 @@ Page({
     getDishes: function () {
         console.log('getDishes')
         var that = this
+        var user_id = wx.getStorageSync('user_id')
         wx.request({
-            url: config.service.dishesUrl,
+            url: `${config.service.dishesUrl}?user_id=${user_id}`,
             method: "GET",
             success: function (data) {
                 var data_from_server = data.data
@@ -542,9 +601,9 @@ Page({
     getMyDishes: function() {
         var that = this
         console.log('carry getMyDishes')
-        let user_id = wx.getStorageSync('userid')
+        let user_id = wx.getStorageSync('user_id')
         wx.request({
-            url: config.service.dishesUrl + '?userid=' + user_id,
+            url: config.service.dishesUrl + '?user_id=' + user_id,
             method: 'GET',
             success: function(server_res) {
                 var myDishes = server_res.data
@@ -563,8 +622,9 @@ Page({
     getRecommendedImage: function() {
         console.log('getRecommendedImage')
         var that = this
+        var user_id = wx.getStorageSync('user_id')
         wx.request({
-            url: config.service.recommendedUrl + '3',
+            url: `${config.service.recommendedUrl}/3?user_id=${user_id}`,
             method: 'GET',
             success: function(server_res) {
                 console.log(server_res)
@@ -588,17 +648,20 @@ Page({
 
     // 恢复点单数据
     recoverOrder: function() {
-        var order = wx.getStorageSync('order')
-        var dishes_list = this.data.dishes_list
-        if (dishes_list.length === 0) return
-        for(var i = 0; i < order.length; i++) {
-            console.log('dishes_list[order[i].dish_id]', dishes_list[order[i].dish_id])
-            dishes_list[order[i].dish_id].num = order[i].amount
+        // 如果是加餐就不需要恢复
+        if (!this.data.isAddMeal) {
+            var order = wx.getStorageSync('order')
+            var dishes_list = this.data.dishes_list
+            if (dishes_list.length === 0) return
+            for (var i = 0; i < order.length; i++) {
+                console.log('dishes_list[order[i].dish_id]', dishes_list[order[i].dish_id])
+                dishes_list[order[i].dish_id].num = order[i].amount
+            }
+            this.setData({
+                ordermenu: order,
+                dishes_list: dishes_list
+            })
         }
-        this.setData({
-            ordermenu: order,
-            dishes_list: dishes_list
-        })
         this.updateOrderMenu()
         console.log(this.data.ordermenu)
         console.log('recover', order)
@@ -608,9 +671,9 @@ Page({
     getTableInfo: function() {
         var table_list = []
         var that = this
-        let user_id = wx.getStorageSync('userid')
+        let user_id = wx.getStorageSync('user_id')
         wx.request({
-            url: config.service.tablesInfoUrl,
+            url:`${config.service.tablesInfoUrl}?user_id=${user_id}`,
             method: 'GET',
             success: function(server_res) {
                 console.log('tables', server_res)
@@ -651,16 +714,16 @@ Page({
     getSingleTableInfo: function(table_id) {
         console.log('table_id in getSingleTableInfo()', table_id)
         var that = this
-        let user_id = wx.getStorageSync('userid')
+        let user_id = wx.getStorageSync('user_id')
         wx.request({
-            url: `${config.service.tablesInfoUrl}/${table_id}`,
+            url: `${config.service.tablesInfoUrl}/${table_id}?user_id=${user_id}`,
             method: 'GET',
             success: function(res) {
                 console.log(res.data)
-                let { orderers_count } = res.data
-                if (orderers_count > 1) {
+                let { orderers_total } = res.data
+                if (orderers_total > 1) {
                     let is_together = wx.getStorageSync('is_together')
-                    console.log('&&&&&&&&&', orderers_count, is_together)
+                    console.log('&&&&&&&&&', orderers_total, is_together)
                     if (!is_together) {
                         that.orderTogether(table_id, user_id)
                     }
@@ -672,7 +735,6 @@ Page({
                 }
             }
         })
-        
     },
 
     // 预订或者坐下
@@ -715,8 +777,8 @@ Page({
     // 上传我点的菜，拉下一起点的菜
     uploadOrder: function() {
         var table_id = wx.getStorageSync('table_id')
-        var user_id = wx.getStorageSync('userid')
-        var url = config.service.tablesInfoUrl + '/' + table_id + '/dishes?userid=' + user_id
+        var user_id = wx.getStorageSync('user_id')
+        var url = config.service.tablesInfoUrl + '/' + table_id + '/dishes?user_id=' + user_id
         console.log(4444444444444, table_id, url)
         var ordermenu = this.data.ordermenu
         var dishes_list = this.data.dishes_list

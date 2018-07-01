@@ -16,75 +16,6 @@ Page({
         myDiscount: []
     },
 
-    /* 点击减号 */
-    bindMinus: function () {
-        var num = this.data.num;
-        var total = this.data.total;
-
-        // 如果大于1时，才可以减  
-        if (num > 1) {
-            num--;
-            total--;
-        }
-
-        // 只有大于一件的时候，才能normal状态，否则disable状态  
-        var minusStatus = num <= 1 ? 'disabled' : 'normal';
-
-        // 将数值与状态写回  
-        this.setData({
-            num: num,
-            minusStatus: minusStatus,
-            total: total
-        });
-    },
-
-
-    /* 点击加号 */
-    bindPlus: function () {
-        var num = this.data.num;
-        var total = this.data.total;
-
-        // 人数和总价都自增1
-        num++;
-        total++;
-
-        // 只有大于一件的时候，才能normal状态，否则disable状态  
-        var minusStatus = num < 1 ? 'disabled' : 'normal';
-
-        // 将数值与状态写回  
-        this.setData({
-            num: num,
-            minusStatus: minusStatus,
-            total: total
-        });
-    },
-
-    postOrder: function () {
-        var that = this
-        var userid = wx.getStorageSync('userid')
-        var takeout_info = null
-        var myDiscount = this.data.myDiscount
-        var discountIndex = this.data.pickerIndex
-        var discount_id = discountIndex == 0 ? null : myDiscount[discountIndex - 1].id
-        var myPostData = {
-            user_id: userid,
-            dishes: this.data.order,
-            people_count: this.data.num,
-            dinning_choice: 0,
-            note: null,
-            takeout_info: takeout_info,
-            discount_id: null
-        }
-        wx.request({
-            url: config.service.postOrderUrl,
-            method: 'POST',
-            data: myPostData,
-            success: function (postOrder_res) {
-                console.log(postOrder_res)
-            }
-        })
-    },
-
     // 选择优惠券
     bindCasPickerChange: function (e) {
         console.log('乔丹选的是', this.data.pickerArray[e.detail.value])
@@ -96,20 +27,18 @@ Page({
 
     navigateTo: function () {
         // 提交订单
-        this.postOrder()
-
-        wx.reLaunch({
-            url: "../reviewPage/reviewPage"
-        })
+        var is_together = wx.getStorageSync('is_together')
+        if (is_together) this.payOrderTogether
+        else this.payOrderNormal
     },
 
     getCoupon: function () {
-        var user_id = wx.getStorageSync('userid')
+        var user_id = wx.getStorageSync('user_id')
         var pickerArray = this.data.pickerArray
         var myDiscount = this.data.myDiscount
         var that = this
         wx.request({
-            url: config.service.discountUrl + '?userid=' + user_id,
+            url: config.service.discountUrl + '?user_id=' + user_id,
             method: 'GET',
             success: function (res) {
                 console.log('getCoupon', res)
@@ -131,12 +60,76 @@ Page({
             }
         })
     },
+    
+    payOrderNormal: function() {
+        var order_id = wx.getStorageSync('order_id')
+        var user_id = wx.getStorageSync('user_id')
+        var table_id = wx.getStorageSync('table_id')
 
+        wx.request({
+            url: `${config.service.payUrl}/${order_id}/pay?user_id=${user_id}`,
+            method: 'POST',
+            data: {
+                table_id: table_id
+            },
+            success: function(res) {
+                that.navigateToReviewPage()
+            }
+        })
+    },
+
+    payOrderTogether: function() {
+        var order_id = wx.getStorageSync('order_id')
+        var user_id = wx.getStorageSync('user_id')
+        var table_id = wx.getStorageSync('table_id')
+
+        wx.request({
+            url: `${config.service.payUrl}/${order_id}/pay/together?user_id=${user_id}`,
+            method: 'POST',
+            data: {
+                table_id: table_id
+            },
+            success: function (res) {
+                that.navigateToReviewPage()
+            }
+        })
+    },
+
+    checkIfPayed: function() {
+        var that = this
+        var user_id = wx.getStorageSync('user_id')
+        var table_id = wx.getStorageSync('table_id')
+
+        wx.request({
+            url: `${config.service.tablesInfoUrl}/${table_id}?user_id=${user_id}`,
+            method: 'GET',
+            success: function(res) {
+                let { status } = res.data
+                if (status == 0) {
+                    that.navigateToReviewPage()
+                }
+            }
+        })
+    },
+
+    navigateToReviewPage: function() {
+        wx.reLaunch({
+            url: "../reviewPage/reviewPage"
+        })
+    },
 
     // 加载本地缓存的菜单
     onLoad: function (options) {
+        var that = this
         var order = this.data.order;
         var total = this.data.total;
+
+        var is_together = wx.getStorageSync('is_together')
+        if (is_together) {
+            setInterval(() => {
+                that.checkIfPayed()
+            }, 3000)
+        }
 
         // 获取优惠券
         this.getCoupon()

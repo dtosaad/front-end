@@ -31,7 +31,10 @@ var config = {
         tablesInfoUrl: `${host}/weapp/tables`,
 
         // 获取优惠券
-        discountUrl: `${host}/weapp/discounts`
+        discountUrl: `${host}/weapp/discounts`,
+
+        // 普通支付
+        payUrl: `${host}/weapp/orders`
     }
 };
 

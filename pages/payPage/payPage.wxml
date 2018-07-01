@@ -15,20 +15,7 @@
         <view class="order-member">
             <view>用餐人数</view>
             <view class="order-member-tips">（茶位费：1元/人）</view>
-            <view class="stepper">  
-                <!-- 减号 -->
-                <view class="stepper-button, {{minusStatus}}">
-                    <text bindtap="bindMinus">-</text>  
-                </view>
-                <!-- 数值 -->
-                <view class="stepper-num">
-                    <text>{{ num }}</text>
-                </view>
-                <!-- 加号 -->
-                <view class="stepper-button, normal">
-                    <text bindtap="bindPlus">+</text>
-                </view>
-            </view>
+            <text>{{ num }}</text>
         </view>
     </view>
 

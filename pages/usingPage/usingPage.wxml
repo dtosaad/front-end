@@ -31,6 +31,6 @@
 
     <!--用餐完毕-->
     <view class='finish-bar'>
-        <navigator url="../payPage/payPage" class='finish-button'>用餐完毕</navigator>
+        <navigator bindtap="finishButtonOnClick" class='finish-button'>用餐完毕</navigator>
     </view>
 </view>
