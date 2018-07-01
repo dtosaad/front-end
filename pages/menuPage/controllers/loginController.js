@@ -19,6 +19,7 @@ var postDataToServer = function postDataToServer(userInfo, code) {
             },
             success: function (data) {
                 // 储存user_id
+                console.log('postDataToServer', data)
                 wx.setStorageSync('user_id', data.data.user_id)
                 wx.setStorageSync('avatar', userInfo.avatarUrl)
                 res()

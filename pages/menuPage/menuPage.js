@@ -548,7 +548,7 @@ Page({
         var that = this
         var user_id = wx.getStorageSync('user_id')
         wx.request({
-            url: `${config.service.dishesUrl}?user_id=${user_id}`,
+            url: `${config.service.dishesUrl}/all?user_id=${user_id}`,
             method: "GET",
             success: function (data) {
                 var data_from_server = data.data
@@ -842,7 +842,6 @@ Page({
                         this.getSingleTableInfo(table_id)
                     }
                 })
-                console.log('login success')
             } else {
                 this.getDishes()
                 this.getRecommendedImage()
