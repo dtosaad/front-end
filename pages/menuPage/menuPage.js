@@ -28,7 +28,7 @@ Page({
         minusStatus: 'disabled',
         
         // 协同点单相关
-        isTogether: false,
+        is_together: false,
         togetherMenu: [],
         last_dishes_array: [],
 
@@ -117,7 +117,7 @@ Page({
                 table_list[table_index].user_id = null
                 that.setData({
                     table_list,
-                    isTogether: false,
+                    is_together: false,
                 })
                 wx.removeStorageSync('table_id')
                 wx.removeStorageSync('is_together')
@@ -467,7 +467,7 @@ Page({
         wx.request({
             url: `${config.service.postOrderUrl}/${order_id}?user_id=${user_id}`,
             method: 'PUT',
-            data: addMealMenu,
+            data: addMeal,
             success: function(res) {
                 console.log('Post added meal success!', res)
                 wx.removeStorageSync("order")
@@ -529,6 +529,7 @@ Page({
         var num = this.data.ordermenu.length
         var is_together = this.data.is_together
         var that = this
+        console.log('is_together', is_together)
         if (is_together) {
             wx.showModal({
                 title: '提示',
@@ -641,6 +642,8 @@ Page({
                 var pic = server_res.data
                 for(var i = 0; i < pic.length; i++) {
                   pic[i] = `${config.service.host}/${pic[i]}`
+                  console.log('******', pic[i])
+                  // pic[i] = config.service.host + pic[i]
                 }
                 that.setData({
                   imgUrls: server_res.data
@@ -766,7 +769,7 @@ Page({
                 wx.setStorageSync('is_together', true)
                 wx.setStorageSync('need_upload', true)
                 that.setData({
-                    isTogether: true
+                    is_together: true
                 })
                 setInterval(() => {
                     let need_upload = wx.getStorageSync('need_upload')
@@ -776,7 +779,7 @@ Page({
             },
             fail: function(res) {
                 that.setData({
-                    isTogether: false
+                    is_together: false
                 })
             }
         })

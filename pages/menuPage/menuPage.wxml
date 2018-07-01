@@ -94,7 +94,7 @@
     </swiper>
 
     <view wx:if = "{{show_order}}" class='ordered-menu' hidden="{{currentTab != 0}}">
-        <view wx:if = '{{isTogether}}'>
+        <view wx:if = '{{is_together}}'>
             <text class='ordered-title'>大家点了</text>
             <view class='ordered-line'></view>
             <view wx:for = "{{togetherMenu}}" wx:for-item = "togetheritem">
