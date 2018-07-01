@@ -641,8 +641,6 @@ Page({
                 var pic = server_res.data
                 for(var i = 0; i < pic.length; i++) {
                   pic[i] = `${config.service.host}/${pic[i]}`
-                  console.log('******', pic[i])
-                  // pic[i] = config.service.host + pic[i]
                 }
                 that.setData({
                   imgUrls: server_res.data
