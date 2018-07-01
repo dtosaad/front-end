@@ -504,7 +504,7 @@ Page({
         var table_id = wx.getStorageSync('table_id')
         var that = this
         wx.request({
-            url: `${config.service.host}/weapp/orders/together?table_id=${table_id}?user_id=${user_id}`,
+            url: `${config.service.host}/weapp/tables/${table_id}/commit?user_id=${user_id}`,
             method: 'POST',
             success: function (res) {
                 console.log('posterOrderTogether', res)
