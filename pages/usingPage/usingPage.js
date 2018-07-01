@@ -1,4 +1,5 @@
 // usingPage.js
+var config = require('../../config')
 
 Page({
     data: {
@@ -7,7 +8,9 @@ Page({
         is_together: null,
         need_update: null,
         all_complete_order: false,
-        table_order_id: null
+        table_order_id: null,
+
+        dishes_list: []
     },
 
     // 获取客户所在桌子的订单ID号
@@ -15,20 +18,25 @@ Page({
     getTableOrderId: function() {
         var that = this
         let user_id = wx.getStorageSync('user_id')
+        var table_id = wx.getStorageSync('table_id')
         
-        return Promise((res, rej) => {
+        return new Promise((res, rej) => {
             wx.request({
                 url: `${config.service.tablesInfoUrl}/${table_id}?user_id=${user_id}`,
                 method: 'GET',
-                success: function (res) {
-                    console.log(res.data)
-                    let { order_id } = res.data
+                success: function (getTableOrder_res) {
+                    console.log(getTableOrder_res.data)
+                    let { order_id } = getTableOrder_res.data
                     if (order_id) {
                         that.setData({
                             all_complete_order: true,
                             table_order_id: order_id
                         })
                     }
+                    res()
+                },
+                fail: function() {
+                    rej()
                 }
             })
         })
@@ -126,8 +134,42 @@ Page({
         })
     },
 
+    getMyOrder: function() {
+        var that = this
+        var user_id = wx.getStorageSync('user_id')
+        var order_id = wx.getStorageSync('order_id')
+        var dishes_list = this.data.dishes_list
+
+        wx.request({
+            url: `${config.service.postOrderUrl}/${order_id}?user_id=${user_id}`,
+            method: 'GET',
+            success: function(res) {
+                console.log('getMyOrder', res.data)
+                var dishes = res.data.dishes
+                var myOrder = []
+                dishes.forEach(element => {
+                    myOrder.push({
+                        dish_name: dishes_list[element.dish_id].dish_name,
+                        amount: element.amount,
+                        isServe: false
+                    })
+                })
+                console.log('myOrder', myOrder)
+                that.setData({
+                    order: myOrder
+                })
+            }
+        })
+    },
+
     // 取出数据，初始化我的订单
     onLoad: function(options) {
+
+        // 获取菜单
+        var dishes_list = wx.getStorageSync('dishes_list')
+        this.setData({
+            dishes_list: dishes_list
+        })
 
         // 如果不是协同点餐，默认all_complete_order是true
         var is_together = wx.getStorageSync('is_together') ? true : false
@@ -145,25 +187,13 @@ Page({
                 that.getTogetherOrder()
             }, 3000)
         }
-        else {
-            try {
-                var myOrder = [];
-                var order = wx.getStorageSync('order');
-                if (order) {
-                    order.forEach(element => {
-                        var temp = {
-                            dish_name: element.dish_name,
-                            amount: element.amount,
-                            isServe: false
-                        }
-                        myOrder.push(temp)
-                    });
-                    this.setData({
-                        order: myOrder
-                    })
-                }
-            } catch (e) { }
-        }
-        
+        else
+            this.getMyOrder()
+    },
+
+    onShow: function() {
+        var is_together = wx.getStorageSync('is_together') ? true : false
+        console.log(is_together)
+        if (!is_together) this.getMyOrder()
     }
 })

@@ -33,7 +33,6 @@ Page({
         last_dishes_array: [],
 
         // 加餐相关
-        addMealMenu: [],
         isAddMeal: false
     },
 
@@ -455,12 +454,23 @@ Page({
     postAddedMeal: function() {
         var order_id = wx.getStorageSync('order_id')
         var user_id = wx.getStorageSync('user_id')
-
+        var ordermenu = this.data.ordermenu
+        var addMealMenu = []
+        for (var i = 0; i < ordermenu.length; i++) {
+            addMealMenu.push({
+                dish_id: ordermenu[i].dish_id,
+                amount: ordermenu[i].amount,
+                price: ordermenu[i].price
+            })
+        }
+        console.log('addMealMenu', addMealMenu)
         wx.request({
             url: `${config.service.postOrderUrl}/${order_id}?user_id=${user_id}`,
             method: 'PUT',
+            data: addMealMenu,
             success: function(res) {
                 console.log('Post added meal success!', res)
+                wx.removeStorageSync("order")
                 wx.reLaunch({
                     url: "../usingPage/usingPage"
                 })
@@ -544,9 +554,9 @@ Page({
 
     // 获取菜单数据
     getDishes: function () {
-        console.log('getDishes')
         var that = this
         var user_id = wx.getStorageSync('user_id')
+        console.log('getDishes', user_id)
         wx.request({
             url: `${config.service.dishesUrl}/all?user_id=${user_id}`,
             method: "GET",
@@ -624,7 +634,7 @@ Page({
         var that = this
         var user_id = wx.getStorageSync('user_id')
         wx.request({
-            url: `${config.service.recommendedUrl}/3?user_id=${user_id}`,
+            url: `${config.service.recommendedUrl}?number=3&user_id=${user_id}`,
             method: 'GET',
             success: function(server_res) {
                 console.log(server_res)
@@ -673,7 +683,7 @@ Page({
         var that = this
         let user_id = wx.getStorageSync('user_id')
         wx.request({
-            url:`${config.service.tablesInfoUrl}?user_id=${user_id}`,
+            url:`${config.service.tablesInfoUrl}/all?user_id=${user_id}`,
             method: 'GET',
             success: function(server_res) {
                 console.log('tables', server_res)

@@ -107,8 +107,11 @@ Page({
 
     payOrder: function() {
         var user_id = wx.getStorageSync('user_id')
-        var order_id = this.data.order
+        var order_id = this.data.order_id
         var table_id = wx.getStorageSync('table_id')
+        console.log('payOrder table_id', table_id, typeof(table_id))
+        console.log('payOrder order_id', order_id, typeof (order_id))
+        console.log('payOrder user_id', user_id, typeof (user_id))
         wx.request({
             url: `${config.service.payUrl}/${order_id}/pay?user_id=${user_id}`,
             method: 'POST',
@@ -127,19 +130,29 @@ Page({
         var extendStatus = this.data.extendStatus;
         var userNumber = this.data.num;
         var is_together = this.data.is_together
+        var table_id = wx.getStorageSync('table_id')
         // 保存数据
         wx.setStorageSync("userNumber", userNumber);
 
         if (extendStatus === 1) {
-            this.postOrder().then(()=>{
-                wx.reLaunch({
-                    url: "../usingPage/usingPage"
+            if (!table_id) {
+                wx.showToast({
+                    title: '请先选择一张桌子~',
+                    icon: 'none'
                 })
-            })
+            }
+            else {
+                this.postOrder().then(() => {
+                    wx.removeStorageSync('order')
+                    wx.reLaunch({
+                        url: "../usingPage/usingPage"
+                    })
+                })
+            }
         } 
         else {
-            var takeout_info = (this.data.extendStatus == 3) ? this.data.takeout_info : undefined
-            if ((this.data.extendStatus == 3) && takeout_info == undefined) {
+            var takeout_info = (extendStatus == 3) ? this.data.takeout_info : undefined
+            if ((extendStatus == 3) && takeout_info == undefined) {
                 wx.showToast({
                     title: '请补全信息！',
                     icon: 'none'
@@ -191,7 +204,7 @@ Page({
                 data: myPostData,
                 success: function (postOrder_res) {
                     console.log('postOrder_res', postOrder_res)
-                    let {order_id} = postOrder_res
+                    let {order_id} = postOrder_res.data
                     that.setData({
                         order_id: order_id
                     })
@@ -204,7 +217,7 @@ Page({
     },
 
     // 选择优惠券
-    bindCasPickerChange: function (e) {
+    bindPickerChange: function (e) {
         console.log('乔丹选的是', this.data.pickerArray[e.detail.value])
         this.setData({
             pickerIndex: e.detail.value
@@ -226,9 +239,10 @@ Page({
                 if (discountArr != null) {
                     console.log('here')
                     myDiscount = discountArr
-                    for (var discount in discountArr) {
-                        pickerArray.push(discount.money)
+                    for (var discount of discountArr) {
+                        pickerArray.push(discount.money + '元抵用券')
                     }
+                    console.log(pickerArray)
                     that.setData({
                         pickerArray: pickerArray,
                         myDiscount: myDiscount
