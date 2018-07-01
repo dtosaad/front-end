@@ -311,7 +311,7 @@ Page({
         if (is_together) {
             setInterval(() => {
                 if (!that.data.need_update) return
-                that.uploadOrder()
+                that.getTogetherOrder()
             }, 3000)
         }
         else {
