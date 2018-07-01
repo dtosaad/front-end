@@ -19,7 +19,7 @@ var config = {
         dishesUrl: `${host}/weapp/dishes`,
 
         // 获取每日推荐图片
-        recommendedUrl: `${host}/weapp/recommendation?number=`,
+        recommendedUrl: `${host}/weapp/recommendation`,
 
         // 图片
         imageUrl: `${host}/weapp`,

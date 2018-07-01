@@ -624,15 +624,13 @@ Page({
         var that = this
         var user_id = wx.getStorageSync('user_id')
         wx.request({
-            url: `${config.service.recommendedUrl}/3?user_id=${user_id}`,
+            url: `${config.service.recommendedUrl}?number=3&user_id=${user_id}`,
             method: 'GET',
             success: function(server_res) {
                 console.log(server_res)
                 var pic = server_res.data
                 for(var i = 0; i < pic.length; i++) {
                   pic[i] = `${config.service.host}/${pic[i]}`
-                  console.log('******', pic[i])
-                  // pic[i] = config.service.host + pic[i]
                 }
                 that.setData({
                   imgUrls: server_res.data
@@ -673,7 +671,7 @@ Page({
         var that = this
         let user_id = wx.getStorageSync('user_id')
         wx.request({
-            url:`${config.service.tablesInfoUrl}?user_id=${user_id}`,
+            url:`${config.service.tablesInfoUrl}/all?user_id=${user_id}`,
             method: 'GET',
             success: function(server_res) {
                 console.log('tables', server_res)
