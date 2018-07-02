@@ -294,7 +294,7 @@ Page({
         var sum_money = 0
         var togetherMenu = this.data.togetherMenu
         var is_together = this.data.is_together
-        
+
         if (!is_together) {
             // 更新订单信息（将数量大于0的菜品算作订单）
             for (var i = 0; i < dishes_list.length; i++) {
@@ -342,7 +342,6 @@ Page({
 
         // 获得当前点击的行数
         var index = e.target.dataset.id;
-        var sum_money = this.data.sum_money
         var dishes_list = this.data.dishes_list
         console.log(dishes_list)
         for (var i = 0; i < dishes_list.length; i++) {
@@ -351,13 +350,11 @@ Page({
                 // 若数量大于0才能减
                 if (dishes_list[i].num >= 1) {
                     dishes_list[i].num--;
-                    sum_money = sum_money - dishes_list[i].price;
 
                     // 保存并更新数据
                     var minus = "dishes_list[" + i + "].num"
                     this.setData({
                         [minus]: dishes_list[i].num,
-                        sum_money: sum_money
                     })
                     this.updateOrderMenu()
                 }
@@ -371,7 +368,6 @@ Page({
 
         // 获得当前点击的行数
         var index = e.target.dataset.id;
-        var sum_money = this.data.sum_money
         var dishes_list = this.data.dishes_list
 
         for (var i = 0; i < dishes_list.length; i++) {
@@ -379,13 +375,11 @@ Page({
 
             if (dishes_list[i].dish_id == index) {
                 dishes_list[i].num++;
-                sum_money = sum_money + dishes_list[i].price;
 
                 // 保存并更新数据
                 var minus = "dishes_list[" + i + "].num"
                 this.setData({
                     [minus]: dishes_list[i].num,
-                    sum_money: sum_money
                 })
                 this.updateOrderMenu()
                 break;
@@ -418,14 +412,12 @@ Page({
     // 减号
     bindMinus: function (e) {
         var id = e.target.dataset.id
-        var sum_money = this.data.sum_money
         var count = this.data. dishes_list[id].num
         var price = this.data.dishes_list[id].price
         var minus = "dishes_list[" + id + "].num"
         
         if (count >= 1) {
             count--
-            sum_money -= price
         }
 
         // 只有大于一件的时候，才能normal状态，否则disable状态  
@@ -434,7 +426,6 @@ Page({
         // 保存并更新数据
         this.setData({
             [minus]: count,
-            sum_money: sum_money,
             minusStatus: minusStatus,
         })
         this.updateOrderMenu()
@@ -443,18 +434,15 @@ Page({
     // 加号
     bindPlus: function (e) {
         var id = e.target.dataset.id
-        var sum_money = this.data.sum_money
         var count = this.data.dishes_list[id].num
         var price = this.data.dishes_list[id].price
         var minus = "dishes_list[" + id + "].num"
 
         count++
-        sum_money += price
         
         // 保存并更新数据
         this.setData({
             [minus]: count,
-            sum_money: sum_money,
             minusStatus: 'normal'
         })
         this.updateOrderMenu()
