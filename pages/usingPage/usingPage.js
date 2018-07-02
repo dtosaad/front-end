@@ -10,7 +10,8 @@ Page({
         all_complete_order: false,
         table_order_id: null,
 
-        dishes_list: []
+        dishes_list: [],
+        interval: null
     },
 
     // 获取客户所在桌子的订单ID号
@@ -44,8 +45,10 @@ Page({
 
     // 完成用餐触发的回调函数
     finishButtonOnClick: function() {
+        var that = this
         this.getTableOrderId().then(() => {
             if (this.data.all_complete_order) {
+                clearInterval(that.data.interval)
                 wx.navigateTo({
                     url: "../payPage/payPage"
                 })
@@ -59,12 +62,14 @@ Page({
         })
     },
 
+    // 呼叫服务员
     callService: function(e) {
         wx.showToast({
             title: '已呼叫，请稍等',
         })
     },
 
+    // 加餐
     addMeal: function (e) {
         if (this.data.all_complete_order) {
             wx.setStorageSync('addMeal', true)
@@ -134,6 +139,7 @@ Page({
         })
     },
 
+    // 获得我的菜单
     getMyOrder: function() {
         var that = this
         var user_id = wx.getStorageSync('user_id')
@@ -180,12 +186,15 @@ Page({
         })
 
         var that = this
-
+        var interval = 0
         if (is_together) {
-            setInterval(() => {
+            interval = setInterval(() => {
                 if (!that.data.need_update) return
                 that.getTogetherOrder()
             }, 3000)
+            this.setData({
+                interval: interval
+            })
         }
         else
             this.getMyOrder()
