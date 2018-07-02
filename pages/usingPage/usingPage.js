@@ -188,6 +188,7 @@ Page({
         var that = this
         var interval = 0
         if (is_together) {
+            that.getTableOrderId()
             interval = setInterval(() => {
                 if (!that.data.need_update) return
                 that.getTogetherOrder()

@@ -292,21 +292,30 @@ Page({
         var order_view_height = 0
         var dishes_list = this.data.dishes_list
         var sum_money = 0
+        var togetherMenu = this.data.togetherMenu
 
-        // 更新订单信息（将数量大于0的菜品算作订单）
-        for (var i = 0; i < dishes_list.length; i++) {
-            if (dishes_list[i] == undefined) continue
-            if (dishes_list[i].num > 0) {
-                var temp = {
-                    dish_id: dishes_list[i].dish_id,
-                    dish_name: dishes_list[i].dish_name,
-                    price: dishes_list[i].price,
-                    amount: dishes_list[i].num
+        if (!is_together) {
+            // 更新订单信息（将数量大于0的菜品算作订单）
+            for (var i = 0; i < dishes_list.length; i++) {
+                if (dishes_list[i] == undefined) continue
+                if (dishes_list[i].num > 0) {
+                    var temp = {
+                        dish_id: dishes_list[i].dish_id,
+                        dish_name: dishes_list[i].dish_name,
+                        price: dishes_list[i].price,
+                        amount: dishes_list[i].num
+                    }
+                    ordermenu.push(temp);
+                    sum_money += temp.price * temp.amount
                 }
-                ordermenu.push(temp);
-                sum_money += temp.price * temp.amount
             }
         }
+        else {
+            for (var i = 0; i < togetherMenu.length; i++) {
+                sum_money += togetherMenu[i].price * togetherMenu[i].amount
+            }
+        }
+        
         // 保存信息
         this.setData({
             ordermenu: ordermenu,
@@ -467,7 +476,7 @@ Page({
         wx.request({
             url: `${config.service.postOrderUrl}/${order_id}?user_id=${user_id}`,
             method: 'PUT',
-            data: addMeal,
+            data: addMealMenu,
             success: function(res) {
                 console.log('Post added meal success!', res)
                 wx.removeStorageSync("order")
