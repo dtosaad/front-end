@@ -293,7 +293,8 @@ Page({
         var dishes_list = this.data.dishes_list
         var sum_money = 0
         var togetherMenu = this.data.togetherMenu
-
+        var is_together = this.data.is_together
+        
         if (!is_together) {
             // 更新订单信息（将数量大于0的菜品算作订单）
             for (var i = 0; i < dishes_list.length; i++) {
