@@ -20,10 +20,16 @@ Page({
     },
 
     // 选择优惠券
-    bindCasPickerChange: function (e) {
+    bindPickerChange: function (e) {
         console.log('乔丹选的是', this.data.pickerArray[e.detail.value])
+        var total = this.data.total
+        if (e.detail.value > 0) {
+            total -= myDiscount[e.detail.value - 1].money
+        }
+        
         this.setData({
-            pickerIndex: e.detail.value
+            pickerIndex: e.detail.value,
+            total: total
         })
 
     },
@@ -253,8 +259,6 @@ Page({
         this.setData({
             dishes_list: dishes_list
         })
-
-       
 
         if (is_together) {
             this.getTogetherOrder().then(() => {
