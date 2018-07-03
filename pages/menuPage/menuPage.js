@@ -840,6 +840,8 @@ Page({
                 that.setData({
                     togetherMenu: togetherMenu
                 })
+
+                that.updateOrderMenu()
             }
         })
     },
