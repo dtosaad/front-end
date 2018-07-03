@@ -15,7 +15,8 @@ Page({
         pickerArray: ['不使用'],
         myDiscount: [],
 
-        dishes_list: []
+        dishes_list: [],
+        interval
     },
 
     // 选择优惠券
@@ -48,9 +49,10 @@ Page({
                 if (discountArr != null) {
                     console.log('here')
                     myDiscount = discountArr
-                    for (var discount in discountArr) {
-                        pickerArray.push(discount.discount)
+                    for (var discount of discountArr) {
+                        pickerArray.push(discount.money + '元抵用券')
                     }
+                    console.log(pickerArray)
                     that.setData({
                         pickerArray: pickerArray,
                         myDiscount: myDiscount
@@ -116,6 +118,7 @@ Page({
             success: function(res) {
                 let { status } = res.data
                 if (status == 0) {
+
                     that.navigateToReviewPage()
                 }
             }
@@ -234,9 +237,12 @@ Page({
         var that = this
         var is_together = wx.getStorageSync('is_together') ? true : false
         if (is_together) {
-            setInterval(() => {
+            interval = setInterval(() => {
                 that.checkIfPayed()
             }, config.interval)
+            this.setData({
+                interval: interval
+            })
         }
 
         // 获取优惠券
