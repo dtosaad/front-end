@@ -314,6 +314,19 @@ Page({
             for (var i = 0; i < togetherMenu.length; i++) {
                 sum_money += togetherMenu[i].price * togetherMenu[i].amount
             }
+            // 更新订单信息（将数量大于0的菜品算作订单）
+            for (var i = 0; i < dishes_list.length; i++) {
+                if (dishes_list[i] == undefined) continue
+                if (dishes_list[i].num > 0) {
+                    var temp = {
+                        dish_id: dishes_list[i].dish_id,
+                        dish_name: dishes_list[i].dish_name,
+                        price: dishes_list[i].price,
+                        amount: dishes_list[i].num
+                    }
+                    ordermenu.push(temp);
+                }
+            }
         }
         
         // 保存信息
