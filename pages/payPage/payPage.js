@@ -16,7 +16,7 @@ Page({
         myDiscount: [],
 
         dishes_list: [],
-        interval
+        interval: null
     },
 
     // 选择优惠券
@@ -118,7 +118,7 @@ Page({
             success: function(res) {
                 let { status } = res.data
                 if (status == 0) {
-
+                    clearInterval(that.data.interval)
                     that.navigateToReviewPage()
                 }
             }
