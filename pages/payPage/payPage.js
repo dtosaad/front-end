@@ -243,8 +243,9 @@ Page({
     onLoad: function (options) {
         var that = this
         var is_together = wx.getStorageSync('is_together') ? true : false
+
         if (is_together) {
-            interval = setInterval(() => {
+            var interval = setInterval(() => {
                 that.checkIfPayed()
             }, config.interval)
             this.setData({
