@@ -1,5 +1,4 @@
 var config = require('../../config')
-var login = require('controllers/loginController')
 var menuPageData = require('menuPageData')
 
 Page({
@@ -169,7 +168,7 @@ Page({
         this.sitdown_or_reserve(table_index, 0, () => {
             setInterval(() => {
                 that.getSingleTableInfo(table_id)
-            }, 3000)
+            }, config.interval)
         })
     },
 
@@ -773,7 +772,7 @@ Page({
                     let need_upload = wx.getStorageSync('need_upload')
                     if (!need_upload || that.data.currentTab === 1) return
                     that.uploadOrder()
-                }, 3000)
+                }, config.interval)
             },
             fail: function(res) {
                 that.setData({
@@ -833,39 +832,17 @@ Page({
     },
 
     onLoad: function (options) {
-        try {
-            var isLogin = wx.getStorageSync('isLogin')
-            let table_id = wx.getStorageSync('table_id')
-            console.log(isLogin)
-            if (!isLogin) {
-                login().then(() => {
-                    this.getDishes()
-                    this.getRecommendedImage()
-                    this.getTableInfo()
-                    let that = this
-                    setInterval(() => {
-                        if (that.data.currentTab !== 1) return
-                        that.getTableInfo()
-                    }, 3000)
-                    if (table_id) {
-                        this.getSingleTableInfo(table_id)
-                    }
-                })
-            } else {
-                this.getDishes()
-                this.getRecommendedImage()
-                this.getTableInfo()
-                let that = this
-                setInterval(() => {
-                    if (that.data.currentTab !== 1) return
-                    that.getTableInfo()
-                }, 3000)
-                if (table_id) {
-                    this.getSingleTableInfo(table_id)
-                }
-            }
-        } catch(e) {
-            console.log('Get isLogin fail!')
+        let table_id = wx.getStorageSync('table_id')
+        this.getDishes()
+        this.getRecommendedImage()
+        this.getTableInfo()
+        let that = this
+        setInterval(() => {
+            if (that.data.currentTab !== 1) return
+            that.getTableInfo()
+        }, config.interval)
+        if (table_id) {
+            this.getSingleTableInfo(table_id)
         }
     },
 

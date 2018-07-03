@@ -1,6 +1,6 @@
 //app.js
 var config = require('./config')
-
+var loginTool = require('./utils/login')
 App({
     onLaunch: function () {
         console.log('App onLaunch')

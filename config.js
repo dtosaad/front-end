@@ -35,7 +35,9 @@ var config = {
 
         // 普通支付
         payUrl: `${host}/weapp/orders`
-    }
+    },
+
+    interval : 1000
 };
 
 module.exports = config;

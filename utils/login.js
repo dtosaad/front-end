@@ -1,11 +1,11 @@
-var config = require('../../../config')
+var config = require('../config')
 
 // 信息上传到服务器
 var postDataToServer = function postDataToServer(userInfo, code) {
-    // console.log('code:', code)
-    // console.log('wechat_name:', userInfo.nickName)
-    // console.log('wechat_avatar:', userInfo.avatarUrl)
-    // console.log('location:', userInfo.country + ' ' + userInfo.city)
+    console.log('code:', code)
+    console.log('wechat_name:', userInfo.nickName)
+    console.log('wechat_avatar:', userInfo.avatarUrl)
+    console.log('location:', userInfo.country + ' ' + userInfo.city)
     
     return new Promise((res, rej) => {
         wx.request({
@@ -55,27 +55,19 @@ var getUserInfo = function getUserInfo(login_res) {
             }
         })
     })
-    
 }
 
+// 登陆接口
 var login = function login(option) {
     return new Promise((res, rej) => {
         wx.login({
             success: function (login_res) {
                 if (login_res.code) {
                     // 登陆成功，获取用户信息
-                    getUserInfo(login_res).then(() => {
-                        // 储存登陆成功的状态
-                        try {
-                            console.log('储存登录状态')
-                            wx.setStorageSync('isLogin', true)
-                            res()
-                        } catch (e) {
-                            console.log(e)
-                            rej()
-                        }
-                    })
-                } else {
+                    console.log('登陆成功')
+                    getUserInfo(login_res).then(() => { res(); })
+                }
+                else {
                     wx.showToast({
                         title: '登陆失败',
                         icon: 'none'
@@ -93,7 +85,8 @@ var login = function login(option) {
             }
         })
     })
-
 }
 
-module.exports = login;
+module.exports = {
+    login: login
+};

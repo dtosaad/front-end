@@ -236,7 +236,7 @@ Page({
         if (is_together) {
             setInterval(() => {
                 that.checkIfPayed()
-            }, 3000)
+            }, config.interval)
         }
 
         // 获取优惠券

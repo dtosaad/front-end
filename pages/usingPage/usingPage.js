@@ -192,7 +192,7 @@ Page({
             interval = setInterval(() => {
                 if (!that.data.need_update) return
                 that.getTogetherOrder()
-            }, 3000)
+            }, config.interval)
             this.setData({
                 interval: interval
             })
