@@ -15,7 +15,7 @@
         <view class="order-member">
             <view>用餐人数</view>
             <view class="order-member-tips">（茶位费：1元/人）</view>
-            <text>{{ num }}</text>
+            <text>{{ amount }}</text>
         </view>
     </view>
 

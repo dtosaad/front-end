@@ -1,0 +1,43 @@
+/*加减控件*/
+.stepper {  
+    width: 132rpx;
+    height: 32rpx;
+    display: flex;
+    flex-wrap: row wrap;
+    justify-content: space-between;
+    border: 1rpx solid rgb(245, 166, 35);
+    border-radius: 50rpx;
+}  
+  
+/*加号和减号*/  
+.stepper text {
+    width: 32rpx;
+    height: 32rpx;
+    line-height: 30rpx;
+    text-align: center;
+    vertical-align: middle;
+    float: left;
+    font-size: 32rpx;
+    margin-left: 2rpx;
+}
+
+/*数值*/  
+.stepper-num {  
+    width: auto;
+}  
+
+.stepper-button {
+    border: 0 solid rgb(245, 166, 35);
+    border-radius: 50rpx;
+}
+
+/*普通样式*/  
+.stepper .normal{  
+    color: black;
+    background: rgb(245, 166, 35);
+}
+
+/*禁用样式*/  
+.stepper .disabled{  
+    color: #888888;  
+}

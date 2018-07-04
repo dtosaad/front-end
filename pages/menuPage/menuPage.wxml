@@ -44,20 +44,7 @@
                                 </view>
                                 <view class='order-num'>
                                     <text class='food-num'>数量</text>
-                                    <view class="stepper">
-                                        <!-- 减号 -->
-                                        <view class="stepper-button, disable">
-                                            <text data-id = "{{index}}" bindtap="bindMinus">-</text>  
-                                        </view>
-                                        <!-- 数值 -->
-                                        <view class="stepper-num">
-                                            <text>{{item.num}}</text>
-                                        </view>
-                                        <!-- 加号 -->
-                                        <view class="stepper-button, normal">
-                                            <text data-id = "{{index}}" bindtap="bindPlus">+</text>
-                                        </view>
-                                    </view>
+                                    <numberController bind:minus="dishAmountChange" bind:plus="dishAmountChange" amount="{{item.amount}}" data-id = "{{index}}"/>
                                 </view>
                             </view>
                             <text class='food-price'>￥{{item.price}}</text>

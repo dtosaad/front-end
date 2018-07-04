@@ -5,7 +5,7 @@ Page({
     // 初始化数据
     data: {
         order: [],
-        num: 1,
+        amount: 1,
         minusStatus: 'disabled',
         total: 0,
 
@@ -235,7 +235,7 @@ Page({
 
         this.setData({
             total: total,
-            num: userNumber
+            amount: userNumber
         });
     },
 

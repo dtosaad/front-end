@@ -1,0 +1,14 @@
+<view class="stepper">
+    <!-- 减号 -->
+    <view class="stepper-button, disable">
+        <text catchtap = "_minusFun">-</text>  
+    </view>
+    <!-- 数值 -->
+    <view class="stepper-num">
+        <text>{{amount}}</text>
+    </view>
+    <!-- 加号 -->
+    <view class="stepper-button, normal">
+        <text catchtap = "_plusFun">+</text>
+    </view>
+</view>

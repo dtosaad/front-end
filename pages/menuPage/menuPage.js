@@ -1,5 +1,4 @@
 var config = require('../../config')
-var menuPageData = require('menuPageData')
 
 Page({
     data: {
@@ -33,6 +32,17 @@ Page({
 
         // 加餐相关
         isAddMeal: false
+    },
+
+    dishAmountChange(e) {
+        // 获得当前点击的行数
+        var amount = e.detail.amount
+        var dish_id = e.target.dataset.id
+        var data_name = "dishes_list[" + dish_id + "].amount"
+        this.setData({
+            [data_name]: amount
+        })
+        this.updateOrderMenu()
     },
 
     get_table_index(table_id) {
@@ -298,12 +308,12 @@ Page({
             // 更新订单信息（将数量大于0的菜品算作订单）
             for (var i = 0; i < dishes_list.length; i++) {
                 if (dishes_list[i] == undefined) continue
-                if (dishes_list[i].num > 0) {
+                if (dishes_list[i].amount > 0) {
                     var temp = {
                         dish_id: dishes_list[i].dish_id,
                         dish_name: dishes_list[i].dish_name,
                         price: dishes_list[i].price,
-                        amount: dishes_list[i].num
+                        amount: dishes_list[i].amount
                     }
                     ordermenu.push(temp);
                     sum_money += temp.price * temp.amount
@@ -317,12 +327,12 @@ Page({
             // 更新订单信息（将数量大于0的菜品算作订单）
             for (var i = 0; i < dishes_list.length; i++) {
                 if (dishes_list[i] == undefined) continue
-                if (dishes_list[i].num > 0) {
+                if (dishes_list[i].amount > 0) {
                     var temp = {
                         dish_id: dishes_list[i].dish_id,
                         dish_name: dishes_list[i].dish_name,
                         price: dishes_list[i].price,
-                        amount: dishes_list[i].num
+                        amount: dishes_list[i].amount
                     }
                     ordermenu.push(temp);
                 }
@@ -347,56 +357,6 @@ Page({
         this.setData({
             show_order: change
         })
-    },
-
-    // 订单减号
-    orderMinus: function (e) {
-
-        // 获得当前点击的行数
-        var index = e.target.dataset.id;
-        var dishes_list = this.data.dishes_list
-        console.log(dishes_list)
-        for (var i = 0; i < dishes_list.length; i++) {
-            if (dishes_list[i] == undefined) continue
-            if (dishes_list[i].dish_id == index) {
-                // 若数量大于0才能减
-                if (dishes_list[i].num >= 1) {
-                    dishes_list[i].num--;
-
-                    // 保存并更新数据
-                    var minus = "dishes_list[" + i + "].num"
-                    this.setData({
-                        [minus]: dishes_list[i].num,
-                    })
-                    this.updateOrderMenu()
-                }
-                break;
-            }
-        }
-    },
-
-    // 订单加号
-    orderPlus: function (e) {
-
-        // 获得当前点击的行数
-        var index = e.target.dataset.id;
-        var dishes_list = this.data.dishes_list
-
-        for (var i = 0; i < dishes_list.length; i++) {
-            if (dishes_list[i] == undefined) continue
-
-            if (dishes_list[i].dish_id == index) {
-                dishes_list[i].num++;
-
-                // 保存并更新数据
-                var minus = "dishes_list[" + i + "].num"
-                this.setData({
-                    [minus]: dishes_list[i].num,
-                })
-                this.updateOrderMenu()
-                break;
-            }
-        }
     },
 
     // 页面滑动
@@ -424,9 +384,9 @@ Page({
     // 减号
     bindMinus: function (e) {
         var id = e.target.dataset.id
-        var count = this.data. dishes_list[id].num
+        var count = this.data. dishes_list[id].amount
         var price = this.data.dishes_list[id].price
-        var minus = "dishes_list[" + id + "].num"
+        var minus = "dishes_list[" + id + "].amount"
         
         if (count >= 1) {
             count--
@@ -446,9 +406,9 @@ Page({
     // 加号
     bindPlus: function (e) {
         var id = e.target.dataset.id
-        var count = this.data.dishes_list[id].num
+        var count = this.data.dishes_list[id].amount
         var price = this.data.dishes_list[id].price
-        var minus = "dishes_list[" + id + "].num"
+        var minus = "dishes_list[" + id + "].amount"
 
         count++
         
@@ -536,7 +496,7 @@ Page({
 
 
     navigateToConfirmOrder: function() {
-        var num = this.data.ordermenu.length
+        var amount = this.data.ordermenu.length
         var is_together = this.data.is_together
         var that = this
         console.log('is_together', is_together)
@@ -550,7 +510,7 @@ Page({
                 }
             })
         }
-        else if (num != 0) {
+        else if (amount != 0) {
             wx.navigateTo({
                 url: "../confirmOrder/confirmOrder"
             })
@@ -589,7 +549,7 @@ Page({
                         ordered_count: data_from_server[i].ordered_count,
                         price: data_from_server[i].price,
                         star_count: Math.round(data_from_server[i].star_count / data_from_server[i].star_times),
-                        num: 0
+                        amount: 0
                     }
                     dishes[temp_dishes.dish_id] = temp_dishes
                 }
@@ -676,7 +636,7 @@ Page({
             if (dishes_list.length === 0) return
             for (var i = 0; i < order.length; i++) {
                 console.log('dishes_list[order[i].dish_id]', dishes_list[order[i].dish_id])
-                dishes_list[order[i].dish_id].num = order[i].amount
+                dishes_list[order[i].dish_id].amount = order[i].amount
             }
             this.setData({
                 ordermenu: order,
@@ -809,8 +769,8 @@ Page({
         console.log('last_dishes_array.length', last_dishes_array.length)
         for (var i = 0; i < dishes_list.length; i++) {
             if (dishes_list[i] == undefined) continue
-            delta[i - 1] = dishes_list[i].num - last_dishes_array[i - 1]
-            last_dishes_array[i - 1] = dishes_list[i].num
+            delta[i - 1] = dishes_list[i].amount - last_dishes_array[i - 1]
+            last_dishes_array[i - 1] = dishes_list[i].amount
         }
 
         var togetherMenu = []

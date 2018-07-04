@@ -5,7 +5,7 @@ Page({
     // 初始化数据
     data: {
         order: [],
-        num: 1,
+        amount: 1,
         minusStatus: 'disabled',
         items: [
             { name: 'TS', value: '堂食', checked: true },
@@ -36,21 +36,21 @@ Page({
 
     /* 点击减号 */
     bindMinus: function () {
-        var num = this.data.num;
+        var amount = this.data.amount;
         var total = this.data.total;
 
         // 如果大于1时，才可以减  
-        if (num > 1) {
-            num--;
+        if (amount > 1) {
+            amount--;
             total--;
         }
 
         // 只有大于一件的时候，才能normal状态，否则disable状态  
-        var minusStatus = num <= 1 ? 'disabled' : 'normal';
+        var minusStatus = amount <= 1 ? 'disabled' : 'normal';
 
         // 将数值与状态写回  
         this.setData({
-            num: num,
+            amount: amount,
             minusStatus: minusStatus,
             total: total
         });
@@ -59,19 +59,19 @@ Page({
 
     /* 点击加号 */
     bindPlus: function () {
-        var num = this.data.num;
+        var amount = this.data.amount;
         var total = this.data.total;
 
         // 人数和总价都自增1
-        num++;
+        amount++;
         total++;
 
         // 只有大于一件的时候，才能normal状态，否则disable状态  
-        var minusStatus = num < 1 ? 'disabled' : 'normal';
+        var minusStatus = amount < 1 ? 'disabled' : 'normal';
 
         // 将数值与状态写回  
         this.setData({
-            num: num,
+            amount: amount,
             minusStatus: minusStatus,
             total: total
         });
@@ -128,7 +128,7 @@ Page({
     navigateTo: function() {
         var that = this
         var extendStatus = this.data.extendStatus;
-        var userNumber = this.data.num;
+        var userNumber = this.data.amount;
         var is_together = this.data.is_together
         var table_id = wx.getStorageSync('table_id')
         // 保存数据
@@ -190,7 +190,7 @@ Page({
         var myPostData = {
             table_id: table_id,
             dishes: this.data.order,
-            people_count: this.data.num,
+            people_count: this.data.amount,
             dinning_choice: this.data.extendStatus,
             note: this.data.note,
             takeout_info: takeout_info,

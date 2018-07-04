@@ -79,7 +79,7 @@ page {
 }
 
 /*数值*/  
-.stepper-num {  
+.stepper-amount {  
     width: auto;
 }  
 

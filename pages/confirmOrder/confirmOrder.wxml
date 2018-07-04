@@ -23,7 +23,7 @@
                 </view>
                 <!-- 数值 -->
                 <view class="stepper-num">
-                    <text>{{ num }}</text>
+                    <text>{{ amount }}</text>
                 </view>
                 <!-- 加号 -->
                 <view class="stepper-button, normal">
