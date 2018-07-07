@@ -1,4 +1,4 @@
-page {
+zpage {
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -274,7 +274,7 @@ page {
     margin-right: 40rpx;
 }
 
-.ordered-stepper {
+.ordered-numberController {
     margin-top: 25rpx;
 }
 

@@ -1,6 +1,9 @@
 var config = require('../../config')
-var login = require('controllers/loginController')
-var menuPageData = require('menuPageData')
+var tableController = require('./controllers/tableController')
+var userController = require('./controllers/userController')
+var togetherController = require('./controllers/togetherController')
+var orderController = require('./controllers/orderController')
+var menuController = require('./controllers/menuController')
 
 Page({
     data: {
@@ -8,9 +11,8 @@ Page({
         sitdown: true,
         table_no: '',
         hidden_modal_table: true,
-        table_index: null,
-        table_id: null,
         get_tables_first: true,
+        table_index: -1,
 
         // 切换顶部导航栏
         currentTab: 0,
@@ -29,148 +31,43 @@ Page({
         minusStatus: 'disabled',
         
         // 协同点单相关
-        isTogether: false,
+        is_together: false,
         togetherMenu: [],
-        last_dishes_array: []
+        last_dishes_array: [],
+
+        // 加餐相关
+        isAddMeal: false,
+        
     },
 
-    get_table_index(table_id) {
-        let tables = this.data.table_list
-        for (let i = 0; i < tables.length; ++i) {
-            if (tables[i].table_id === table_id) {
-                return i
-            }
-        }
-        return -1
-    },
+    dishAmountChange(e) {
+        // 获得当前点击的行数
 
-    choose_table(table_index) {
-        let table_list = this.data.table_list
-        if (table_list.length === 0) {
-            wx.showToast({
-                title: '抱歉，获取桌位信息出错，请稍后再试',
-                icon: 'none',
-                duration: 3000,
-            })
-            return
-        }
-        let user_id = wx.getStorageSync('userid')
-        // 1. 是这个桌子的主人
-        let own_table_index = -1
-        let chosen_table = table_list[table_index]
-        if (chosen_table.user_id === user_id) {
-            if (chosen_table.status === 2) {
-                this.sitdown(table_index)
-            }
-            wx.showToast({
-                title: 'OK，请点餐',
-                icon: 'success',
-                duration: 3000,
-            })
-            return true
-        }
-        for (let i = 0; i < table_list.length; ++i) {
-            let table = table_list[i]
-            // 2. 是其它桌子的主人
-            if (table.user_id === user_id) {
-                own_table_index = i
-                wx.showToast({
-                    title: '抱歉，不能重复选择桌子',
-                    icon: 'none',
-                    duration: 3000,
-                })
-                return false
-            }
-        }
-        // 3. 不是任一桌子的主人
-        if (own_table_index === -1) {
-            let table = table_list[table_index]
-            // 协同点餐
-            if (table.user_id) {
-                let that = this
-                wx.showModal({
-                    title: '提示',
-                    content: `该桌子有人了，要进入协同点餐吗？`,
-                    success: function(res) {
-                        if (res.cancel) return
-                        that.orderTogether(table.table_id, user_id)
-                    }
-                })
-            } else {  // 坐下，成为这个桌子的主人
-                this.sitdown(table_index)
-            }
-        }
-    },
-
-    free_table(table_index) {
-        let table = this.data.table_list[table_index]
-        let user_id = wx.getStorageSync('userid')
-        let that = this
-        wx.request({
-            url: `${config.service.tablesInfoUrl}/${table.table_id}?user_id=${user_id}`,
-            method: "DELETE",
-            success: function(data) {
-                let table_list = that.data.table_list;
-                table_list[table_index].status_ = '订'
-                table_list[table_index].user_avatar = null
-                table_list[table_index].status = 0
-                table_list[table_index].user_id = null
-                that.setData({
-                    table_list,
-                })
-                wx.removeStorageSync('table_id')
-            },
-            fail: function(res) {
-                console.log("离开桌子失败", res)
-            }
+        var amount = e.detail.amount
+        var dish_id = e.target.dataset.id
+        console.log(amount, dish_id, e.target.dataset)
+        var data_name = "dishes_list[" + dish_id + "].amount"
+        this.setData({
+            [data_name]: amount
         })
+        this.updateOrderMenu()
     },
 
-    sitdown_or_reserve(table_index, which) {
-        let table_list = this.data.table_list
-        let table = table_list[table_index]
-        let user_id = wx.getStorageSync('userid')
-        let status = which === 0 ? 1 : 2
-        let that = this
-        // 坐下
-        console.log('userid', user_id)
-        wx.setStorageSync("table_id", table.table_id)
-        wx.request({
-            url: `${config.service.tablesInfoUrl}/${table.table_id}?status=${status}&user_id=${user_id}`,
-            method: 'POST',
-            success: function() {
-                table_list[table_index].status_ = '预'
-                table_list[table_index].user_avatar = wx.getStorageSync('avatar')
-                table_list[table_index].status = status
-                table_list[table_index].user_id = user_id
-                console.log('new table_list', table_list)
-                that.setData({
-                    table_list,
-                })
-                wx.showToast({
-                    title: '成功',
-                    icon: 'success',
-                    duration: 3000,
-                })
-            },
-            fail: function (err) {
-                console.log(err)
-            }
-        })
-    },
+    choose_table: tableController.choose_table,
 
-    sitdown(table_index) {
-        this.sitdown_or_reserve(table_index, 0)
-    },
+    free_table: tableController.free_table,
 
-    reserve(table_index) {
-        this.sitdown_or_reserve(table_index, 1)
-    },
+    sitdown_or_reserve: tableController.sitdown_or_reserve,
 
+    sitdown: tableController.sitdown,
+
+    reserve: tableController.reserve,
+
+    // 点击桌位头像
     table_avatar_click(e) {
         let table_index = e.target.dataset.index
         let table = this.data.table_list[table_index]
-        let user_id = wx.getStorageSync('userid')
+        let user_id = wx.getStorageSync('user_id')
         // 这个桌子的主人是他
         if (table.user_id === user_id) {
             let hint = table.status === 1 ? '离开' : '取消预订'
@@ -183,18 +80,18 @@ Page({
                     that.free_table(table_index)
                 }
             })
-            this.free_table(table_index)
-            return
         }
         this.choose_table(table_index)
     },
 
+    // 取消输入
 	cancel_input: function() {
         this.setData({
             hidden_modal: true
         });
     },
 
+    // 确认输入
     confirm_input: function() {
         let number = this.data.table_no.toUpperCase()
         let table_index = -1
@@ -218,20 +115,26 @@ Page({
         }
     },
 
+    // 取消
     cancel_take: function() {
         this.setData({
             hidden_modal_table: true
         });
     },
 
+    // 确认
     confirm_take: function() {
+        if (this.data.sitdown) {
+            this.sitdown(this.data.table_index)
+        } else {
+            this.reserve(this.data.table_index)
+        }
         this.setData({
             hidden_modal_table: true
         });
-        let index = this.data.table_index
-        this.sitdown_or_reserve(index, this.data.sitdown ? 0 : 1)
     },
 
+    // 输入桌号
     input_table_no: function(e) {
         this.setData({
             table_no: e.detail.value
@@ -274,33 +177,7 @@ Page({
     },
 
     // 更新订单
-    updateOrderMenu: function () {
-        var ordermenu = []
-        var order_view_height = 0
-        var dishes_list = this.data.dishes_list
-        var sum_money = 0
-
-        // 更新订单信息（将数量大于0的菜品算作订单）
-        for (var i = 0; i < dishes_list.length; i++) {
-            if (dishes_list[i] == undefined) continue
-            if (dishes_list[i].num > 0) {
-                var temp = {
-                    dish_id: dishes_list[i].dish_id,
-                    dish_name: dishes_list[i].dish_name,
-                    price: dishes_list[i].price,
-                    amount: dishes_list[i].num
-                }
-                ordermenu.push(temp);
-                sum_money += temp.price * temp.amount
-            }
-        }
-        // 保存信息
-        this.setData({
-            ordermenu: ordermenu,
-            order_view_height: order_view_height,
-            sum_money: sum_money
-        })
-    },
+    updateOrderMenu: orderController.updateOrderMenu,
 
     // 显示订单
     showOrderMenu: function (e) {
@@ -312,62 +189,6 @@ Page({
         this.setData({
             show_order: change
         })
-    },
-
-    // 订单减号
-    orderMinus: function (e) {
-
-        // 获得当前点击的行数
-        var index = e.target.dataset.id;
-        var sum_money = this.data.sum_money
-        var dishes_list = this.data.dishes_list
-        console.log(dishes_list)
-        for (var i = 0; i < dishes_list.length; i++) {
-            if (dishes_list[i] == undefined) continue
-            if (dishes_list[i].dish_id == index) {
-                // 若数量大于0才能减
-                if (dishes_list[i].num >= 1) {
-                    dishes_list[i].num--;
-                    sum_money = sum_money - dishes_list[i].price;
-
-                    // 保存并更新数据
-                    var minus = "dishes_list[" + i + "].num"
-                    this.setData({
-                        [minus]: dishes_list[i].num,
-                        sum_money: sum_money
-                    })
-                    this.updateOrderMenu()
-                }
-                break;
-            }
-        }
-    },
-
-    // 订单加号
-    orderPlus: function (e) {
-
-        // 获得当前点击的行数
-        var index = e.target.dataset.id;
-        var sum_money = this.data.sum_money
-        var dishes_list = this.data.dishes_list
-
-        for (var i = 0; i < dishes_list.length; i++) {
-            if (dishes_list[i] == undefined) continue
-
-            if (dishes_list[i].dish_id == index) {
-                dishes_list[i].num++;
-                sum_money = sum_money + dishes_list[i].price;
-
-                // 保存并更新数据
-                var minus = "dishes_list[" + i + "].num"
-                this.setData({
-                    [minus]: dishes_list[i].num,
-                    sum_money: sum_money
-                })
-                this.updateOrderMenu()
-                break;
-            }
-        }
     },
 
     // 页面滑动
@@ -392,51 +213,9 @@ Page({
         }
     },
 
-    // 减号
-    bindMinus: function (e) {
-        var id = e.target.dataset.id
-        var sum_money = this.data.sum_money
-        var count = this.data. dishes_list[id].num
-        var price = this.data.dishes_list[id].price
-        var minus = "dishes_list[" + id + "].num"
-        
-        if (count >= 1) {
-            count--
-            sum_money -= price
-        }
-
-        // 只有大于一件的时候，才能normal状态，否则disable状态  
-        var minusStatus = count < 1 ? 'disabled' : 'normal'
-        
-        // 保存并更新数据
-        this.setData({
-            [minus]: count,
-            sum_money: sum_money,
-            minusStatus: minusStatus,
-        })
-        this.updateOrderMenu()
-    },
-
-    // 加号
-    bindPlus: function (e) {
-        var id = e.target.dataset.id
-        var sum_money = this.data.sum_money
-        var count = this.data.dishes_list[id].num
-        var price = this.data.dishes_list[id].price
-        var minus = "dishes_list[" + id + "].num"
-
-        count++
-        sum_money += price
-        
-        // 保存并更新数据
-        this.setData({
-            [minus]: count,
-            sum_money: sum_money,
-            minusStatus: 'normal'
-        })
-        this.updateOrderMenu()
-    },
-
+    // 上传加餐信息
+    postAddedMeal: orderController.postAddedMeal,
+ 
     // 导航到下一页
     navigateTo: function () {
         var that = this
@@ -446,9 +225,7 @@ Page({
             key: 'addMeal',
             success: function(res) {
                 if (res.data) {
-                    wx.reLaunch({
-                        url: "../usingPage/usingPage"
-                    })
+                    that.postAddedMeal()
                 } else {
                     that.navigateToConfirmOrder()
                 }
@@ -459,9 +236,26 @@ Page({
         })
     },
 
+    // 协同告诉后台我点完单了
+    posterOrderTogether: orderController.posterOrderTogether,
+
+
     navigateToConfirmOrder: function() {
-        var num = this.data.ordermenu.length
-        if (num != 0) {
+        var amount = this.data.ordermenu.length
+        var is_together = this.data.is_together
+        var that = this
+        console.log('is_together', is_together)
+        if (is_together) {
+            wx.showModal({
+                title: '提示',
+                content: '点餐完毕后无法修改订单，是否确认提交？',
+                success: function(res) {
+                    if (res.cancel) return
+                    that.posterOrderTogether()
+                }
+            })
+        }
+        else if (amount != 0) {
             wx.navigateTo({
                 url: "../confirmOrder/confirmOrder"
             })
@@ -475,292 +269,66 @@ Page({
     },
 
     // 获取菜单数据
-    getDishes: function () {
-        console.log('getDishes')
-        var that = this
-        wx.request({
-            url: config.service.dishesUrl,
-            method: "GET",
-            success: function (data) {
-                var data_from_server = data.data
-                var dishes = new Array(data_from_server.length)
-                var last_dishes_array = new Array(data_from_server.length)
-                for (var i = 0; i < data_from_server.length; i++) {
-                    last_dishes_array[i] = 0
-                }
-
-                console.log('all dishes', dishes)
-                for (var i = 0; i < data_from_server.length; i++) {
-                    var temp_dishes = {
-                        dish_id: data_from_server[i].dish_id,
-                        type: [data_from_server[i].type, '没吃过'],
-                        image: `${config.service.host}/images/dishes_tiny/${data_from_server[i].dish_id}.jpeg`,
-                        dish_name: data_from_server[i].dish_name,
-                        ordered_count: data_from_server[i].ordered_count,
-                        price: data_from_server[i].price,
-                        star_count: Math.round(data_from_server[i].star_count / data_from_server[i].star_times),
-                        num: 0
-                    }
-                    dishes[temp_dishes.dish_id] = temp_dishes
-                }
-                let type_list = ["我吃过"]
-                for (let dish of dishes) {
-                    if (dish == undefined) continue
-                    if (type_list.indexOf(dish.type[0]) == -1) {
-                        type_list.push(dish.type[0]);
-                    }
-                }
-                console.log('type_list', type_list)
-                that.setData({
-                    type_list: type_list,
-                    dishes_list: dishes,
-                    currentMenu: type_list[1],
-                    last_dishes_array: last_dishes_array
-                });
-                console.log('this.getMyDishes');
-                
-                that.getMyDishes()
-            },
-            fail: function (res) {
-                console.log("Get dishes failed!")
-            }
-        })
-    },
+    getDishes: menuController.getDishes,
 
     // 获取我吃过的菜谱
-    getMyDishes: function() {
-        var that = this
-        console.log('carry getMyDishes')
-        let user_id = wx.getStorageSync('userid')
-        wx.request({
-            url: config.service.dishesUrl + '?userid=' + user_id,
-            method: 'GET',
-            success: function(server_res) {
-                var myDishes = server_res.data
-                var dishes = that.data.dishes_list
-                for (var i = 0; i < myDishes.length; i++) {
-                    dishes[myDishes[i].dish_id].type[1] = '我吃过'
-                }
-                console.log('getMyDishes', myDishes)
-                // 恢复我吃过的菜
-                that.recoverOrder()
-            }
-        })
-    },
+    getMyDishes: menuController.getMyDishes,
 
     // 获取每日推荐的图片链接
-    getRecommendedImage: function() {
-        console.log('getRecommendedImage')
-        var that = this
-        wx.request({
-            url: config.service.recommendedUrl + '3',
-            method: 'GET',
-            success: function(server_res) {
-                console.log(server_res)
-                var pic = server_res.data
-                for(var i = 0; i < pic.length; i++) {
-                  pic[i] = `${config.service.host}/${pic[i]}`
-                  console.log('******', pic[i])
-                  // pic[i] = config.service.host + pic[i]
-                }
-                that.setData({
-                  imgUrls: server_res.data
-                })
-                console.log(pic)
-            },
-            fail: (err) => {
-                console.log('******', err)
-            }
-        })
-
-    },
+    getRecommendedImage: menuController.getRecommendedImage,
 
     // 恢复点单数据
-    recoverOrder: function() {
-        var order = wx.getStorageSync('order')
-        var dishes_list = this.data.dishes_list
-        if (dishes_list.length === 0) return
-        for(var i = 0; i < order.length; i++) {
-            console.log('dishes_list[order[i].dish_id]', dishes_list[order[i].dish_id])
-            dishes_list[order[i].dish_id].num = order[i].amount
-        }
-        this.setData({
-            ordermenu: order,
-            dishes_list: dishes_list
-        })
-        this.updateOrderMenu()
-        console.log(this.data.ordermenu)
-        console.log('recover', order)
-    },
+    recoverOrder: userController.recoverOrder,
 
     // 获取所有的桌位信息
-    getTableInfo: function() {
-        var table_list = []
-        var that = this
-        let user_id = wx.getStorageSync('userid')
-        wx.request({
-            url: config.service.tablesInfoUrl,
-            method: 'GET',
-            success: function(server_res) {
-                console.log('tables', server_res)
-                var allTables = server_res.data
-                let has_table = false
-                let get_tables_first = that.data.get_tables_first
-                for (var i = 0; i < allTables.length; i++) {
-                    var table = {
-                        index: i,
-                        table_id: allTables[i].table_id,
-                        number: allTables[i].number,
-                        status_: allTables[i].user_id == null ? '订' : '预',
-                        color: allTables[i].number[0] == 'A' ? 1 : allTables[i].number[0] == 'B' ? 2 : 3,
-                        user_avatar: allTables[i].user_avatar,
-                        status: allTables[i].status,
-                        user_id: allTables[i].user_id,
-                    };
-                    table_list.push(table);
-                    if (get_tables_first && table.user_id === user_id) {
-                        has_table = true
-                        wx.setStorageSync('table_id', table.table_id)
-                    }
-                }
-                if (get_tables_first && !has_table) {
-                    wx.removeStorageSync('table_id')
-                    that.setData({
-                        hidden_modal: false
-                    })
-                }
-                that.setData({
-                    table_list: table_list,
-                    get_tables_first: false
-                })
-            }
-        })
-    },
+    getTableInfo: tableController.getTableInfo,
 
+    // 获取单独的桌位信息
+    getSingleTableInfo: tableController.getSingleTableInfo,
+
+    // 预订或者坐下
     bookOrTakeTable: function(e) {
         let table_index = e.target.dataset.index
-        let table_id = e.target.dataset.id
-        let table_id_old = wx.getStorageSync('table_id')
-        if (table_id_old) {
-            wx.showToast({
-                title: '抱歉，您已经选了位置，不能重复选择桌位',
-                icon: 'none',
-                duration: 3000,
-            })
-            return
-        }
         this.setData({
-            hidden_modal_table: false,
             table_index,
-            table_id,
-        });
+        })
+        this.choose_table(table_index)
     },
 
     // 确认协同点餐
-    orderTogether: function(table_id, user_id) {
-        var that = this
-        var url = config.service.tablesInfoUrl + '/' + table_id + '/together?userid=' + user_id
-        wx.request({
-            url: url,
-            method: 'POST',
-            success: function(res) {
-                wx.setStorageSync('table_id', table_id)
-                wx.setStorageSync('is_together', true)
-                wx.setStorageSync('need_upload', true)
-                that.setData({
-                    isTogether: true
-                })
-                setInterval(() => {
-                    let need_upload = wx.getStorageSync('need_upload')
-                    if (!need_upload || that.data.currentTab === 1) return
-                    that.uploadOrder()
-                }, 3000)
-            },
-            fail: function(res) {
-                that.setData({
-                    isTogether: false
-                })
-            }
-        })
-    },
+    orderTogether: togetherController.orderTogether,
 
     // 上传我点的菜，拉下一起点的菜
-    uploadOrder: function() {
-        var table_id = wx.getStorageSync('table_id')
-        var user_id = wx.getStorageSync('userid')
-        var url = config.service.tablesInfoUrl + '/' + table_id + '/dishes?userid=' + user_id
-
-        var ordermenu = this.data.ordermenu
-        var dishes_list = this.data.dishes_list
-        var last_dishes_array = this.data.last_dishes_array
-        var delta = new Array(last_dishes_array.length)
-        console.log('dishes_list', dishes_list)
-        console.log('last_dishes_array.length', last_dishes_array.length)
-        for (var i = 0; i < dishes_list.length; i++) {
-            if (dishes_list[i] == undefined) continue
-            delta[i - 1] = dishes_list[i].num - last_dishes_array[i - 1]
-            last_dishes_array[i - 1] = dishes_list[i].num
-        }
-
-        var togetherMenu = []
-        var that = this
-        console.log('delta', delta)
-        wx.request({
-            url: url,
-            method: 'POST',
-            data: delta,
-            success: function(res) {
-                console.log('togetherMenu', res)
-                var togetherArr = res.data
-                var dishes_list = that.data.dishes_list
-                for (var i = 0; i < togetherArr.length; i++) {
-                    if (togetherArr[i] > 0) {
-                        var temp = {
-                            dish_id: i + 1,
-                            dish_name: dishes_list[i + 1].dish_name,
-                            price: dishes_list[i + 1].price,
-                            amount: togetherArr[i]
-                        }
-                        console.log('temp', temp)
-                        togetherMenu.push(temp)
-                    }
-                }
-
-                that.setData({
-                    togetherMenu: togetherMenu
-                })
-            }
-        })
-    },
+    uploadOrder: userController.uploadOrder,
 
     onLoad: function (options) {
-        try {
-            var isLogin = wx.getStorageSync('isLogin')
-            console.log(isLogin)
-            if (!isLogin) {
-                login().then(() => {
-                    this.getDishes()
-                    this.getRecommendedImage()
-                    this.getTableInfo()
-                    let that = this
-                    setInterval(() => {
-                        if (that.data.currentTab !== 1) return
-                        that.getTableInfo()
-                    }, 3000)
-                })
-                console.log('login success')
-            } else {
-                this.getDishes()
-                this.getRecommendedImage()
-                this.getTableInfo()
-                let that = this
-                setInterval(() => {
-                    if (that.data.currentTab !== 1) return
-                    that.getTableInfo()
-                }, 3000)
-            }
-        } catch(e) {
-            console.log('Get isLogin fail!')
+        orderController.setThat(this)
+        tableController.setThat(this)
+        togetherController.setThat(this)
+        menuController.setThat(this)
+        userController.setThat(this)
+
+        let table_id = wx.getStorageSync('table_id')
+        this.getDishes()
+        this.getRecommendedImage()
+        this.getTableInfo()
+        let that = this
+        setInterval(() => {
+            if (that.data.currentTab !== 1) return
+            that.getTableInfo()
+        }, config.interval)
+        if (table_id) {
+            this.getSingleTableInfo(table_id)
         }
-    }
+    },
+
+    onHide: function () {
+        if (this.data.is_together)
+            wx.setStorageSync('need_upload', false)
+    },
+
+    onShow: function () {
+        if (this.data.is_together)
+            wx.setStorageSync('need_upload', true)
+    },
 })

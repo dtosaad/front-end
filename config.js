@@ -19,7 +19,7 @@ var config = {
         dishesUrl: `${host}/weapp/dishes`,
 
         // 获取每日推荐图片
-        recommendedUrl: `${host}/weapp/recommendation?number=`,
+        recommendedUrl: `${host}/weapp/recommendation`,
 
         // 图片
         imageUrl: `${host}/weapp`,
@@ -31,8 +31,13 @@ var config = {
         tablesInfoUrl: `${host}/weapp/tables`,
 
         // 获取优惠券
-        discountUrl: `${host}/weapp/discounts`
-    }
+        discountUrl: `${host}/weapp/discounts`,
+
+        // 普通支付
+        payUrl: `${host}/weapp/orders`
+    },
+
+    interval : 1000
 };
 
 module.exports = config;

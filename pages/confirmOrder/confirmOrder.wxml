@@ -23,7 +23,7 @@
                 </view>
                 <!-- 数值 -->
                 <view class="stepper-num">
-                    <text>{{ num }}</text>
+                    <text>{{ amount }}</text>
                 </view>
                 <!-- 加号 -->
                 <view class="stepper-button, normal">
@@ -38,7 +38,7 @@
         <view class="eatstyle">
             <view>用餐方式</view>
             <radio-group class="my-radio-group" bindchange="radioChange">
-                <label class="radio-group-label" wx:for="{{items}}" wx:key="{{items}}">
+                <label class="radio-group-label" wx:for="{{items}}" wx:key="{{items}}" wx:if="{{!(item.value != '堂食' & is_together == true)}}">
                     <text>{{item.value}}</text>
                     <radio value="{{item.name}}" checked="{{item.checked}}" color="rgb(245, 166, 35)"/>
                 </label>

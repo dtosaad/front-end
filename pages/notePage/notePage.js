@@ -28,9 +28,7 @@ Page({
     },
 
     onLoad: function (options) {
-        console.log(options.noteStatus);
-        console.log(options.note);
-        if (options.noteStatus != 'note-unchanged') {
+        if (options.note) {
             this.setData({
                 cur_words: options.note,
                 cur_words_num: options.note.length

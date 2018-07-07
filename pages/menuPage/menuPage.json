@@ -1,3 +1,6 @@
 {
-    "navigationBarTitleText": "中大零饭"
+    "navigationBarTitleText": "中大零饭",
+    "usingComponents": {
+        "numberController": "../../components/numberController/numberController"
+    }
 }
