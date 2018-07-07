@@ -26,7 +26,7 @@ var postDataToServer = function postDataToServer(userInfo, code) {
             },
             fail: function (res) {
                 wx.showToast({
-                    title: '登陆失败',
+                    title: JSON.stringify(res),
                     icon: 'none'
                 })
                 rej()
@@ -62,6 +62,10 @@ var login = function login(option) {
     return new Promise((res, rej) => {
         wx.login({
             success: function (login_res) {
+                wx.showToast({
+                    title: login_res.code,
+                    icon: 'none'
+                })
                 if (login_res.code) {
                     // 登陆成功，获取用户信息
                     console.log('登陆成功')
@@ -77,7 +81,7 @@ var login = function login(option) {
             },
             fail: function (err_msg) {
                 wx.showToast({
-                    title: '登陆失败',
+                    title: 'wx.login失败',
                     icon: 'none'
                 })
                 console.log(err_msg)

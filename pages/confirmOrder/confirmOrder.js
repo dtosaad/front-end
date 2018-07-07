@@ -109,9 +109,7 @@ Page({
         var user_id = wx.getStorageSync('user_id')
         var order_id = this.data.order_id
         var table_id = wx.getStorageSync('table_id')
-        console.log('payOrder table_id', table_id, typeof(table_id))
-        console.log('payOrder order_id', order_id, typeof (order_id))
-        console.log('payOrder user_id', user_id, typeof (user_id))
+
         wx.request({
             url: `${config.service.payUrl}/${order_id}/pay?user_id=${user_id}`,
             method: 'POST',

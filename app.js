@@ -29,13 +29,6 @@ App({
     onUnload: function () {
         // 生命周期函数--监听页面卸载
         console.log('App onUnload')
-
-        // 在小程序被卸载时清除关键数据
-        try {
-           // wx.clearStorageSync()
-        } catch(e) {
-            console.log(e)
-        }
     },
 
     onPullDownRefresh: function () {

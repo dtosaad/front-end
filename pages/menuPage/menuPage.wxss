@@ -274,7 +274,7 @@ zpage {
     margin-right: 40rpx;
 }
 
-.ordered-stepper {
+.ordered-numberController {
     margin-top: 25rpx;
 }
 

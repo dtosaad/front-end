@@ -130,8 +130,6 @@ Page({
 
     },
 
-
-
     // 删除星星
     deleteStar: function(e) {
         var star_index = e.currentTarget.dataset.index
